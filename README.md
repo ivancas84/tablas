@@ -42,6 +42,19 @@ set_include_path(get_include_path()
 Incluir en el index.php la ruta al archivo de configuracion del proyecto
 </pre>
 
+# base de datos
+
+* Todas las tablas deben tener un id definido
+
+* Debe existir una tabla transaccion con los siguientes atributos:
+
+id BIGINT(20)
+tipo VARCHAR(255)
+detalle TEXT
+descripcion TEXT
+alta TIMESTAMP
+actualizado TIMESTAMP
+
 
 
 
