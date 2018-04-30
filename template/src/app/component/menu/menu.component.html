@@ -1,0 +1,22 @@
+<nav class="navbar navbar-toggleable-md navbar-dark bg-dark">
+  <button class="navbar-toggler navbar-toggler-right" type="button" aria-controls="appNavigation" [attr.aria-expanded]="!isCollapsed" aria-label="Toggle navigation" (click)="toggleMenu()">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">My App</a>
+  <div class="collapse navbar-collapse" id="appNavigation" [ngbCollapse]="isCollapsed">
+    <div class="navbar-nav mr-auto">
+      <a class="nav-item nav-link" routerLink="" routerLinkActive="active">Home</a>
+      <a class="nav-item nav-link" routerLink="/about" routerLinkActive="active">About</a>
+
+
+    <div ngbDropdown class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" id="dropdownBasic1" ngbDropdownToggle>Toggle dropdown</a>
+      <div class="dropdown-menu"  ngbDropdownMenu aria-labelledby="dropdownBasic1">
+        <button class="dropdown-item">Action - 1</button>
+        <button class="dropdown-item">Another Action</button>
+        <button class="dropdown-item">Something else is here</button>
+      </div>
+    </div>
+  </div>
+  </div>
+</nav>

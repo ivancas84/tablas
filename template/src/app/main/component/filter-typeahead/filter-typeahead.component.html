@@ -1,0 +1,11 @@
+<span [formGroup]="filter">
+
+  <ng-template #rt let-r="result" let-t="term">
+    {{ r.nombre}}
+  </ng-template>
+
+  <input class="form-control form-control-sm" formControlName="value" [ngbTypeahead]="search" placeholder="Seleccionar" [inputFormatter]="formatter" [resultTemplate]="rt">
+  <span *ngIf="searching"><span class="oi oi-clock"></span></span>
+  <span *ngIf="isSelected(filter.get('value').value)"><span class="oi oi-check"></span></span>
+
+</span>

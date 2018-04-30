@@ -1,0 +1,12 @@
+
+<div [formGroup]="fieldset">
+  <label>Nombre:
+      <input formControlName="nombre">
+  </label>
+  <label>Clasificacion:
+      <input formControlName="clasificacion">
+  </label>
+
+  <p>Debug Form Value: {{ fieldset.value | json }}</p>
+  <p>Debug Form Status: {{ fieldset.status | json }}</p>
+</div>
