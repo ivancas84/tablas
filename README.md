@@ -39,6 +39,10 @@ set_include_path(get_include_path()
   . PATH_SEPARATOR . $_SERVER["DOCUMENT_ROOT"] . "/" . PATH_SYS . "/api/main"
 ); 
 
+Incluir en el index.php la ruta al archivo de configuracion del proyecto
+
+
+
 
 
 

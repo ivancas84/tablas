@@ -62,8 +62,8 @@ class GenerateConfig {
 
 
   protected function entities(){
-    require_once("generate/php/entity/Main.php");
-    require_once("generate/php/entity/Entity.php");
+    require_once("generate/config/entity/Main.php");
+    require_once("generate/config/entity/Entity.php");
 
     foreach($this->tablesInfo as $tableInfo){
       $self = new ClassEntityMain($tableInfo["name"], $tableInfo["alias"], $tableInfo["fields"]);
@@ -76,8 +76,8 @@ class GenerateConfig {
 
   //
   protected function fields(){
-    require_once("generate/php/field/Field.php");
-    require_once("generate/php/field/Main.php");
+    require_once("generate/config/field/Field.php");
+    require_once("generate/config/field/Main.php");
 
     foreach($this->tablesInfo as $tableInfo){
       foreach ( $tableInfo["fields"] as $fieldInfo) {
@@ -103,7 +103,7 @@ class GenerateConfig {
     $gen = new IncludeEntityClasses($this->tablesInfo);
     $gen->generateIfNotExists();
 
-    
+
   }
 
 

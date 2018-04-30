@@ -48,7 +48,6 @@ class GeneratePhp {
   }
 
   public function generate(){
-    echo "<br><br><br>***************<br>***** PHP *****<br>***************<br><br>";
     $this->dba();
     $this->includeModelClasses();
 
