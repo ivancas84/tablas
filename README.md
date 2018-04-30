@@ -10,7 +10,7 @@ Definir un archivo de configuracion: "/path/to/project/config/config.php"
 
 Incluir en el archivo de configuracion las siguientes constantes, por ejemplo:
 
-<?php
+<pre>
 //ini_set("display_errors", 1);
 //ini_set('date.timezone', 'America/Argentina/Buenos_Aires');
 //session_set_cookie_params(7200, '/', '.dominio.com.ar'); //produccion
@@ -40,7 +40,7 @@ set_include_path(get_include_path()
 ); 
 
 Incluir en el index.php la ruta al archivo de configuracion del proyecto
-
+</pre>
 
 
 
