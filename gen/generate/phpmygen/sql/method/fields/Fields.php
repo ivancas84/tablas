@@ -2,49 +2,57 @@
 
 
 class ClassSql_fields extends GenerateEntity {
-  
+
   /**
   * Generar sql distinct fields
   * @param array $table Tabla de la estructura
   * @param string $string Codigo generado hasta el momento
   * @return string Codigo generado
   */
-  protected function fields(Entity $entity, $tableName, $prefixField){
+  protected function fields(Entity $entity){
     $pk = $entity->getPk();
     $nfFk = $entity->getFieldsByType(["nf","fk"]);
-    
-    $this->string .= $tableName . "." . $entity->getPk()->getName() . " AS " . $entity->getPk()->getName() . ", ";
-    
+
+    $this->string .= "{\$prefix}." . $entity->getPk()->getName() . " AS {\$prf}" . $entity->getPk()->getName() . ", ";
+
     foreach ( $nfFk as $field ) {
-      $this->string .= $tableName . "." . $field->getName() . " AS " . $prefixField . $field->getName() . ", ";
+      $this->string .=  "{\$prefix}." . $field->getName() . " AS {\$prf}" . $field->getName() . ", ";
 
     }
-    
+
     $this->string .= "
 ";
   }
 
 
-  
+
   protected function end(){
-    $this->string .= "    \";
+    $this->string .= "\";
   }
+
 ";
   }
-  
+
 
   protected function start(){
     $this->string .= "
   //***** @override *****
-  public function fields(){
+  public static function _fields(\$prefix = ''){
+    if(empty(\$prefix)) {
+      \$prefix = '" . $this->getEntity()->getAlias() . "';
+      \$prf = '';
+    } else {
+      \$prf = \$prefix . '_';
+    }
+
     return \"";
   }
-  
-    
+
+
   public function generate(){
     $this->start();
-    $this->fields($this->getEntity(), $this->getEntity()->getAlias(), "");
-    $this->end();  
+    $this->fields($this->getEntity());
+    $this->end();
     return $this->string;
   }
 

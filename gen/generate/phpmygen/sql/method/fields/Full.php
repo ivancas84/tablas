@@ -2,89 +2,90 @@
 
 
 class ClassSql_fieldsFull extends GenerateEntity {
-  
+  public $fields = [];
+
+  public function generate(){
+    if(!$this->getEntity()->hasRelations()) return "";
+
+    $this->start();
+    $this->recursive($this->getEntity());
+    $this->end();
+    return $this->string;
+  }
+
+
+  protected function start(){
+    $this->string .= "  public function fieldsFull(){
+    return self::_fields()";
+  }
+
+  /**
+   * Metodo auxiliar de generacion del body main
+   * @param Entity $entity
+   * @param array $tablesVisited
+   * @param type $prefix Prefijo, si esta vacio significa que se esta arrancando el metodo recursivo con la entidad principal
+   * @param type $prefixField
+   */
+  protected function recursive(Entity $entity, array $tablesVisited = NULL, $prefix = "") {
+    if(is_null($tablesVisited)) $tablesVisited = array();
+
+    if (!empty($prefix)){
+      $this->string .= $this->fields($entity, $prefix);
+    }
+
+    $this->fk($entity, $tablesVisited, $prefix);
+    $this->u_($entity, $tablesVisited, $prefix);
+  }
+
+
   /**
   * Generar sql distinct fields
   * @param array $table Tabla de la estructura
   * @param string $string Codigo generado hasta el momento
   * @return string Codigo generado
   */
-  protected function fields(Entity $entity, $tableName, $prefixField){
-    $pkNfFk = $entity->getFields();
-    foreach ( $pkNfFk as $field ) {
-      $this->string .= $tableName . "." . $field->getName() . " AS " . $prefixField . $field->getName() . ", ";
-
-    }
-    
-    $this->string .= "
-";
+  protected function fields(Entity $entity, $prefix){
+    $field = "{$entity->getName("XxYy")}::_fields('{$prefix}')";
+    array_push($this->fields, $field);
   }
-  
+
   protected function end(){
-    $this->string .= "    \";
+    if(count($this->fields)){
+      $this->string .= " .
+    " .implode(' .
+    ', $this->fields);
+    }
+    $this->string .= ";
   }
 ";
   }
-  
-  protected function start(){
-    $this->string .= "
-  //***** @override *****
-  public function fieldsFull(){
-    return \$this->fields() . \"";
-  }
-  
-  
-  protected function fk(Entity $entity, array $tablesVisited, $prefixTable, $prefixField){
+
+
+
+  protected function fk(Entity $entity, array $tablesVisited, $prefix){
     $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
-    foreach ($fk as $field ) {  
-      array_push($tablesVisited, $entity->getName());
-      $this->string .= $this->recursive($field->getEntityRef(), $tablesVisited, $prefixTable . $field->getAlias(), $prefixField . $field->getAlias() . "_") ;
+    $prf = (empty($prefix)) ? "" : $prefix . "_";
+    array_push($tablesVisited, $entity->getName());
+
+    foreach ($fk as $field ) {
+      $this->string .= $this->recursive($field->getEntityRef(), $tablesVisited, $prf . $field->getAlias()) ;
     }
   }
-  
-  protected function u_(Entity $entity, array $tablesVisited, $prefixTable, $prefixField){
+
+  protected function u_(Entity $entity, array $tablesVisited,  $prefix){
     $u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
-    
+    $prf = (empty($prefix)) ? "" : $prefix . "_";
+    array_push($tablesVisited, $entity->getName());
+
     foreach ($u_ as $field ) {
-      array_push($tablesVisited, $entity->getName());
-      $this->string .= $prefixTable . $field->getAlias("_") . "." . $field->getEntity()->getPk()->getName() . " AS " . $prefixField . $field->getAlias("_") . ", ";     
-      $this->fields($field->getEntity(), $prefixTable . $field->getAlias("_"), $prefixField . $field->getAlias("_") . "_");
+      $this->fields($field->getEntity(), $prf . $field->getAlias("_"));
     }
 
   }
-  
-  /**
-   * Metodo auxiliar de generacion del body main
-   * @param Entity $entity
-   * @param array $tablesVisited
-   * @param type $prefixTable
-   * @param type $prefixField
-   */
-  protected function recursive(Entity $entity, array $tablesVisited = NULL, $prefixTable = "", $prefixField = "") {
-    if(is_null($tablesVisited)) $tablesVisited = array();
-    
-    $string = "";
-    if (!empty($prefixTable)){
-      $this->string .= $this->fields($entity, $prefixTable, $prefixField);
-      $prefixTable = $prefixTable . "_";
-    } else {
-      $prefixTable = "";
-    }
-    
-    $string .= $this->fk($entity, $tablesVisited, $prefixTable, $prefixField);
-    $string .= $this->u_($entity, $tablesVisited, $prefixTable, $prefixField);
-    return $string;
-  }
-  
-  
-   public function generate(){
-    if(!$this->getEntity()->hasRelations()) return "";
 
-    $this->start();
-    //$this->fields($this->getEntity(), $this->getEntity()->getAlias(), "");
-    $this->recursive($this->getEntity());
-    $this->end();  
-    return $this->string;
-  }
- 
+
+
+
+
+
 }
