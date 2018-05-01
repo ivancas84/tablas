@@ -34,11 +34,11 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
 
   protected function mappingField(){
-    require_once("generate/php/sql/method/_MappingField.php");
+    require_once("generate/phpmygen/sql/method/_MappingField.php");
     $gen = new ClassSql__mappingField($this->getEntity());
     $this->string .= $gen->generate();
 
-    require_once("generate/php/sql/method/MappingField.php");
+    require_once("generate/phpmygen/sql/method/MappingField.php");
     $gen = new ClassSql_mappingField($this->getEntity());
     $this->string .= $gen->generate();
 
@@ -47,10 +47,10 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
   protected function methodFields(){
 
-    require_once("generate/php/sql/method/fields/Full.php");
-    require_once("generate/php/sql/method/fields/Fields.php");
-    require_once("generate/php/sql/method/fields/label/Label.php");
-    require_once("generate/php/sql/method/fields/label/Full.php");
+    require_once("generate/phpmygen/sql/method/fields/Full.php");
+    require_once("generate/phpmygen/sql/method/fields/Fields.php");
+    require_once("generate/phpmygen/sql/method/fields/label/Label.php");
+    require_once("generate/phpmygen/sql/method/fields/label/Full.php");
 
 
     $gen = new ClassSql_fields($this->getEntity());
@@ -67,14 +67,14 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
   }
 
   protected function methodJoin(){
-    require_once("generate/php/sql/method/Join.php");
+    require_once("generate/phpmygen/sql/method/Join.php");
 
     $gen = new ClassSql_join($this->getEntity());
     $this->string .= $gen->generate();
   }
 
   protected function conditionSearch(){
-    require_once("generate/php/sql/method/ConditionSearch.php");
+    require_once("generate/phpmygen/sql/method/ConditionSearch.php");
 
     $gen = new ClassSql_conditionSearch($this->getEntity());
     $this->string .= $gen->generate();
@@ -84,7 +84,7 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
 
   protected function conditionAdvancedSearch(){
-    require_once("generate/php/sql/method/ConditionAdvancedSearch.php");
+    require_once("generate/phpmygen/sql/method/ConditionAdvancedSearch.php");
 
     $gen = new ClassSql_conditionAdvancedSearch($this->getEntity());
     $this->string .= $gen->generate();

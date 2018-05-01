@@ -50,7 +50,7 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
   }
 
   protected function insertSql(){
-    require_once("generate/php/sqlo/method/InsertSql.php");
+    require_once("generate/phpmygen/sqlo/method/InsertSql.php");
     $g = new GenerateClassDataSqlMethodInsertSql($this->getEntity());
     $this->string .=  $g->generate();
   }
@@ -58,49 +58,49 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
 
 
   protected function initializeInsertSql(){
-    require_once("generate/php/sqlo/method/InitializeInsertSql.php");
+    require_once("generate/phpmygen/sqlo/method/InitializeInsertSql.php");
     $gen = new InitializeInsertSql($this->getEntity());
     $this->string .= $gen->generate();
   }
 
   protected function initializeUpdateSql(){
-    require_once("generate/php/sqlo/method/InitializeUpdateSql.php");
+    require_once("generate/phpmygen/sqlo/method/InitializeUpdateSql.php");
     $gen = new InitializeUpdateSql($this->getEntity());
     $this->string .= $gen->generate();
   }
 
   protected function formatSql(){
-    require_once("generate/php/sqlo/method/FormatSql.php");
+    require_once("generate/phpmygen/sqlo/method/FormatSql.php");
     $gen = new Sqlo_FormatSql($this->getEntity());
     $this->string .= $gen->generate();
   }
 
 
   protected function updateSql(){
-    require_once("generate/php/sqlo/method/UpdateSql.php");
+    require_once("generate/phpmygen/sqlo/method/UpdateSql.php");
     $gen = new Sqlo_updateSql($this->getEntity());
     $this->string .= $gen->generate();
   }
 
   protected function uploadSql(){
-    require_once("generate/php/sqlo/method/UploadSql.php");
+    require_once("generate/phpmygen/sqlo/method/UploadSql.php");
     $gen = new GenerateClassDataSqlMethodUploadSql($this->getEntity());
     $this->string .= $gen->generate();
   }
 
   protected function uploadSqlIndex(){
-    require_once("generate/php/sqlo/method/UploadSqlIndex.php");
+    require_once("generate/phpmygen/sqlo/method/UploadSqlIndex.php");
     $this->string .= GenerateClassDataSqlMethodUploadSqlIndex::createAndGetString($this->getEntity());
   }
 
   protected function _build(){
-    require_once("generate/php/sqlo/method/_Build.php");
+    require_once("generate/phpmygen/sqlo/method/_Build.php");
     $gen = new ClassSqlo__build($this->getEntity());
     $this->string .= $gen->generate();
   }
 
   protected function build(){
-    require_once("generate/php/sqlo/method/Build.php");
+    require_once("generate/phpmygen/sqlo/method/Build.php");
     $gen = new ClassSqlo_build($this->getEntity());
     $this->string .= $gen->generate();
   }

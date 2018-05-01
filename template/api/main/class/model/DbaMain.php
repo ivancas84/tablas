@@ -198,7 +198,7 @@ class DbaMain {
   }
 
   //row
-  public function row($entity, $render = null) {
+  public function one($entity, $render = null) {
     $rows = $this->all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
     elseif(count($rows) == 1) return $rows[0];
@@ -206,7 +206,7 @@ class DbaMain {
   }
 
   //row or null
-  public function rowOrNull($entity, $render = null) {
+  public function oneOrNull($entity, $render = null) {
     $rows = $this->all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
     elseif(count($rows) == 1) return $rows[0];
