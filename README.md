@@ -1,12 +1,16 @@
 # tablas
 
-El objetivo principal de este proyecto es construir una estructura en PHP de la base de datos.
+El objetivo principal de este proyecto es construir una estructura en PHP de la base de datos para ser utilizada en otros proyectos. Partiendo de este objetivo principal se definieron dos subproyectos:
 
-Partiendo del objetivo principal se definieron dos subproyectos principales:
-
-1) PHPMYGEN que define una API y un conjunto de clases para acceder a una base de datos mysql
+1) PHPMYGEN que define un conjunto de clases para acceder a una base de datos MySQL
 
 2) ANGULARIOGEN que define una serie de templates para facilitar el desarrollo de un frontend en Angular2+.
+
+El proyecto tablas se construye partiendo de la siguiente ideas:
+* Una base de datos es el componente principal de todo sistema. No importa cual sea la forma en que se accede a los datos, los datos siempre están, todo lo demás es secundario.
+* Los datos y su estructura son dinámicas, varían con el tiempo. Deben utilizarse herramientas que permitan fácilmente adaptarse a los cambios.
+* Un motor de base de datos proporciona un conjunto de herramientas que facilitan el desarrollo y no conviene dejarlas a un lado. La solución más óptima se logra utilizando la herramienta adecuada según el problema a resolver.
+* La base de datos constituye una poderosa herramienta de configuración, ya que además de resguardar los datos, proporciona un mapa de configuración de sus tipos, nombres, relaciones, etc.
 
 
 Procedimiento inicial:
