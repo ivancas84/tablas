@@ -1,16 +1,16 @@
 <?php
 
-require_once("generate/php/sql/method/fields/Fields.php");
+require_once("generate/phpmygen/sql/method/fields/Fields.php");
 
 class ClassSql_fieldsLabelFull extends GenerateEntity{
-  
+
   protected function end(){
     $this->string .= "    \";
   }
 ";
   }
-  
-  public function fieldsConcat(Entity $entity, $prefixTable = "", $prefixField = ""){    
+
+  public function fieldsConcat(Entity $entity, $prefixTable = "", $prefixField = ""){
     $tableIdentification = (!empty($prefixTable)) ? $prefixTable : $entity->getAlias();
 
     $mf = $entity->getFieldsByType(array("pk","nf"));
@@ -24,10 +24,10 @@ class ClassSql_fieldsLabelFull extends GenerateEntity{
         $this->string .= $tableIdentification . "." . $field->getName() . ", ";
       }
     }
-    
+
     if(!$existMain) $this->string .= $tableIdentification . ".id, ";
 
-    
+
     $this->string = rtrim($this->string);
     $this->string = rtrim($this->string, ", ");
     $this->string .= ") AS " . $prefixField . "label,
@@ -40,16 +40,16 @@ class ClassSql_fieldsLabelFull extends GenerateEntity{
   public function fieldsLabelFull(){
     return \"";
   }
-  
+
   protected function fk(Entity $entity, array $tablesVisited, $prefixTable, $prefixField){
     $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
-    foreach ($fk as $field ) {  
+    foreach ($fk as $field ) {
       array_push($tablesVisited, $entity->getName());
       $this->fieldsConcat($field->getEntityRef(), $prefixTable . $field->getAlias(), $prefixField . $field->getAlias() . "_") ;
       $this->recursive($field->getEntityRef(), $tablesVisited, $prefixTable . $field->getAlias() . "_", $prefixField . $field->getAlias() . "_");
     }
   }
-  
+
   protected function u_(Entity $entity, array $tablesVisited, $prefixTable, $prefixField){
     $u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
 
@@ -59,7 +59,7 @@ class ClassSql_fieldsLabelFull extends GenerateEntity{
     }
 
   }
-  
+
 
   protected function recursive(Entity $entity, array $tablesVisited = NULL, $prefixTable = "", $prefixField = "") {
     if(is_null($tablesVisited)) $tablesVisited = array();
@@ -72,9 +72,9 @@ class ClassSql_fieldsLabelFull extends GenerateEntity{
     if(!$this->getEntity()->hasRelations()) return "";
     $this->start();
     $this->recursive($this->getEntity());
-    $this->end();  
+    $this->end();
     return $this->string;
   }
-  
+
 
 }

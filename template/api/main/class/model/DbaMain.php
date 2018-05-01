@@ -468,13 +468,26 @@ LIMIT 10;
     unset($_SESSION["transaction"][$this->transaction]);
   }
 
-  public function build($entity, array $rows){
+  public function json($entity, array $rows){
     $sqlo = $this->entitySqlo($entity);
     $rows_ = [];
 
 
     foreach($rows as $row){
-      $row_ = $sqlo->build($row);
+      $row_ = $sqlo->json($row);
+      array_push($rows_, $row_);
+    }
+
+    return $rows_;
+  }
+  
+  public function values($entity, array $rows){
+    $sqlo = $this->entitySqlo($entity);
+    $rows_ = [];
+
+
+    foreach($rows as $row){
+      $row_ = $sqlo->values($row);
       array_push($rows_, $row_);
     }
 
