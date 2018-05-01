@@ -1,12 +1,12 @@
-  <?php
+<?php
 
+//controlador para generar el proyecto AngularIoGen
 require_once("./config/config.php");
 require(PATH_GEN); //configuracion del modulo de administracion
 
 require_once("config/structure.php");
 
 
-require("generate/angulariogen/Angular2.php");
-$php = new GenerateAngular2($structure);
+require("generate/angulariogen/AngularIoGen.php");
+$php = new AngularIoGen($structure);
 $php->generate();
-

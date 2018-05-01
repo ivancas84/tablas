@@ -3,10 +3,7 @@
 require_once("class/db/My.php");
 require_once("class/Aliases.php");
 
-/**
- * Generar clases y archivos de configuracion
- */
-class GenerateConfig {
+class Tablas {
 
   protected $db; //DbSqlMy. Conexion con base de datos mysql
   protected $tablesInfo; //array. Informacion de las tablas
@@ -62,8 +59,8 @@ class GenerateConfig {
 
 
   protected function entities(){
-    require_once("generate/config/entity/Main.php");
-    require_once("generate/config/entity/Entity.php");
+    require_once("generate/tablas/entity/Main.php");
+    require_once("generate/tablas/entity/Entity.php");
 
     foreach($this->tablesInfo as $tableInfo){
       $self = new ClassEntityMain($tableInfo["name"], $tableInfo["alias"], $tableInfo["fields"]);
@@ -76,8 +73,8 @@ class GenerateConfig {
 
   //
   protected function fields(){
-    require_once("generate/config/field/Field.php");
-    require_once("generate/config/field/Main.php");
+    require_once("generate/tablas/field/Field.php");
+    require_once("generate/tablas/field/Main.php");
 
     foreach($this->tablesInfo as $tableInfo){
       foreach ( $tableInfo["fields"] as $fieldInfo) {
@@ -93,13 +90,13 @@ class GenerateConfig {
 
 
   public function structure(){
-    require_once("generate/config/Structure.php");
+    require_once("generate/tablas/Structure.php");
     $gen = new GenerateConfigStructure($this->tablesInfo);
     $gen->generate();
   }
 
   public function includes(){
-    require_once("generate/config/EntityClasses.php");
+    require_once("generate/tablas/EntityClasses.php");
     $gen = new IncludeEntityClasses($this->tablesInfo);
     $gen->generateIfNotExists();
 

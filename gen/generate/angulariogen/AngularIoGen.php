@@ -1,6 +1,6 @@
 <?php
 
-class GenerateAngular2 {
+class AngularIoGen {
 
   protected $structure;
 

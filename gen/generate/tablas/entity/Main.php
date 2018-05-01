@@ -2,7 +2,7 @@
 
 require_once("generate/GenerateFile.php");
 require_once("function/snake_case_to.php");
-require_once("generate/config/entity/method/GetFields.php");
+require_once("generate/tablas/entity/method/GetFields.php");
 
 //***** Generacion de clase TableStructure para una determinada tabla *****
 class ClassEntityMain extends GenerateFile{
