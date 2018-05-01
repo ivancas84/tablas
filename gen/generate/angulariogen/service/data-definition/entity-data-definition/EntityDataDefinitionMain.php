@@ -31,49 +31,49 @@ export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends Da
   }
 
   protected function storage(){
-    require_once("generate/angular2/service/data-definition/entity-data-definition/_Storage.php");
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Storage.php");
     $gen = new EntityDataDefinition_Storage($this->entity);
     $this->string .= $gen->generate();
   }
 
   protected function init(){
-    require_once("generate/angular2/service/data-definition/entity-data-definition/_Init.php");
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Init.php");
     $gen = new EntityDataDefinition_Init($this->entity);
     $this->string .= $gen->generate();
   }
 
   protected function initMain(){
-    require_once("generate/angular2/service/data-definition/entity-data-definition/_InitMain.php");
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_InitMain.php");
     $gen = new EntityDataDefinition_InitMain($this->entity);
     $this->string .= $gen->generate();
   }
 
   protected function initFilters(){
-    require_once("generate/angular2/service/data-definition/entity-data-definition/_InitFilters.php");
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_InitFilters.php");
     $gen = new EntityDataDefinition_InitFilters($this->entity);
     $this->string .= $gen->generate();
   }
 
   protected function initForm(){
-    require_once("generate/angular2/service/data-definition/entity-data-definition/_InitForm.php");
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_InitForm.php");
     $gen = new EntityDataDefinition_InitForm($this->entity);
     $this->string .= $gen->generate();
   }
 
   protected function serverFilters(){
-    require_once("generate/angular2/service/data-definition/entity-data-definition/_ServerFilters.php");
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_ServerFilters.php");
     $gen = new EntityDataDefinition_ServerFilters($this->entity);
     $this->string .= $gen->generate();
   }
 
   protected function options(){
-    require_once("generate/angular2/service/data-definition/entity-data-definition/_Options.php");
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Options.php");
     $gen = new EntityDataDefinition_Options($this->entity);
     $this->string .= $gen->generate();
   }
 
   protected function formGroup(){
-    require_once("generate/angular2/service/data-definition/entity-data-definition/_FormGroup.php");
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_FormGroup.php");
     $gen = new EntityDataDefinition_FormGroup($this->entity);
     $this->string .= $gen->generate();
   }
@@ -81,14 +81,14 @@ export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends Da
 
 
   protected function label(){
-    require_once("generate/angular2/service/data-definition/entity-data-definition/_Label.php");
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Label.php");
     $gen = new EntityDataDefinition_Label($this->entity);
     $this->string .= $gen->generate();
   }
 
 
   protected function server(){
-    require_once("generate/angular2/service/data-definition/entity-data-definition/_Server.php");
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Server.php");
     $gen = new EntityDataDefinition_Server($this->entity);
     $this->string .= $gen->generate();
   }

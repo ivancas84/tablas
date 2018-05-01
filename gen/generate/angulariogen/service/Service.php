@@ -31,11 +31,11 @@ class GenerateService {
     }
 
     protected function entityDataDefinition($entity){
-      require_once("generate/angular2/service/data-definition/entity-data-definition/EntityDataDefinitionMain.php");
+      require_once("generate/angulariogen/service/data-definition/entity-data-definition/EntityDataDefinitionMain.php");
       $gen = new EntityDataDefinitionMain($entity);
       $gen->generate();
 
-      require_once("generate/angular2/service/data-definition/entity-data-definition/EntityDataDefinition.php");
+      require_once("generate/angulariogen/service/data-definition/entity-data-definition/EntityDataDefinition.php");
       $gen = new EntityDataDefinition($entity);
       $gen->generate();
     }

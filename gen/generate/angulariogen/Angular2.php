@@ -120,20 +120,20 @@ class GenerateAngular2 {
 
 
   protected function dataDefinitionLoader(){
-    require_once("generate/angular2/DataDefinitionLoaderService/DataDefinitionLoaderService.php");
+    require_once("generate/angulariogen/DataDefinitionLoaderService/DataDefinitionLoaderService.php");
     $gen = new DataDefinitionLoaderService($this->structure);
     $gen->generate();
   }
 
 
   public function component(){
-    require_once("generate/angular2/component/Component.php");
+    require_once("generate/angulariogen/component/Component.php");
     $gen = new GenerateComponent($this->structure);
     $gen->generate();
   }
 
   public function service(){
-    require_once("generate/angular2/service/Service.php");
+    require_once("generate/angulariogen/service/Service.php");
     $gen = new GenerateService($this->structure);
     $gen->generate();
   }
