@@ -45,7 +45,7 @@ class ClassSql_fieldsFull extends GenerateEntity {
   * @return string Codigo generado
   */
   protected function fields(Entity $entity, $prefix){
-    $field = "{$entity->getName("XxYy")}::_fields('{$prefix}')";
+    $field = "{$entity->getName("XxYy")}Sql::_fields('{$prefix}')";
     array_push($this->fields, $field);
   }
 

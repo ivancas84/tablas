@@ -83,10 +83,13 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
 
 
-  protected function conditionAdvancedSearch(){
-    require_once("generate/phpmygen/sql/method/ConditionAdvancedSearch.php");
+  protected function conditionAdvanced(){
+    require_once("generate/phpmygen/sql/method/ConditionAdvancedMain.php");
+    $gen = new ClassSql_conditionAdvancedMain($this->getEntity());
+    $this->string .= $gen->generate();
 
-    $gen = new ClassSql_conditionAdvancedSearch($this->getEntity());
+    require_once("generate/phpmygen/sql/method/_ConditionAdvanced.php");
+    $gen = new ClassSql__conditionAdvanced($this->getEntity());
     $this->string .= $gen->generate();
   }
 
@@ -99,7 +102,7 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     $this->methodFields();
     $this->methodJoin();
     $this->conditionSearch();
-    $this->conditionAdvancedSearch();
+    $this->conditionAdvanced();
     $this->end();
   }
 
