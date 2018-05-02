@@ -14,17 +14,17 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
 
   protected function start(){
     $this->string .= "  //@override
-    public static function _conditionAdvanced(\$field, \$option, \$value, \$prefix = ''){
-      if(empty(\$prefix)) {
-        \$t = '" . $this->getEntity()->getAlias() . "';
-        \$p = '';
-      } else {
-        \$t = \$prefix;
-        \$p = \$prefix . '_';
-      }
+  public static function _conditionAdvanced(\$field, \$option, \$value, \$prefix = ''){
+    if(empty(\$prefix)) {
+      \$t = '" . $this->getEntity()->getAlias() . "';
+      \$p = '';
+    } else {
+      \$t = \$prefix;
+      \$p = \$prefix . '_';
+    }
 
-      switch (\$field){
-  ";
+    switch (\$field){
+";
   }
 
   protected function condition(Entity $entity){
@@ -45,7 +45,7 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
 
 
   protected function string($fieldName){
-    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionText(\"{\$t}." . $fieldName . "\", \$value, \$option);
+    $this->string .= "       case \"{\$p}" . $fieldName . "\": return \$this->conditionText(\"{\$t}." . $fieldName . "\", \$value, \$option);
 " ;
 
   }
@@ -70,6 +70,7 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
   protected function end(){
     $this->string .= "    }
   }
+
 ";
   }
 

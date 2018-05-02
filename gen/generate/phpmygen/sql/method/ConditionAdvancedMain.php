@@ -14,8 +14,8 @@ class ClassSql_conditionAdvancedMain extends GenerateEntity{
 
   protected function start(){
     $this->string .= "  //@override
-  protected function conditionAdvancedMain(\$field, \$option, \$value){
-    self::_conditionAdvanced(\$field, \$option, \$value);
+  protected function conditionAdvancedMain(\$field, \$option, \$value) {
+    if(\$c = self::_conditionAdvanced(\$field, \$option, \$value)) return \$c;
 ";
   }
 
@@ -42,7 +42,7 @@ class ClassSql_conditionAdvancedMain extends GenerateEntity{
 
 
   protected function condition(Entity $entity, $prefix){
-    $this->string .= "    {$entity->getName("XxYy")}Sql::_conditionAdvanced(\$field, \$option, \$value, '{$prefix}')
+    $this->string .= "    if(\$c = {$entity->getName("XxYy")}Sql::_conditionAdvanced(\$field, \$option, \$value, '{$prefix}')) return \$c;
 ";
   }
 
@@ -71,9 +71,9 @@ class ClassSql_conditionAdvancedMain extends GenerateEntity{
 
 
   protected function end(){
-    $this->string .= "    }
-    }
-  ";
+    $this->string .= "  }
+
+";
   }
 
 

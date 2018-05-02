@@ -42,7 +42,18 @@ abstract class EntitySql {
   }
 
   //***** metodos abstractos *****
-  public function conditionSearch($search = "") { throw new BadMethodCallException("Not Implemented"); } //Definir condicion de busqueda simple
+  public function conditionSearch($search = "") {  } //Definir condicion de busqueda simple
+
+  //Definir sql condicion obligatoria
+  //Utilizada generalmente para restringir visualización, CUIDADO CON LA PERSISTENCIA!!! las restricciones de visualización son también aplicadas al persistir, pudiendo no tener el efecto deseado.
+  //@return "(condition) " //por las dudas dejar espacio despues de condicion
+  //@example "(alias.field = value) "
+  //@example "(pago.deleted = false) "
+  public function conditionAux(){ throw new BadMethodCallException("Not Implemented");  } //Llamar a cadena de metodos independientes
+
+
+  public static function _conditionAux($prefix = ''){ return "";  } //Sobrescribir si existe condicion obligatoria
+
 
   //Busqueda avanzada
   //@param   Array $advanced
@@ -220,12 +231,7 @@ abstract class EntitySql {
   //Definir sql de campos
   public function fieldsFull(){ return $this->fields(); } //sobrescribir si existen relaciones
 
-  //Definir sql condicion obligatoria
-  //Utilizada generalmente para restringir visualización, CUIDADO CON LA PERSISTENCIA!!! las restricciones de visualización son también aplicadas al persistir, pudiendo no tener el efecto deseado.
-  //@return "(condition) " //por las dudas dejar espacio despues de condicion
-  //@example "(alias.field = value) "
-  //@example "(pago.deleted = false) "
-  public function conditionAux(){ return "";  } //Sobrescribir si existe condicion obligatoria
+
 
   //Definir etiqueta (concatenar campos principales)
   //Puede requerir relaciones completas!!!

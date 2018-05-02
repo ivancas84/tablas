@@ -22,13 +22,13 @@ class PhpMyGen {
 
     require_once("generate/phpmygen/sqlo/Sql.php");
     $gen = new ClassSqlo($entity);
-    $gen->generate();
+    $gen->generateIfNotExists();
   }
 
   protected function sql(Entity $entity){
     require_once("generate/phpmygen/sql/Sql.php");
     $gen = new GenerateClassSql($entity);
-    $gen->generate();
+    $gen->generateIfNotExists();
 
     require_once("generate/phpmygen/sql/Main.php");
     $gen = new GenerateClassSqlMain($entity);

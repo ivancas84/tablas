@@ -143,7 +143,8 @@ class DbaMain {
   public function all($entity, $render = null){
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->all($render);
-    error_log($sql);
+    //error_log($sql);
+    echo $sql;
     $result = $this->db->query($sql);
     return $this->db->fetchAll($result);
   }
@@ -480,7 +481,7 @@ LIMIT 10;
 
     return $rows_;
   }
-  
+
   public function values($entity, array $rows){
     $sqlo = $this->entitySqlo($entity);
     $rows_ = [];
