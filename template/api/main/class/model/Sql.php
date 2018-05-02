@@ -33,7 +33,7 @@ abstract class EntitySql {
       $field_ = $this->mappingField($field);
       array_push($fields, $field_ . " AS " . $field);
     }
-    
+
     return implode(", ", $fields);
   }
 
@@ -95,7 +95,7 @@ abstract class EntitySql {
   }
 
 
-  protected function _conditionAdvanced($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
+  protected function conditionAdvancedMain($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
 
   public function fields(){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos
 

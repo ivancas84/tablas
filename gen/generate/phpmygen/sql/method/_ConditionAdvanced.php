@@ -1,9 +1,15 @@
 <?php
 
 
-class ClassSql_conditionAdvancedSearch extends GenerateEntity{
+class ClassSql__conditionAdvanced extends GenerateEntity{
 
-  
+  protected function start(){
+    $this->string .= "  //@override
+    protected function conditionAdvancedMain(\$field, \$option, \$value){
+      switch (\$field){
+  ";
+  }
+
   public function generate(){
     $this->start();
     $this->condition($this->getEntity(), $this->getEntity()->getAlias(), "");
@@ -56,12 +62,6 @@ class ClassSql_conditionAdvancedSearch extends GenerateEntity{
     unset($field);
   }
 
-  protected function start(){
-    $this->string .= "  //@override
-  protected function conditionAdvancedMain(\$field, \$option, \$value){
-    switch (\$field){
-";
-  }
 
 
   protected function end(){
