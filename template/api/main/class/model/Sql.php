@@ -200,8 +200,6 @@ abstract class EntitySql {
     $condA = $this->conditionAdvanced($render->getAdvanced());
     $sqlCond .= concat($condA, " AND", $connect, $sqlCond);
     $condO = $this->conditionAux();
-    echo "A".$condO."A";
-
     $sqlCond .= concat($condO, " AND", $connect, $sqlCond);
     $condP = $render->getCondition();
     $sqlCond .= concat($condP, " AND", $connect, $sqlCond);

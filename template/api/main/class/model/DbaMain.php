@@ -150,9 +150,6 @@ class DbaMain {
   public function all($entity, $render = null){
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->all($render);
-    //error_log($sql);
-    echo $sql;
-
     $db = self::dbInstance();
     $result = $db->query($sql);
     return $db->fetchAll($result);
