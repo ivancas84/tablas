@@ -9,21 +9,25 @@ require_once("class/db/My.php");
 //Acceso a una determinada Db
 class DbaMain {
 
-  protected $db; //conexion con una determinada db
-  protected $transaction; //id de transaccion (las transacciones se guardan en variables de sesion para poder manejarlas desde el cliente)
-  protected $sqlos = []; //instancias de sqlo en uso (permite evitar que se instancien multiples objetos iguales)
-  protected $entities = []; //instancias de entities en uso (permite evitar que se instancien multiples objetos iguales)
+  public static $dbInstance = NULL; //conexion con una determinada db
+  public $transaction = NULL; //id de transaccion (las transacciones se guardan en variables de sesion para poder manejarlas desde el cliente)
+  public $sqlos = []; //instancias de sqlo en uso (permite evitar que se instancien multiples objetos iguales)
+  public $entities = []; //instancias de entities en uso (permite evitar que se instancien multiples objetos iguales)
 
 
-  public function __construct() {
-    $this->db = new DbSqlMy(DATA_HOST, DATA_USER, DATA_PASS, DATA_DBNAME, DATA_SCHEMA);
-    $this->transaction = null;
+
+  public static function dbInstance() {
+    if (self::$dbInstance === null) self::$dbInstance = new DbSqlMy(DATA_HOST, DATA_USER, DATA_PASS, DATA_DBNAME, DATA_SCHEMA);
+    return self::$dbInstance;
   }
 
-  public function close(){ $this->db->close(); }
+  public static function dbClose() {
+    if (self::$dbInstance != null) self::$dbInstance->close();
+    return self::$dbInstance;
+  }
 
   //siguiente id
-  protected function nextId($entity){
+  protected function nextId($entity) {
     $entity_ = $this->entity($entity);
 
     //mysql (php5.5+)
@@ -31,9 +35,10 @@ class DbaMain {
     return hexdec(uniqid());
     //postgresql
 
+    $db = self::dbInstance();
     $sql = "select nextval('" . $entity_->getSn_() . "_id_seq')";
-    $result = $this->db->query($sql);
-    $row = $this->db->fetchRow($result);
+    $result = $db->query($sql);
+    $row = $db->fetchRow($result);
     return $row[0];
   }
 
@@ -100,7 +105,7 @@ class DbaMain {
     if(!array_key_exists($entity, $this->sqlos)){
       $sqloName = snake_case_to("XxYy", $entity) . "Sqlo";
       $sqlo = new $sqloName;
-      $sqlo->setDb($this->db);
+      $sqlo->setDb(self::dbInstance());
       $this->sqlos[$entity] = $sqlo;
     }
     return $this->sqlos[$entity];
@@ -110,17 +115,19 @@ class DbaMain {
   public function count($entity, $render = null){
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->count($render);
-    $result = $this->db->query($sql);
-    $row = $this->db->fetchAssoc($result);
+    $db = self::dbInstance();
+    $result = $db->query($sql);
+    $row = $db->fetchAssoc($result);
     return $row["num_rows"];
   }
 
   //busqueda estricta por campos unicos
   public function _unique($entity, $render = null){
+    $db = self::dbInstance();
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->_unique($render);
-    $result = $this->db->query($sql);
-    $rows = $this->db->fetchAll($result);
+    $result = $db->query($sql);
+    $rows = $db->fetchAll($result);
 
     if(count($rows) > 1) throw new Exception("La busqueda estricta por campos unicos de " . $this->entity->getName() . " retorno mas de un resultado");
     if(count($rows) == 1) return $rows[0];
@@ -131,8 +138,9 @@ class DbaMain {
   public function unique($entity, $render = null){
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->unique($render);
-    $result = $this->db->query($sql);
-    $rows = $this->db->fetchAll($result);
+    $db = self::dbInstance();
+    $result = $db->query($sql);
+    $rows = $db->fetchAll($result);
 
     if(count($rows) > 1) throw new Exception("La busqueda por campos unicos de " . $this->entity->getName() . " retorno mas de un resultado");
     if(count($rows) == 1) return $rows[0];
@@ -145,16 +153,20 @@ class DbaMain {
     $sql = $sqlo->all($render);
     //error_log($sql);
     echo $sql;
-    $result = $this->db->query($sql);
-    return $this->db->fetchAll($result);
+
+    $db = self::dbInstance();
+    $result = $db->query($sql);
+    return $db->fetchAll($result);
   }
 
   //ids
   public function ids($entity, $render = null){
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->all($render);
-    $result = $this->db->query($sql);
-    return $this->db->fetchAllColumns($result, 0);
+
+    $db = self::dbInstance();
+    $result = $db->query($sql);
+    return $db->fetchAllColumns($result, 0);
   }
 
   //id
@@ -194,8 +206,9 @@ class DbaMain {
   public function getAll($entity, array $ids, $render = null){
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->getAll($ids, $render);
-    $result = $this->db->query($sql);
-    return $this->db->fetchAll($result);
+    $db = self::dbInstance();
+    $result = $db->query($sql);
+    return $db->fetchAll($result);
   }
 
   //row
@@ -460,11 +473,12 @@ LIMIT 10;
       VALUES (" . $id . ", '" . $fecha . "', '" . $this->db->escapeString($descripcion) . "', '" . $this->db->escapeString($detalle) . "', '" . $tipo . "');
     ";
 
-    $this->db->query($queryTransaction);
+    $db = self::dbInstance();
+    $db->query($queryTransaction);
 
     $queryPersist = $descripcion;
     $queryPersist .= "UPDATE transaccion SET tipo = 'commit', actualizado = '" . date("Y-m-d H:i:s") . "' WHERE id = " . $id . ";";
-    $this->db->multiQueryTransaction($queryPersist);
+    $db->multiQueryTransaction($queryPersist);
 
     unset($_SESSION["transaction"][$this->transaction]);
   }
@@ -472,7 +486,6 @@ LIMIT 10;
   public function json($entity, array $rows){
     $sqlo = $this->entitySqlo($entity);
     $rows_ = [];
-
 
     foreach($rows as $row){
       $row_ = $sqlo->json($row);
