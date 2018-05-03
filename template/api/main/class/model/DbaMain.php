@@ -105,7 +105,6 @@ class DbaMain {
     if(!array_key_exists($entity, $this->sqlos)){
       $sqloName = snake_case_to("XxYy", $entity) . "Sqlo";
       $sqlo = new $sqloName;
-      $sqlo->setDb(self::dbInstance());
       $this->sqlos[$entity] = $sqlo;
     }
     return $this->sqlos[$entity];

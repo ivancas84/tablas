@@ -4,7 +4,6 @@ require_once("generate/GenerateEntityRecursive.php");
 
 class ClassSql_conditionAux extends GenerateEntityRecursive{
 
-  protected $conditions = [];
   public function generate(){
     $this->start();
     $this->recursive($this->getEntity());
@@ -16,35 +15,21 @@ class ClassSql_conditionAux extends GenerateEntityRecursive{
   protected function start(){
     $this->string .= "  //@override
   public function conditionAux() {
-    return \"(\" . self::_conditionAux() .
+    \$sqlCond = \$this->_conditionAux();
 ";
   }
 
   protected function body(Entity $entity, $prefix){
-    array_push($this->conditions, "{$entity->getName("XxYy")}Sql::_conditionAux('{$prefix}')");
+    $this->string .= "    \$sql = new {$entity->getName("XxYy")}Sql; \$cond = \$sql->_conditionAux('{$prefix}');
+    \$sqlCond .= concat(\$cond, ' AND', '', \$sqlCond);
+
+";
   }
 
   protected function end(){
-    if(!empty( $this->conditions)) {
-      $conditions = implode(" .
-    \" AND \" . ", $this->conditions);
-
-    $this->string .= "    \" AND \" . {$conditions} . \")\";
+    $this->string .= "    return (empty(\$cond)) ? '' : \"({\$cond})\";
   }
-
 ";
-    } else {
-        $this->string .= " \")\";
-      }
-
-      ";
-    }
   }
-
-
-
-
-
-
 
 }

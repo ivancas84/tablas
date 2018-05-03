@@ -1,8 +1,9 @@
 <?php
 
 
-class ClassSql_conditionAdvancedMain extends GenerateEntity{
+require_once("generate/GenerateEntityRecursive.php");
 
+class ClassSql_conditionAdvancedMain extends GenerateEntityRecursive{
 
   public function generate(){
     $this->start();
@@ -15,60 +16,15 @@ class ClassSql_conditionAdvancedMain extends GenerateEntity{
   protected function start(){
     $this->string .= "  //@override
   protected function conditionAdvancedMain(\$field, \$option, \$value) {
-    if(\$c = self::_conditionAdvanced(\$field, \$option, \$value)) return \$c;
+    if(\$c = \$this->_conditionAdvanced(\$field, \$option, \$value)) return \$c;
 ";
   }
 
 
-    /**
-     * Metodo recursivo de generacion de codigo
-     * @param Entity $entity
-     * @param array $tablesVisited
-     * @param type $prefix
-     * @return type
-     */
-    protected function recursive(Entity $entity, array $tablesVisited = NULL, $prefix = ""){
-      if (is_null($tablesVisited)) $tablesVisited = array();
-
-      if (!empty($prefix)){
-        $this->string .= $this->condition($entity, $prefix);
-      }
-
-      $this->fk($entity, $tablesVisited, $prefix);
-      $this->u_($entity, $tablesVisited, $prefix);
-    }
-
-
-
-
-  protected function condition(Entity $entity, $prefix){
-    $this->string .= "    if(\$c = {$entity->getName("XxYy")}Sql::_conditionAdvanced(\$field, \$option, \$value, '{$prefix}')) return \$c;
+  protected function body(Entity $entity, $prefix){
+    $this->string .= "     \$sql = new {$entity->getName("XxYy")}Sql; if(\$c = \$sql->_conditionAdvanced(\$field, \$option, \$value, '{$prefix}')) return \$c;
 ";
   }
-
-
-
-
-  public function fk(Entity $entity, array $tablesVisited, $prefix){
-    $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
-    $prf = (empty($prefix)) ? "" : $prefix . "_";
-    array_push($tablesVisited, $entity->getName());
-
-    foreach($fk as $field){
-      $this->recursive($field->getEntityRef(), $tablesVisited, $prf . $field->getAlias());
-    }
-  }
-
-  protected function u_(Entity $entity, array $tablesVisited, $prefix){
-    $u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
-    $prf = (empty($prefix)) ? "" : $prefix . "_";
-    array_push($tablesVisited, $entity->getName());
-
-    foreach($u_ as $field) {
-      $this->condition($field->getEntity(), $prf . $field->getAlias("_"));
-    }
-  }
-
 
   protected function end(){
     $this->string .= "  }

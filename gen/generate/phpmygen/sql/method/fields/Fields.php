@@ -13,10 +13,10 @@ class ClassSql_fields extends GenerateEntity {
     $pk = $entity->getPk();
     $nfFk = $entity->getFieldsByType(["nf","fk"]);
 
-    $this->string .= "{\$prefix}." . $entity->getPk()->getName() . " AS {\$prf}" . $entity->getPk()->getName() . ", ";
+    $this->string .= "{\$t}." . $entity->getPk()->getName() . " AS {\$p}" . $entity->getPk()->getName() . ", ";
 
     foreach ( $nfFk as $field ) {
-      $this->string .=  "{\$prefix}." . $field->getName() . " AS {\$prf}" . $field->getName() . ", ";
+      $this->string .=  "{\$t}." . $field->getName() . " AS {\$p}" . $field->getName() . ", ";
 
     }
 
@@ -36,14 +36,9 @@ class ClassSql_fields extends GenerateEntity {
 
   protected function start(){
     $this->string .= "
-  //***** @override *****
-  public static function _fields(\$prefix = ''){
-    if(empty(\$prefix)) {
-      \$prefix = '" . $this->getEntity()->getAlias() . "';
-      \$prf = '';
-    } else {
-      \$prf = \$prefix . '_';
-    }
+  public function _fields(\$prefix = ''){
+    \$t = (empty(\$prefix)) ?  '" . $this->getEntity()->getAlias() . "'  : \$prefix;
+    \$p = (empty(\$prefix)) ?  ''  : \$prefix . '_';
 
     return \"";
   }

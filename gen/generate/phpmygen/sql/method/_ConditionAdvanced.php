@@ -14,15 +14,10 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
 
   protected function start(){
     $this->string .= "  //@override
-  public static function _conditionAdvanced(\$field, \$option, \$value, \$prefix = ''){
-    if(empty(\$prefix)) {
-      \$t = '" . $this->getEntity()->getAlias() . "';
-      \$p = '';
-    } else {
-      \$t = \$prefix;
-      \$p = \$prefix . '_';
-    }
-
+  public function _conditionAdvanced(\$field, \$option, \$value, \$prefix = ''){
+    \$t = (empty(\$prefix)) ?  '" . $this->getEntity()->getAlias() . "'  : \$prefix;
+    \$p = (empty(\$prefix)) ?  ''  : \$prefix . '_';
+  
     switch (\$field){
 ";
   }

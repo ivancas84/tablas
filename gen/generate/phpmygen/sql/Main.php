@@ -21,6 +21,7 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
   public function __construct(){
     \$this->entity = new " . $this->getEntity()->getName("XxYy") . "Entity;
+    \$this->db = Dba::dbInstance();    
   }
 ";
   }

@@ -15,10 +15,6 @@ abstract class EntitySqlo {
   protected $db;     //Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren. Puede requerirse adicionalmente determinar el motor de base de datos para definir la sintaxis adecuada
   protected $sql;    //EntitySql. Atributo auxiliar para facilitar la definicion de consultas sql
 
-  public function setDb(DbInterface $db){
-    $this->db = $db;
-    $this->sql->setDb($db);
-  }
 
   protected function _build(array $row, $prefix = "") { throw new BadMethodCallException("No implementado"); }
   public function build(array $row) { return $this->_build($row); }

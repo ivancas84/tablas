@@ -37,9 +37,6 @@ abstract class EntitySql {
     return implode(", ", $fields);
   }
 
-  public function setDb(DbInterface $db){
-    $this->db = $db;
-  }
 
   //***** metodos abstractos *****
   public function conditionSearch($search = "") {  } //Definir condicion de busqueda simple
@@ -52,7 +49,7 @@ abstract class EntitySql {
   public function conditionAux(){ throw new BadMethodCallException("Not Implemented");  } //Llamar a cadena de metodos independientes
 
 
-  public static function _conditionAux($prefix = ''){ return "";  } //Sobrescribir si existe condicion obligatoria
+  public function _conditionAux($prefix = ''){ return "";  } //Sobrescribir si existe condicion obligatoria
 
 
   //Busqueda avanzada
@@ -77,7 +74,7 @@ abstract class EntitySql {
   public function conditionAdvancedRecursive(array $advanced){
     if(!is_array($advanced[0])) {
       $mode = (empty($advanced[3])) ? "AND" : $advanced[3];
-      $condicion = $this->_conditionAdvanced($advanced[0], $advanced[1], $advanced[2], "");
+      $condicion = $this->conditionAdvancedMain($advanced[0], $advanced[1], $advanced[2], "");
       return ["condition" => $condicion, "mode" => $mode];
 
     } else {
@@ -108,7 +105,7 @@ abstract class EntitySql {
 
   protected function conditionAdvancedMain($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
 
-  public function fields(){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos
+  public function _fields(){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos
 
   public function fieldId(){ return $this->entity->getAlias() . "." . $this->entity->getPk()->getName(); } //Se define el identificador en un metodo independiente para facilitar la reimplementacion para aquellos casos en que el id tenga un nombre diferente al requerido, para el framework es obligatorio que todas las entidades tengan una pk con nombre "id"
 
@@ -203,6 +200,8 @@ abstract class EntitySql {
     $condA = $this->conditionAdvanced($render->getAdvanced());
     $sqlCond .= concat($condA, " AND", $connect, $sqlCond);
     $condO = $this->conditionAux();
+    echo "A".$condO."A";
+
     $sqlCond .= concat($condO, " AND", $connect, $sqlCond);
     $condP = $render->getCondition();
     $sqlCond .= concat($condP, " AND", $connect, $sqlCond);
@@ -229,7 +228,7 @@ abstract class EntitySql {
 
 
   //Definir sql de campos
-  public function fieldsFull(){ return $this->fields(); } //sobrescribir si existen relaciones
+  public function fieldsFull(){ return $this->_fields(); } //sobrescribir si existen relaciones
 
 
 
