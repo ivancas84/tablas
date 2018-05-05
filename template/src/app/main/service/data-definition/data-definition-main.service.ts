@@ -1,4 +1,6 @@
 import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import 'rxjs/add/operator/map';
@@ -7,10 +9,10 @@ import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/operator/catch';
 
 
-
-
 import { SessionStorageService } from '../storage/session-storage.service';
 import { ParserService } from '../parser/parser.service';
+import { MessageService } from '../message/message.service';
+
 
 import { HTTP_OPTIONS, API_ROOT } from '../../../app.config';
 import { DataDefinitionLoaderService } from '../../../service/data-definition/data-definition-loader.service';
@@ -18,14 +20,22 @@ import { Display } from '../../class/display';
 import { DataDefinition } from './data-definition';
 
 
-
 export class DataDefinitionMainService {
 
-  constructor(public http: HttpClient, public storage: SessionStorageService, public loader: DataDefinitionLoaderService, public parser: ParserService) { }
+  constructor(public fb: FormBuilder, public http: HttpClient, public storage: SessionStorageService, public loader: DataDefinitionLoaderService, public parser: ParserService, public message: MessageService) { }
 
+  uniqueId(): string {
+    let start = new Date().getTime();
+    while (new Date().getTime() < start + 1); //esperar un microsegundo para evitar colisiones en caso de multiples llamados al metodo
+
+    let date = Date.now().toString();
+    let number =  (Math.floor(Math.random()*10000)).toString(); //numero aleatorio de 4 posisiones
+    if ( (4 - number.length) > 0 ) number = "0" + number;
+    return date+number;
+  }
 
   //field sincronizado? Un field se considera "sincronizado" si es estrictamente distinto de false
-  isSync(key, sync): boolean { return (!(key in sync) || sync[key]) ? true : false; }
+  isSync(key, sync): boolean { return (!sync || !(key in sync) || sync[key]) ? true : false; }
 
   options(entity, sync): Observable<any> {
     let ddi: DataDefinition = this.loader.getInstance(entity, this);
@@ -68,19 +78,23 @@ export class DataDefinitionMainService {
 
   getAll (entity: string, ids: any): Observable<any> {
     let rows: Array<{ [index: string]: boolean|string|number }> = new Array(ids.length);
+
     let searchIds: Array<string | number> = new Array();
 
     for(let i = 0; i < ids.length; i++) {
       let data: { [index: string]: boolean|string|number }  = this.storage.getItem(entity + ids[i]);
+
       rows[i] = data;
       if(!data) searchIds.push(ids[i]); //BUG: SI ES BOOLEAN FALSE?
     }
 
+
     if (searchIds.length > 0) {
       //return new Promise((resolve, reject) => {
         let url: string = API_ROOT + entity + '/getAll';
-        return this.http.post<any>(url, "ids="+JSON.stringify(searchIds), HTTP_OPTIONS).mergeMap(
+        return this.http.post<any>(url, "ids="+JSON.stringify(searchIds), HTTP_OPTIONS).map(
           rows_ => {
+
             for(let i = 0; i < rows_.length; i++){
               let ddi: DataDefinition = this.loader.getInstance(entity, this);
               ddi.storage(rows_[i]);
@@ -91,7 +105,7 @@ export class DataDefinitionMainService {
               rows[j] = rows_[i];
             }
 
-            return of(rows);
+            return rows_;
           }
         );
     } else {
@@ -100,7 +114,7 @@ export class DataDefinitionMainService {
   }
 
   ids (entity: string, display: Display = null): Observable<any> {
-    let key = "_ids" + entity + JSON.stringify(display);
+    let key = "_" + entity + "_ids" + JSON.stringify(display);
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
 
     let url = API_ROOT + entity + '/ids'
@@ -113,22 +127,29 @@ export class DataDefinitionMainService {
   }
 
   count (entity: string, data: any = null): Observable<any> {
-    let key = "_count" + JSON.stringify(data);
+    let key = "_" + entity + "_count" + JSON.stringify(data);
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
 
     let url = API_ROOT + entity + '/count'
-    return this.http.post<any>(url, "data="+JSON.stringify(data), HTTP_OPTIONS).mergeMap(
+    return this.http.post<any>(url, "data="+JSON.stringify(data), HTTP_OPTIONS).map(
       res => {
         this.storage.setItem(key, res);
-        return of(res);
+        return res;
       }
     );
   }
 
-  init (entity: string, row:{ [index: string]: any }): Observable<{ [index: string]: any }> {
+  init (entity: string, row:{ [index: string]: any }, sync:{ [index: string]: any } = null): Observable<{ [index: string]: any }> {
     let ddi: DataDefinition = this.loader.getInstance(entity, this);
-    return ddi.init(row);
+    return ddi.init(row, sync);
   }
+
+
+  initForm (entity: string, row:{ [index: string]: any }, sync:{ [index: string]: any } = null): Observable<{ [index: string]: any }> {
+    let ddi: DataDefinition = this.loader.getInstance(entity, this);
+    return ddi.initForm(row, sync);
+  }
+
 
   labelGet (entity: string, id: string | number): Observable<any> {
     return this.get(entity, id).mergeMap(
@@ -171,6 +192,8 @@ export class DataDefinitionMainService {
   initLabelAll (entity: string, rows:any[]): Observable<any> {
     var obs = [];
 
+    if(!rows.length) return of([])
+
     for (var i = 0; i < rows.length; i++) {
       var ob = this.initLabel(entity, rows[i]);
       obs.push(ob);
@@ -190,5 +213,62 @@ export class DataDefinitionMainService {
     let ddi: DataDefinition = this.loader.getInstance(entity, this);
     return ddi.serverFilters(filters);
   }
+
+  //definir estructura de formularios
+  formGroup (entity: string, sync:any): FormGroup {
+    let ddi: DataDefinition = this.loader.getInstance(entity, this);
+    return ddi.formGroup(sync);
+  }
+
+  //definir datos para ser enviados al servidor
+  server (entity: string, row:{ [index: string]: any }): { [index: string]: any } {
+    let ddi: DataDefinition = this.loader.getInstance(entity, this);
+    return ddi.server(row);
+  }
+
+  checkTransaction(){
+    let url = API_ROOT + 'system/checkTransaction'
+    return this.http.get<any>(url).map(
+      response => {
+        if(!response["data"] || response["data"] == "null") return null;
+
+        if(response["data"] == "CLEAR"){  this.storage.clear(); }
+
+        else if(response["data"]) {
+         this.storage.removeItems(response["data"]);
+         this.storage.removeItemsPrefix("_");
+        }
+
+        return response["data"];
+      }
+    );
+  }
+
+  //envia un conjunto de datos para ser procesados, retorna un array con los ids persistidos
+  process(data: any[]){
+    let url = API_ROOT + 'system/process'
+
+    return this.http.post<any>(url, "data="+JSON.stringify(data), HTTP_OPTIONS).map(
+      response => {
+        this.message.add("Se efectuado un registro de datos");
+        return response;
+      }
+    )
+  }
+
+  //eliminar entidad
+  delete(entity:string, id:string|number): Observable<any> {
+    let url = API_ROOT + entity + '/delete'
+
+    return this.http.post<any>(url, "id="+JSON.stringify(id), HTTP_OPTIONS).map(
+      response => {
+        if(response.status) this.message.add("Se ha eliminado " + entity);
+        else this.message.add("No se puede eliminar " + entity + ": " + response.message)
+        return response;
+      }
+    )
+  }
+
+
 
 }

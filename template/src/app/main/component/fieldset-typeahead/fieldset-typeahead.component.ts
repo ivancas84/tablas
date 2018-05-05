@@ -15,18 +15,22 @@ import { Filter } from "../../class/filter";
 import { DataDefinitionService } from '../../../service/data-definition/data-definition.service';
 
 @Component({
-  selector: 'app-filter-typeahead',
-  templateUrl: './filter-typeahead.component.html',
+  selector: 'app-fieldset-typeahead',
+  templateUrl: './fieldset-typeahead.component.html',
 })
-export class FilterTypeaheadComponent {
+export class FieldsetTypeaheadComponent {
   @Input() entity: string;
-  @Input() filter: FormGroup;
+  @Input() fieldsetForm: FormGroup;
+  @Input() field: string;
 
   searching = false;
 
   constructor(public dd: DataDefinitionService) {  }
 
-  isSelected(value) { return (value) && (typeof value === 'object') && (value.hasOwnProperty('id')) && (value.id); }
+  isSelected(field) {
+    let value = this.fieldsetForm.get(field).value;
+    return (value) && (typeof value === 'object') && (value.hasOwnProperty('id')) && (value.id);
+  }
 
   searchTerm(term): Observable<any> {
     var display = new Display();

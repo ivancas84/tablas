@@ -24,26 +24,36 @@ export class ParserService {
   }
 
   //@param format (default Y-m-d)
-  dateString(value: Date, format: string = null): string {
-    if(!(value instanceof Date)) return null;
+  //  "d/m/Y",
+  //  "object": Retorna un objeto {day:number, month:number, year:number}, inspirado en el datepicker de bootstrap
+  dateFormat(value: Date, format: string = null): any {
+    if(!(value instanceof Date)){
+      if(format = "object") return { day:null, month:null, year:null };
+      else { return null; }
+    }
 
-    let yyyy: string = null;
-    let mm: string = null;
-    let dd: string = null
+    //se asigna un numero a las variables porque sino tira error en compliacion: ubsequent variable declarations must have the same type
     switch(format){
       case "F": return this.MONTH_NAMES[value.getMonth()];
 
       case "d/m/Y":
-        yyyy = value.getFullYear().toString();
-        mm = (value.getMonth()+1).toString();
-        dd  = value.getDate().toString();
+        var yyyy = value.getFullYear().toString();
+        var mm = (value.getMonth()+1).toString();
+        var dd  = value.getDate().toString();
         return (dd[1]?dd:"0"+dd[0]) + "/" + (mm[1]?mm:"0"+mm[0]) + "/" + yyyy;
 
+
+      case "object":
+        var yyyy2 = value.getFullYear();
+        var mm2 = value.getMonth()+1;
+        var dd2  = value.getDate();
+        return {day:dd2, month:mm2, year:yyyy2};
+
       default:
-        yyyy = value.getFullYear().toString();
-        mm = (value.getMonth()+1).toString();
-        dd  = value.getDate().toString();
-        return yyyy + "-" + (mm[1]?mm:"0"+mm[0]) + "-" + (dd[1]?dd:"0"+dd[0]);
+        var yyyy3 = value.getFullYear().toString();
+        var mm3 = (value.getMonth()+1).toString();
+        var dd3  = value.getDate().toString();
+        return yyyy3 + "-" + (mm3[1]?mm3:"0"+mm3[0]) + "-" + (dd3[1]?dd3:"0"+dd3[0]);
       }
   }
 

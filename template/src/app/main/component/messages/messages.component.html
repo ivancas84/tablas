@@ -1,0 +1,10 @@
+<div *ngIf="message.messages.length">
+
+  <div *ngFor='let m of message.messages; let i = index' class="alert alert-primary alert-dismissible">
+    <button (click)="message.remove(i)" type="button" class="close" data-dismiss="alert">&times;</button>
+    {{m}}
+  </div>
+
+  <button class="btn btn-primary btn-sm" (click)="message.clear()">Limpiar</button>
+
+</div>

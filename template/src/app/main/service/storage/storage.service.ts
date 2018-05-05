@@ -18,14 +18,32 @@ export abstract class StorageService {
       return JSON.parse(data);
   }
 
-  clear(): void {
-    this.getStorage().clear();
-  }
+
+  removeItem(key): void { this.getStorage().removeItem(key); }
+
+  clear(): void { this.getStorage().clear(); }
 
   keyExists(key: string): boolean {
     let s = this.getStorage();
     return (key in s) ? true : false;
   }
 
+  removeItems(ids): void {
+    let s = this.getStorage();
+    for (let i in ids){
+      if (ids.hasOwnProperty(i)) s.removeItem(ids[i]);
+    }
+  }
+
+  removeItemsPrefix(prefix): void {
+    let s = this.getStorage(),
+        keys = Object.keys(s);
+
+    for (let i in keys){
+      if (keys.hasOwnProperty(i)){
+        if(keys[i].indexOf(prefix) !== -1) s.removeItem(keys[i]);
+      }
+    }
+  }
 
 }

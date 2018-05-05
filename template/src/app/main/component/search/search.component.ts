@@ -5,7 +5,7 @@ import { of } from 'rxjs/observable/of';
 
 import { Display } from "../../class/display";
 import { Filter } from "../../class/filter";
-import { UtilsService } from "../../service/utils/utils.service";
+import { RouterService } from "../../service/router/router.service";
 
 import { DataDefinitionService } from '../../../service/data-definition/data-definition.service';
 
@@ -13,9 +13,11 @@ export abstract class SearchComponent implements OnChanges {
   @Input() display: Display;
   searchForm: FormGroup;
   entity: string; //entidad principal del componente
-  options: {}; //opciones para el formulario
+  options: {} = null; //opciones para el formulario
+  sync: Array<any> = null;
+  url: string; //url de acceso
 
-  constructor(protected fb: FormBuilder, protected dd: DataDefinitionService, protected utils: UtilsService)  {
+  constructor(protected fb: FormBuilder, protected dd: DataDefinitionService, protected router: RouterService)  {
     this.createForm();
   }
 
@@ -46,26 +48,24 @@ export abstract class SearchComponent implements OnChanges {
     this.display.search = formModel.search;
     this.display.filters = this.dd.serverFilters(this.entity, filters);
     let sid = encodeURI(JSON.stringify(this.display));
-    this.utils.navigate('/' + this.entity + '-show?sid=' + sid);
+    this.router.navigateByUrl('/' + this.url + '?sid=' + sid);
   }
 
-  defineOptions(entity: string): Observable<any> {
-    return this.dd.all(entity).mergeMap(
-      rows => { return this.dd.initLabelAll(entity, rows); }
-    );
-  }
 
-  setOptions(): Observable<any>{ return of([]); }
+
 
   ngOnChanges() {
-    this.setOptions().subscribe(
-      response => {
+    this.dd.options(this.entity, this.sync).subscribe(
+      options => {
+        this.options = options;
+
+        //let filters_: any[] =  Object.assign([], this.display.filters);
         this.dd.initFilters(this.entity, this.display.filters).subscribe(
-          filters => {
+          filters_ => {
             this.searchForm.reset({
-              search: ""
+              search: this.display.search
             });
-            this.setFilters(filters);
+            this.setFilters(filters_);
           }
         );
       }

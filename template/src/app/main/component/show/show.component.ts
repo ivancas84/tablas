@@ -14,7 +14,9 @@ export class ShowComponent implements OnInit {
   sync: { [index: string]: boolean } = {}; //datos de sincronizacion
   disabled: boolean; //deshabilitar inputs (si existen)
 
-  constructor(protected dd: DataDefinitionService, protected route: ActivatedRoute) { }
+  constructor(protected dd: DataDefinitionService, protected route: ActivatedRoute) {
+    this.queryParams();
+  }
 
   queryParams() {
     this.route.queryParams.subscribe(
@@ -24,7 +26,7 @@ export class ShowComponent implements OnInit {
         } else {
           for(let i in params){
             if(params.hasOwnProperty(i)){
-              if(!(i in this.display)) this.display.filters.push({field:i, option:"=", value:params[i]}); //asignar filtro
+              if(!(i in this.display)) this.display.filters.push([i, "=", params[i]]); //asignar filtro
               else this.display[i] = params[i]; //asignar parametro
             }
           }
@@ -35,22 +37,14 @@ export class ShowComponent implements OnInit {
 
   getData() {
     this.dd.all(this.entity, this.display).subscribe(
-      rows => {
-        for (let i = 0; i < rows.length; i++) {
-          this.dd.init(this.entity, rows[i]).subscribe(
-            row => {
-               this.rows.push(row);
-             }
-          );
-        }
-      },
-      error => { console.log(error); }
+      rows => { this.rows = rows; }
     );
   }
 
   ngOnInit() {
-    this.queryParams();
-    this.getData();
+    this.dd.checkTransaction().subscribe(
+      response => { this.getData(); }
+    );
   }
 
 
