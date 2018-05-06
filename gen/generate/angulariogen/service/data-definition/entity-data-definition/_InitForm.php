@@ -1,7 +1,7 @@
 <?php
 
 require_once("generate/GenerateEntity.php");
-
+require_once("function/settypebool.php");
 
 class EntityDataDefinition_InitForm extends GenerateEntity {
 
