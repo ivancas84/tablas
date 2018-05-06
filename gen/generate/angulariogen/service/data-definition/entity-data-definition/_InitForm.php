@@ -123,7 +123,7 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
   protected function typeahead(Field $field){
     $this->string .= "
     if(this.dd.isSync('" . $field->getName() . "', sync)) {
-      var ob = this.dd.getOrNull('" . $field->getEntityRef()->getName() . "', row['" . $field->getName() . "']).mergeMap(
+      var ob: Observable<any> = this.dd.getOrNull('" . $field->getEntityRef()->getName() . "', row['" . $field->getName() . "']).mergeMap(
         rowG => {
           if(!rowG) {
             row_['plan'] = null;
@@ -145,7 +145,7 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
   protected function fieldU_(Field $field){
     $this->string .= "
     if(this.dd.isSync('" . $field->getAlias("_") . "', sync)) {
-      var ob = this.dd.labelGetOrNull('" . $field->getEntity()->getName() . "', row['" . $field->getAlias("_") . "']).map(
+      var ob: Observable<any> = this.dd.labelGetOrNull('" . $field->getEntity()->getName() . "', row['" . $field->getAlias("_") . "']).map(
         rowR => { row_['" . $field->getAlias("_") . "'] = rowR; }
       );
       observables.push(ob);
