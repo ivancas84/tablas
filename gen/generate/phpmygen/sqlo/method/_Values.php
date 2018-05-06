@@ -15,7 +15,7 @@ class ClassSqlo__values extends GenerateEntity {
   protected function start(){
     $this->string .= "
   //@override
-  public static function _values(array \$row, \$prefix = \"\"){
+  public function _values(array \$row, \$prefix = \"\"){
     if(empty(\$row)) return null;
     \$row_ = [];
 ";

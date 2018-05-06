@@ -16,8 +16,11 @@ abstract class EntitySqlo {
   protected $sql;    //EntitySql. Atributo auxiliar para facilitar la definicion de consultas sql
 
 
-  protected function _build(array $row, $prefix = "") { throw new BadMethodCallException("No implementado"); }
-  public function build(array $row) { return $this->_build($row); }
+  public function _json(array $row, $prefix = "") { throw new BadMethodCallException("No implementado"); }
+  public function json(array $row) { return $this->_json($row); }
+
+  public function _values(array $row, $prefix = "") { throw new BadMethodCallException("No implementado"); }
+  public function values(array $row) { return $this->_values($row); }
 
   //Definir clase de presentacion
   //@param String | Object | Array | Render En función del tipo de parámetro define el render

@@ -19,7 +19,7 @@ try{
 
     echo json_encode($row);
   } finally {
-    $dba->close();
+    $dba::dbClose();
   }
 
 } catch (Exception $ex) {

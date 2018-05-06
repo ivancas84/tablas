@@ -14,7 +14,7 @@ try{
     $count = $dba->count(ENTITY, $render);
     echo json_encode(intval($count));
 
-  } finally { $dba->close(); }
+  } finally { $dba::dbClose(); }
 
 } catch (Exception $ex) {
   http_response_code(500);

@@ -16,7 +16,7 @@ try{
     $rows = $dba->build(ENTITY, $rows_);
     echo json_encode($rows);
 
-  } finally { $dba->close(); }
+  } finally { $dba::dbClose(); }
 
 } catch (Exception $ex) {
   error_log($ex->getTraceAsString());

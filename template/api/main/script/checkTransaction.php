@@ -6,8 +6,8 @@ try{
 
   $dba = new Dba(); try {
     $details = $dba->check();
-    echo json_encode(["data" => $details]);      
-  } finally { $dba->close(); }
+    echo json_encode(["data" => $details]);
+  } finally { $dba::dbClose(); }
 
 } catch (Exception $ex) {
   error_log($ex->getTraceAsString());

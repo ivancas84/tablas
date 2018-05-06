@@ -302,7 +302,8 @@ class DbaMain {
       return $id;
     }
 
-    $this->transaction = $this->db->uniqId();
+    $db = self::dbInstance();
+    $this->transaction = $db->uniqId();
 
     $_SESSION["transaction"][$this->transaction] = [
       "sql" => null,
@@ -370,13 +371,14 @@ AND actualizado > '" . $timestampCheck . "'
 ORDER BY actualizado ASC
 LIMIT 20;
 ";
-    $result = $this->db->query($query);
-    $numRows = intval($this->db->numRows($result));
+    $db = self::dbInstance();
+    $result = $db->query($query);
+    $numRows = intval($db->numRows($result));
 
     if($numRows > 0){
       if($numRows == 20) return "CLEAR";
 
-      $rows = $this->db->fetchAll($result);
+      $rows = $db->fetchAll($result);
 
       $de = "";
       foreach($rows as $row){
@@ -458,7 +460,8 @@ LIMIT 10;
   public function commit(){
     if(empty($this->transaction)) throw new UnexpectedValueException("Id de transaccion no definido");
 
-    $id = $this->db->escapeString($this->transaction);
+    $db = self::dbInstance();
+    $id = $db->escapeString($this->transaction);
     $descripcion = $_SESSION["transaction"][$this->transaction]["descripcion"];
     $detalle = $_SESSION["transaction"][$this->transaction]["detalle"];
     $tipo = $_SESSION["transaction"][$this->transaction]["tipo"];
@@ -466,7 +469,7 @@ LIMIT 10;
 
     $queryTransaction = "
       INSERT INTO transaccion (id, actualizado, descripcion, detalle, tipo)
-      VALUES (" . $id . ", '" . $fecha . "', '" . $this->db->escapeString($descripcion) . "', '" . $this->db->escapeString($detalle) . "', '" . $tipo . "');
+      VALUES (" . $id . ", '" . $fecha . "', '" . $db->escapeString($descripcion) . "', '" . $db->escapeString($detalle) . "', '" . $tipo . "');
     ";
 
     $db = self::dbInstance();

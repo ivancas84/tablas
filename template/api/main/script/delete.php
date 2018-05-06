@@ -22,7 +22,7 @@ try{
     $dba->commit();
     echo json_encode(["status" => true, "message" =>null, "id" => $idD]);
 
-  } finally { $dba->close(); }
+  } finally { $dba::dbClose(); }
 
 } catch (Exception $ex) {
   error_log($ex->getTraceAsString());

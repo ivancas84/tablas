@@ -63,7 +63,7 @@ try{
 
     echo json_encode($response);
 
-  } finally { $dba->close(); }
+  } finally { $dba::dbClose(); }
 
 
 } catch (Exception $ex){

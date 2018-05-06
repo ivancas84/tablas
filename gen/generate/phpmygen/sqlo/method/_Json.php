@@ -15,7 +15,7 @@ class ClassSqlo__json extends GenerateEntity {
   protected function start(){
     $this->string .= "
   //@override
-  public static function _json(array \$row, \$prefix = \"\"){
+  public function _json(array \$row, \$prefix = \"\"){
     if(empty(\$row)) return null;
     \$row_ = [];
 ";

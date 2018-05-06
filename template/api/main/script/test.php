@@ -12,7 +12,7 @@ try{
 
     echo json_encode($rows);
 
-  } finally { $dba->close(); }
+  } finally { $dba::dbClose(); }
 
 } catch (Exception $ex) {
   http_response_code(500);

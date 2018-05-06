@@ -14,7 +14,7 @@ try{
     $ids = $dba->ids(ENTITY, $render);
     echo json_encode($ids);
 
-  } finally { $dba->close(); }
+  } finally { $dba::dbClose(); }
 
 } catch (Exception $ex) {
   http_response_code(500);
