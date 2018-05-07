@@ -98,7 +98,7 @@ class Tablas {
   public function includes(){
     require_once("generate/tablas/EntityClasses.php");
     $gen = new IncludeEntityClasses($this->tablesInfo);
-    $gen->generateIfNotExists();
+    $gen->generate();
 
 
   }
