@@ -22,6 +22,7 @@ abstract class EntitySqlo {
   public function _values(array $row, $prefix = "") { throw new BadMethodCallException("No implementado"); }
   public function values(array $row) { return $this->_values($row); }
 
+  public function nextPk(){ return $this->db->uniqId(); }
   //Definir clase de presentacion
   //@param String | Object | Array | Render En función del tipo de parámetro define el render
   //@return Render Clase de presentacion
@@ -132,7 +133,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $sql .= ";
   ";
 
-     return $sql;
+    return $sql;
   }
 
   //@override
