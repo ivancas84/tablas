@@ -1,6 +1,6 @@
 <?php
 
-require_once("generate/phpmygen/sql/method/fields/Fields.php");
+require_once("generate/phpdbgen/sql/method/fields/Fields.php");
 
 class ClassSql_fieldsLabelFull extends GenerateEntity{
 

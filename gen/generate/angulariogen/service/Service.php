@@ -137,32 +137,32 @@ class GenerateService {
 
 
   protected function sqlo(){
-    require_once("generate/phpmygen/sqlo/Main.php");
+    require_once("generate/phpdbgen/sqlo/Main.php");
     $gen = new ClassSqloMain($this->entity);
     $gen->generate();
 
-    require_once("generate/phpmygen/sqlo/Sql.php");
+    require_once("generate/phpdbgen/sqlo/Sql.php");
     $gen = new ClassSqlo($this->entity);
     $gen->generate();
   }
 
   protected function sql(){
-    require_once("generate/phpmygen/sql/Sql.php");
+    require_once("generate/phpdbgen/sql/Sql.php");
     $gen = new GenerateClassSql($this->entity);
     $gen->generate();
 
-    require_once("generate/phpmygen/sql/Main.php");
+    require_once("generate/phpdbgen/sql/Main.php");
     $gen = new GenerateClassSqlMain($this->entity);
     $gen->generate();
 
   }
 
   protected function values(){
-    require_once("generate/phpmygen/values/Main.php");
+    require_once("generate/phpdbgen/values/Main.php");
     $gen = new ClassValuesMain($this->entity);
     $gen->generate();
 
-    require_once("generate/phpmygen/values/Imp.php");
+    require_once("generate/phpdbgen/values/Imp.php");
     $gen = new ClassValuesImp($this->entity);
     $gen->generate();
 

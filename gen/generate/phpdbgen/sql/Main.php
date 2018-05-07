@@ -35,11 +35,11 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
 
   protected function mappingField(){
-    require_once("generate/phpmygen/sql/method/_MappingField.php");
+    require_once("generate/phpdbgen/sql/method/_MappingField.php");
     $gen = new ClassSql__mappingField($this->getEntity());
     $this->string .= $gen->generate();
 
-    require_once("generate/phpmygen/sql/method/MappingField.php");
+    require_once("generate/phpdbgen/sql/method/MappingField.php");
     $gen = new ClassSql_mappingField($this->getEntity());
     $this->string .= $gen->generate();
 
@@ -48,10 +48,10 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
   protected function methodFields(){
 
-    require_once("generate/phpmygen/sql/method/fields/Full.php");
-    require_once("generate/phpmygen/sql/method/fields/Fields.php");
-    require_once("generate/phpmygen/sql/method/fields/label/Label.php");
-    require_once("generate/phpmygen/sql/method/fields/label/Full.php");
+    require_once("generate/phpdbgen/sql/method/fields/Full.php");
+    require_once("generate/phpdbgen/sql/method/fields/Fields.php");
+    require_once("generate/phpdbgen/sql/method/fields/label/Label.php");
+    require_once("generate/phpdbgen/sql/method/fields/label/Full.php");
 
 
     $gen = new ClassSql_fields($this->getEntity());
@@ -68,14 +68,14 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
   }
 
   protected function methodJoin(){
-    require_once("generate/phpmygen/sql/method/Join.php");
+    require_once("generate/phpdbgen/sql/method/Join.php");
 
     $gen = new ClassSql_join($this->getEntity());
     $this->string .= $gen->generate();
   }
 
   protected function conditionSearch(){
-    require_once("generate/phpmygen/sql/method/ConditionSearch.php");
+    require_once("generate/phpdbgen/sql/method/ConditionSearch.php");
 
     $gen = new ClassSql_conditionSearch($this->getEntity());
     $this->string .= $gen->generate();
@@ -85,17 +85,17 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
 
   protected function filters(){
-    require_once("generate/phpmygen/sql/method/_ConditionAdvanced.php");
+    require_once("generate/phpdbgen/sql/method/_ConditionAdvanced.php");
     $gen = new ClassSql__conditionAdvanced($this->getEntity());
     $this->string .= $gen->generate();
 
-    require_once("generate/phpmygen/sql/method/ConditionAdvancedMain.php");
+    require_once("generate/phpdbgen/sql/method/ConditionAdvancedMain.php");
     $gen = new ClassSql_conditionAdvancedMain($this->getEntity());
     $this->string .= $gen->generate();
   }
 
   protected function conditionAux(){
-    require_once("generate/phpmygen/sql/method/ConditionAux.php");
+    require_once("generate/phpdbgen/sql/method/ConditionAux.php");
     $gen = new ClassSql_conditionAux($this->getEntity());
     $this->string .= $gen->generate();
 
