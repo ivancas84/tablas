@@ -29,43 +29,52 @@ class EntityDataDefinition_Storage extends GenerateEntity {
   }
 
 
-  protected function recursive(Entity $entity, array $tablesVisited = NULL, $arrayName = "") {
+  protected function recursive(Entity $entity, array $tablesVisited = NULL, array $names = []) {
 
     if(is_null($tablesVisited)) $tablesVisited = array();
-    if (empty($arrayName)) $arrayName = "row";
 
-    $this->fk($entity, $tablesVisited, $arrayName);
-    $this->u_($entity, $tablesVisited, $arrayName);
+    $this->fk($entity, $tablesVisited, $names);
+    $this->u_($entity, $tablesVisited, $names);
 
 
-     if ($arrayName != "row") $this->string .= $this->fields($entity->getName(), $arrayName);
+     if (!empty($names)) $this->fields($entity->getName(), $names);
   }
 
+  protected function fields($tableName, array $names){
+    $row = "row";
+    $key = $names[count($names)-1];
+    for($i =0; $i < count($names) -1 ; $i++) $row .= "['{$names[$i]}']";
+    $row_ = $row . "['{$key}']";
 
-  protected function fk(Entity $entity, array $tablesVisited, $arrayName){
+
+    $this->string .= "    if(('{$key}' in {$row}) && ({$row_}.id !=  'undefined')){
+      this.dd.storage.setItem('{$tableName}' + {$row_}.id, {$row_});
+      delete {$row_};
+    }
+";
+  }
+
+  protected function fk(Entity $entity, array $tablesVisited, array $names){
     $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
     foreach ($fk as $field ) {
       array_push($tablesVisited, $entity->getName());
-      $this->string .= $this->recursive($field->getEntityRef(), $tablesVisited, $arrayName . "[\"" . $field->getName() . "_\"]") ;
+      array_push($names, $field->getName() . "_");
+
+      $this->recursive($field->getEntityRef(), $tablesVisited, $names) ;
     }
   }
 
-  protected function u_(Entity $entity, array $tablesVisited, $arrayName){
+  protected function u_(Entity $entity, array $tablesVisited, array $names){
     $u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
 
     foreach ($u_ as $field ) {
       array_push($tablesVisited, $entity->getName());
-      $this->string .= $this->fields($field->getEntity()->getName(), $arrayName . "[\"" . $field->getAlias("_") . "_\"]");
+      array_push($names, $field->getAlias("_") . "_");
+      $this->fields($field->getEntity()->getName(), $names);
     }
 
   }
 
-  protected function fields($tableName, $arrayName){
-    $this->string .= "    if(" . $arrayName . ".id !=  \"undefined\"){
-      this.dd.storage.setItem(\"" . $tableName . "\" + " . $arrayName . ".id, " . $arrayName . ");
-      delete " . $arrayName . ";
-    }
-";
-  }
+
 
 }
