@@ -126,12 +126,12 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
       var ob: Observable<any> = this.dd.getOrNull('" . $field->getEntityRef()->getName() . "', row['" . $field->getName() . "']).mergeMap(
         rowG => {
           if(!rowG) {
-            row_['plan'] = null;
+            row_['{$field->getName()}'] = null;
             return of(null);
           }
 
-          return this.dd.initLabel('plan', rowG).map(
-            rowI => { row_['plan'] = rowI; }
+          return this.dd.initLabel('{$field->getName()}', rowG).map(
+            rowI => { row_['{$field->getName()}'] = rowI; }
           );
         }
       )
