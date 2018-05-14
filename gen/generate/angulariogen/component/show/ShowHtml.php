@@ -14,7 +14,7 @@ class ComponentShowHtml extends GenerateFileEntity {
 
   public function generateCode() {
     $this->string .= "<app-" . $this->getEntity()->getName("xx-yy") . "-search [display]=\"display\"></app-" . $this->getEntity()->getName("xx-yy") . "-search>
-<app-" . $this->getEntity()->getName("xx-yy") . "-table [data]=\"rows\" [sync]=\"sync\"></app-" . $this->getEntity()->getName("xx-yy") . "-table>
+<app-" . $this->getEntity()->getName("xx-yy") . "-table [display]=\"display\" [data]=\"rows\" [sync]=\"sync\"></app-" . $this->getEntity()->getName("xx-yy") . "-table>
 <app-pagination [display]=\"display\" [entity]=\"'" . $this->getEntity()->getName() . "'\"></app-pagination>
 ";
 

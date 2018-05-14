@@ -16,6 +16,7 @@ class ComponentTableTs extends GenerateFileEntity {
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TableComponent } from '../../main/component/table/table.component';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
+import { RouterService } from '../../main/service/router/router.service';
 
 @Component({
   selector: 'app-" . $this->entity->getName("xx-yy") . "-table',
@@ -23,9 +24,10 @@ import { DataDefinitionService } from '../../service/data-definition/data-defini
 })
 export class " . $this->entity->getName("XxYy") . "TableComponent extends TableComponent {
 
-  constructor(protected dd: DataDefinitionService, protected modalService: NgbModal) {
-    super(dd, modalService);
+  constructor(protected dd: DataDefinitionService, protected modalService: NgbModal, protected router: RouterService) {
+    super(dd, modalService, router);
     this.entity = '" . $this->entity->getName() . "';
+    this.url =  '" . $this->entity->getName("xx-yy") . "-show';
   }
 
 }
