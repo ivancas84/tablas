@@ -43,14 +43,22 @@ export class DataDefinitionMainService {
   }
 
   all (entity: string, display: Display = null): Observable<any> {
-    return this.ids(entity, display).mergeMap(
-      ids => {
-        if(!ids.length) { return of([]) }
-        else {
-          return this.getAll(entity, ids)
+    let key = "_" + entity + "_all" + JSON.stringify(display);
+    if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
+
+    let url = API_ROOT + entity + '/all'
+    return this.http.post<any>(url, "data="+JSON.stringify(display), HTTP_OPTIONS).map(
+      rows => {
+        this.storage.setItem(key, rows);
+
+        for(let i = 0; i < rows.length; i++){
+          let ddi: DataDefinition = this.loader.getInstance(entity, this);
+          ddi.storage(rows[i]);
         }
+
+        return rows;
       }
-    )
+    );
   }
 
 
@@ -76,6 +84,8 @@ export class DataDefinitionMainService {
     )
   }
 
+  //recibe una lista de ids, y retorna sus datos (deben estar ordenados en el mismo orden que se reciben los ids)
+  //simplifica la cantidad de valores retornados utilizando el cache, pero realiza un procesamiento adicional de ordenamiento en el cliente.
   getAll (entity: string, ids: any): Observable<any> {
     let rows: Array<{ [index: string]: boolean|string|number }> = new Array(ids.length);
 

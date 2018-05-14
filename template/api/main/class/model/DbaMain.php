@@ -202,6 +202,7 @@ class DbaMain {
   public function getAll($entity, array $ids, $render = null){
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->getAll($ids, $render);
+
     $db = self::dbInstance();
     $result = $db->query($sql);
     return $db->fetchAll($result);

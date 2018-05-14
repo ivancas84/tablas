@@ -259,7 +259,8 @@ abstract class EntitySql {
 
     foreach($orderByFields as $key => $value){
       $value = ((strtolower($value) == "asc") || ($value === true)) ? "asc" : "desc";
-      $sql_ = $this->mappingField($key) . " " . $value;
+      $sql_ = $this->mappingField($key) . " IS NULL, ";
+      $sql_ .= $this->mappingField($key) . " " . $value;
       $sql .= concat($sql_, ', ', ' ORDER BY', $sql);
     }
     return $sql;

@@ -22,7 +22,6 @@ export abstract class TableComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if(changes.data){ //changes.row.isFirstChange()
-
       for (let i = 0; i < this.data.length; i++) {
         this.dd.init(this.entity, this.data[i]).subscribe(
           row => { this.rows.push(row); }

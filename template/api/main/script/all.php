@@ -13,7 +13,7 @@ try{
   $dba = new Dba(); try {
     $render = $dba->render(ENTITY, $params);
     $rows_ = $dba->all(ENTITY, $render);
-    $rows = $dba->build(ENTITY, $rows_);
+    $rows = $dba->json(ENTITY, $rows_);
     echo json_encode($rows);
 
   } finally { $dba::dbClose(); }
