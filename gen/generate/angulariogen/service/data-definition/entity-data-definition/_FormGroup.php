@@ -29,7 +29,7 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
 
     foreach($fields as $field){
       switch ( $field->getSubtype() ) {
-
+        case "checkbox": $this->checkbox($field); break;
         default: $this->defecto($field); //name, email
       }
     }
@@ -67,7 +67,10 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
 
 
 
-
+  protected function checkbox(Field $field) {
+      $this->string .= "      " . $field->getName() . ": false,
+";
+  }
 
   protected function defecto(Field $field) {
       if($field->isNotNull()) $this->string .= "      " . $field->getName() . ": ['', Validators.required ],

@@ -125,6 +125,7 @@ class DbaMain {
     $db = self::dbInstance();
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->_unique($render);
+
     $result = $db->query($sql);
     $rows = $db->fetchAll($result);
 

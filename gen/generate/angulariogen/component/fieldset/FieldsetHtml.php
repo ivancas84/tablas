@@ -29,7 +29,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
 
     foreach($fields as $field) {
       switch ( $field->getSubtype() ) {
-        //case "checkbox": $this->checkbox($field); break;
+        case "checkbox": $this->checkbox($field); break;
         //case "date": $this->date($field);  break;
         //case "float": case "integer": case "cuil": case "dni": $this->number($field); break;
         // case "year": $this->date($field); break;
@@ -75,6 +75,16 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     <div class=\"col-10\">
       <input class=\"form-control\" type=\"text\" formControlName=\"" . $field->getName() . "\"  [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
     </div>
+  </div>
+";
+  }
+
+
+  protected function checkbox(Field $field) {
+    $this->string .= "  <div class=\"form-group form-check\">
+    <label class=\"form-check-label\">
+      <input class=\"form-check-input\" type=\"{$field->getName()}\" formControlName=\"addDomicilio\"> {$field->getName()}
+    </label>
   </div>
 ";
   }

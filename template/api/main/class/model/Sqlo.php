@@ -185,7 +185,6 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $conditionUniqueFields = $this->sql->conditionUniqueFields($row);
     if(empty($conditionUniqueFields)) return null;
 
-
     $sql = "SELECT DISTINCT ";
     $sql .= $this->sql->fieldsFull();
     $sql .= $this->sql->fieldsAux();

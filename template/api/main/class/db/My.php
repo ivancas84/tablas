@@ -4,13 +4,13 @@ require_once ( "function/settypebool.php" );
 require_once("class/db/Interface.php");
 
 class DbSqlMy extends mysqli implements DbInterface {
-    
+
   protected $host;
   protected $user;
   protected $password;
   protected $dbname;
-  protected $schema;  
-  
+  protected $schema;
+
   public function __construct($host, $user, $password, $dbname, $schema) {
     $this->host = $host;
     $this->user = $user;
@@ -22,103 +22,103 @@ class DbSqlMy extends mysqli implements DbInterface {
     $this->multiQuery( "SET NAMES 'utf8'; SET lc_time_names = 'es_AR';");
 
   }
-  
-  
+
+
   //***** @override *****
   public function getSchema(){
     return $this->schema;
   }
-  
+
   //***** @override *****
   public function getSchemaDot(){
     if (!empty($this->schema)) return $this->schema . ".";
     return "";
   }
-  
+
   //***** @override *****
   public function getDbms(){
     return "mysql";
   }
-  
+
   //***** @override *****
-  public function query($query){   
+  public function query($query){
     $result = parent::query($query);
     if(!$result) throw new Exception($this->error);
     return $result;
   }
-  
+
   public function multiQuery($query){
     $result = $this->multi_query($query);
     if(!$result) throw new Exception($this->error);
-     
+
     $i = 0;
     $errors = [];
     while ($this->more_results()) {
       $i++;
-      $result = $this->next_result();            
+      $result = $this->next_result();
       if(!$result) array_push($errors, "sentencia " . $i);
     }
-    
-    if(count($errors)) throw new Exception($this->error . implode(" " . $errors));
-     
+
+    if(count($errors)) throw new Exception($this->error . ": " . implode(" ", $errors));
+
     return $result;
   }
-  
-  
-  public function multiQueryTransaction($query){    
-    
-    try { 
-      $this->multiQuery("BEGIN; " . $query); 
-      $this->query("COMMIT;");      
-    } 
-    
+
+
+  public function multiQueryTransaction($query){
+
+    try {
+      $this->multiQuery("BEGIN; " . $query);
+      $this->query("COMMIT;");
+    }
+
     catch (Exception $ex) {
       $this->query("ROLLBACK;");
       throw $ex;
     }
   }
-  
+
   //***** @override *****
   public function numRows($result){
     return $result->num_rows;
   }
-  
+
   public function numFields($result){
     return $result->field_count;
   }
-  
+
   public function fetchAll($result) {
     $rows = array();
     while ($row = $result->fetch_assoc()) {
       array_push($rows,$row);
     }
-    
+
     return $rows;
   }
-  
+
   public function fetchAssoc($result){
     return $result->fetch_assoc();
   }
-  
+
   public function fetchRow($result){
     return $result->fetch_row();
   }
-  
-  
-  public function fetchAllColumns($result, $fieldNumber) {  
+
+
+  public function fetchAllColumns($result, $fieldNumber) {
     if ($fieldNumber >= $this->numFields($result)) return array();
-    
+
     $column = array();
     while ($row = $this->fetchRow($result)) array_push($column,$row[$fieldNumber]);
-    
+
     return $column;
   }
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
   /**
    * Retornar array multiple con informacion de los fields de una tabla de la base de datos
    * @param string $table: nombre de la tabla
@@ -127,25 +127,25 @@ class DbSqlMy extends mysqli implements DbInterface {
    */
   function fieldsInfo ( $table ) {
         $sql = "
-SELECT 
-  DISTINCT COLUMNS.COLUMN_NAME, COLUMNS.COLUMN_DEFAULT, COLUMNS.IS_NULLABLE, COLUMNS.DATA_TYPE, COLUMNS.COLUMN_TYPE, COLUMNS.CHARACTER_MAXIMUM_LENGTH, COLUMNS.NUMERIC_PRECISION, COLUMNS.NUMERIC_SCALE, COLUMNS.COLUMN_KEY, COLUMNS.EXTRA, 
+SELECT
+  DISTINCT COLUMNS.COLUMN_NAME, COLUMNS.COLUMN_DEFAULT, COLUMNS.IS_NULLABLE, COLUMNS.DATA_TYPE, COLUMNS.COLUMN_TYPE, COLUMNS.CHARACTER_MAXIMUM_LENGTH, COLUMNS.NUMERIC_PRECISION, COLUMNS.NUMERIC_SCALE, COLUMNS.COLUMN_KEY, COLUMNS.EXTRA,
   SUB.REFERENCED_TABLE_NAME, SUB.REFERENCED_COLUMN_NAME, COLUMNS.ORDINAL_POSITION
-FROM INFORMATION_SCHEMA.COLUMNS 
-LEFT OUTER JOIN ( 
-  SELECT KEY_COLUMN_USAGE.COLUMN_NAME, KEY_COLUMN_USAGE.REFERENCED_TABLE_NAME, KEY_COLUMN_USAGE.REFERENCED_COLUMN_NAME 
-  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
+FROM INFORMATION_SCHEMA.COLUMNS
+LEFT OUTER JOIN (
+  SELECT KEY_COLUMN_USAGE.COLUMN_NAME, KEY_COLUMN_USAGE.REFERENCED_TABLE_NAME, KEY_COLUMN_USAGE.REFERENCED_COLUMN_NAME
+  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
   WHERE (CONSTRAINT_NAME != 'PRIMARY') AND (REFERENCED_TABLE_NAME IS NOT NULL) AND (REFERENCED_COLUMN_NAME IS NOT NULL)
 
-  AND (KEY_COLUMN_USAGE.TABLE_SCHEMA = '" .  $this->dbname . "') AND (KEY_COLUMN_USAGE.TABLE_NAME = '" . $table . "') 
-) AS SUB ON (COLUMNS.COLUMN_NAME = SUB.COLUMN_NAME) 
-WHERE (COLUMNS.TABLE_SCHEMA = '" .  $this->dbname . "') AND (COLUMNS.TABLE_NAME = '" . $table . "') 
+  AND (KEY_COLUMN_USAGE.TABLE_SCHEMA = '" .  $this->dbname . "') AND (KEY_COLUMN_USAGE.TABLE_NAME = '" . $table . "')
+) AS SUB ON (COLUMNS.COLUMN_NAME = SUB.COLUMN_NAME)
+WHERE (COLUMNS.TABLE_SCHEMA = '" .  $this->dbname . "') AND (COLUMNS.TABLE_NAME = '" . $table . "')
 ORDER BY COLUMNS.ORDINAL_POSITION;";
 
-        
+
         $result = $this->query($sql);
 
             $r_aux = $this-> fetchAll ( $result ) ;
-            
+
             $r = array () ;
 
             //redefinir valores del resultado de la consulta
@@ -163,7 +163,7 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
 
                 if ( !empty( $field_aux["CHARACTER_MAXIMUM_LENGTH"] ) ) {
                     $field["length"] = $field_aux["CHARACTER_MAXIMUM_LENGTH"] ;
-                } elseif ( !empty( $field_aux["NUMERIC_PRECISION"] ) ) {          
+                } elseif ( !empty( $field_aux["NUMERIC_PRECISION"] ) ) {
           $sub = substr($field_aux["COLUMN_TYPE"] , strpos($field_aux["COLUMN_TYPE"],"(")+strlen("("),strlen($field_aux["COLUMN_TYPE"]));
           $length = substr($sub,0,strpos($sub,")"));
           if(intval($field_aux["NUMERIC_PRECISION"]) <= intval($length)){
@@ -171,7 +171,7 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
           } else {
             $field["length"] = $length;
           }
-          
+
                     if ( (!empty ( $field_aux["NUMERIC_SCALE"])) && ( $field_aux["NUMERIC_SCALE"] != '0' ) ) {
                             $field["length"] .= "," . $field_aux["NUMERIC_SCALE"] ;
                     }
@@ -185,10 +185,10 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
             return $r ;
 
     }
-    
-    
-    
-    
+
+
+
+
   /**
    * Retornar array con el nombre de las tablas de la base de datos *****
    */
@@ -207,30 +207,30 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
   public function begin() {
     return $this->begin_transaction();
   }
-  
+
   public function escapeString($string){
     return $this->escape_string($string);
   }
-  
-  
-  
+
+
+
     /**
      * @override
      *
-    public function connect(){  
+    public function connect(){
       if ($this->isConnected()) {
         throw new Exception("Error al conectar. Ya existe una conexion abierta. Solo puede existir una conexion a la base de datos abierta a la vez");
       }
 
       $this->connection = mysqli_connect ($this->host, $this->user, $this->pass, $this->dbname);
-      $this->query( "SET NAMES 'utf8';"); 
+      $this->query( "SET NAMES 'utf8';");
 
       if (mysqli_connect_error()){
           $this->connection = null;
           throw new Exception(mysqli_connect_error());
       }
     }
-    
+
     /**
      * @override
      *
@@ -239,10 +239,10 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
       $res = mysqli_autocommit($this->connection, $mode);
       if (!$res) throw new Exception(mysqli_error($this->connection));
       return $res;
-    }    
-  
-   
-  
+    }
+
+
+
     /**
      * @override
      *
@@ -253,12 +253,12 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
       if (!$res) throw new Exception(mysqli_error($this->connection));
       return true;
     }
- 
-  
-    
+
+
+
     /**
      * @override
-     *  
+     *
     public function isConnected() {
         if (isset($this->connection)) {
             if ((is_object($this->connection)) && (get_class($this->connection) == "mysqli") && (mysqli_ping($this->connection))){
@@ -279,11 +279,11 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
       $this->setTransaction(false);
       return true;
     }
-  
-    
-    
-    
-    
+
+
+
+
+
     /**
      * @override
      *
@@ -295,38 +295,38 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
       $this->connection = NULL;
       return true;
     }
-    
 
- 
-  
+
+
+
     /**
      * @override
      *
     function error(){
         return mysqli_error($this->connection);
     }
-  
+
     /**
      * @override
      *
     function numRows($result){
         return mysqli_num_rows($result);
     }
-  
+
     /**
      * @override
      *
     function numFields($result){
         return mysqli_num_fields($result);
     }
-  
+
     /**
      * @override
      *
     function fieldName($result,$field_number){
         return mysqli_field_name($result,$field_number);
     }
-  
+
     /**
      * @override
      *
@@ -349,14 +349,14 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
             return false;
         }
     }
-  
+
     /**
      * @override
      *
     function freeResult($result){
             return mysqli_free_result($result);
     }
-  
+
     /**
      * @override
      *
@@ -364,10 +364,10 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
         $a = array();
         for ($i = 0; $i < $this->numRows($result); $i++){
                 array_push($a,$this->fetchAssoc($result,$i));
-        }        
-        return $a;    
+        }
+        return $a;
     }
-  
+
     /**
      * @override
      *
@@ -383,7 +383,7 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
             return false;
         }
     }
-    
+
 
     /**
      * @override
@@ -391,7 +391,7 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
     protected function escapeStringAux($string){
         return mysqli_real_escape_string($this->connection, $string);
     }
-  
+
     /**
      * @override
      *
@@ -411,7 +411,7 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
             return $res [ 0 ];
         }
     }*/
-  
+
   //generar id unico
   public function uniqId(){
     usleep(1);
