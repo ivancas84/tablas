@@ -19,7 +19,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
   }
 
   protected function start() {
-    $this->string .= "<fieldset *ngIf=\"fieldsetForm\" [formGroup]=\"fieldsetForm\">
+    $this->string .= "<fieldset *ngIf=\"fieldsetForm && enable\" [formGroup]=\"fieldsetForm\">
 ";
   }
 

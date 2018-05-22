@@ -125,7 +125,7 @@ class EntityDataDefinition_Server extends GenerateEntity {
   protected function typeahead(Field $field) {
     $this->string .= "    if('" . $field->getName() . "' in row){
       value = null;
-      if (typeof row['" . $field->getName() . "'] == 'object'){
+      if (row['" . $field->getName() . "'] && (typeof row['" . $field->getName() . "'] == 'object')){
         if (('id' in row) && (row['" . $field->getName() . "']['id'] != '')) value = row['" . $field->getName() . "']['id'];
       } else {
         if (row['" . $field->getName() . "'] != '') value = row['" . $field->getName() . "'];
