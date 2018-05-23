@@ -138,6 +138,9 @@ class DbaMain {
   public function unique($entity, $render = null){
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->unique($render);
+    
+    if(empty($sql)) return null;
+    
     $db = self::dbInstance();
     $result = $db->query($sql);
     $rows = $db->fetchAll($result);
@@ -508,5 +511,7 @@ LIMIT 10;
 
     return $rows_;
   }
+  
+
 
 }
