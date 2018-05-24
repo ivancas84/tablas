@@ -289,4 +289,133 @@ abstract class EntitySql {
 
 
 
+
+
+
+  //Definir valor numerico para la base de datos
+  //@param mixed $value Valor a definir.
+  //  'null': Valor especial que indica que el campo debe definirse en null
+  //@throws Exception si value no se encuentra correctamente definido   
+  public function numeric($value){
+    if(is_null($value) || ($value === 'null')) return 'null';
+
+    if ( !is_numeric($value) ) throw new Exception('Valor numerico incorrecto: ' . $value);
+    else return $value;
+  }
+
+  //Definir valor numerico entero mayor a 0 para la base de datos
+  //@param $value Valor a definir.
+  //  'null': Valor especial que indica que el campo debe definirse en null
+  //@throws Exception si value no se encuentra correctamente definido
+  public function positiveIntegerWithoutZerofill($value){
+    if(is_null($value) || ($value === 'null')) return 'null';
+
+    if ((!is_numeric($value)) && (!intval($value) > 0)) throw new Exception('Valor entero positivo sin ceros incorrecto: ' . $value);
+    else return $value;
+  }
+
+  //Definir valor timestamp para la base de datos
+  //@param $value Valor a definir.
+  //  'null': Valor especial que indica que el campo debe definirse en null
+  //@throws Exception si value no se encuentra correctamente definido
+  public function timestamp($value){
+    if($value == 'null') return 'null';
+
+    if(is_object($value) && get_class($value) == "DateTime"){
+      $datetime = $value;
+    } else {
+      $datetime = DateTime::createFromFormat('Y-m-d H:i:s', $value);
+    }
+
+    if ( !$datetime ) throw new Exception('Valor fecha y hora incorrecto: ' . $value);
+    else return "'" . $datetime->format('Y-m-d H:i:s') . "'";
+  }
+
+  //Definir valor date para la base de datos
+  //@param $value Valor a definir.
+  //  'null': Valor especial que indica que el campo debe definirse en null
+  //@throws Exception si value no se encuentra correctamente definido
+  public function date($value){
+    if($value == 'null') return 'null';
+
+    if(is_object($value) && get_class($value) == "DateTime"){
+      $datetime = $value;
+    } else {
+      $datetime = DateTime::createFromFormat('Y-m-d', $value);
+    }
+
+    if ( !$datetime ) throw new Exception('Valor fecha incorrecto: ' . $value);
+    else return "'" . $datetime->format('Y-m-d') . "'";
+  }
+
+
+  //Definir valor time para la base de datos
+  //@param $value Valor a definir.
+  //  'null': Valor especial que indica que el campo debe definirse en null
+  //@throws Exception si value no se encuentra correctamente definido
+  public function time($value){
+    if($value == 'null') return 'null';
+
+    if(is_object($value) && get_class($value) == "DateTime"){
+      $datetime = $value;
+    } else {
+      $datetime = DateTime::createFromFormat('H:i', $value);
+    }
+
+    if ( !$datetime ) throw new Exception('Valor fecha incorrecto: ' . $value);
+    else return "'" . $datetime->format('H:i') . "'";
+  }
+
+
+  //Definir valor time para la base de datos
+  //@param $value Valor a definir.
+  //  'null': Valor especial que indica que el campo debe definirse en null
+  //@throws Exception si value no se encuentra correctamente definido
+  public function year($value){
+    if($value == 'null') return 'null';
+
+    if(is_object($value) && get_class($value) == "DateTime"){
+      $datetime = $value;
+    } else {
+      $datetime = DateTime::createFromFormat('Y', $value);
+    }
+
+    if ( !$datetime ) throw new Exception('Valor año incorrecto: ' . $value);
+    else return "'" . $datetime->format('Y') . "'";
+  }
+
+
+
+  //Definir valor boolean para la base de datos
+  //@param $value Valor a definir. 'null': Valor especial que indica que el campo debe definirse en null
+  public function boolean($value){
+    if(is_null($value) || ($value === 'null')) return 'null';
+
+    return ( settypebool($value) ) ? 'true' : 'false';
+  }
+
+
+
+  //Definir string
+  //@param string $value Valor a definir. 'null': Valor especial que indica que el campo debe definirse en null
+  //@throws Exception si value no se encuentra correctamente definido
+  public function string($value){
+    if(is_null($value) || ($value === 'null')) return 'null';
+
+    if (!is_string($value)) throw new Exception('Valor de caracteres incorrecto: ' . $value);
+    else return "'" . $value . "'";
+  }
+
+  //Definir string
+  //@param string $value Valor a definir. 'null': Valor especial que indica que el campo debe definirse en null
+  //@throws Exception si value no se encuentra correctamente definido
+  public function escapeString($value){
+    if($value == 'null') return 'null';
+
+    $v = (is_numeric($value)) ? strval($value) : $value;
+    if (!is_string($v)) throw new Exception('Valor de caracteres incorrecto: ' . $v);
+    else $escapedString = $this->db->escapeString($v);
+    return "'" . $escapedString . "'";
+  }
+
 }

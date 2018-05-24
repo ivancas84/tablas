@@ -24,7 +24,6 @@ class ClassSqloMain extends GenerateFileEntity {
     $this->string .= "<?php
 
 require_once(\"class/model/Sqlo.php\");
-require_once(\"class/db/SqlFormat.php\");
 
 //Implementacion principal de Sqlo para una entidad especifica
 class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
