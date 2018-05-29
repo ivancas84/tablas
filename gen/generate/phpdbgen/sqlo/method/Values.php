@@ -23,7 +23,7 @@ class ClassSqlo_values extends GenerateEntity {
 
   protected function bodyMain(){
     $this->string .= "    if(empty(\$row)) return null;
-    \$row_ = self::_values(\$row);
+    \$row_ = \$this->_values(\$row);
 
 ";
   }
@@ -43,8 +43,9 @@ class ClassSqlo_values extends GenerateEntity {
 
 
   protected function body(Entity $entity, $arrayName, $prefixField, $createArray = true){
-    $this->string .= "    \$val = " . $entity->getName("XxYy"). "Sqlo::_values(\$row, \"" . $prefixField. "\");
-    if(!empty(\$val)) " . $arrayName . " = \$val;
+    $this->string .= "    \$sqlo = new {$entity->getName('XxYy')}Sqlo;
+    \$val = \$sqlo->_values(\$row, '{$prefixField}');
+    if(!empty(\$val)) {$arrayName} = \$val;
 
 ";
   }

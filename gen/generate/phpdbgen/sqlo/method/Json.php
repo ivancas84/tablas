@@ -23,7 +23,7 @@ class ClassSqlo_json extends GenerateEntity {
 
   protected function bodyMain(){
     $this->string .= "    if(empty(\$row)) return null;
-    \$row_ = self::_json(\$row);
+    \$row_ = \$this->_json(\$row);
 
 ";
   }
@@ -43,7 +43,8 @@ class ClassSqlo_json extends GenerateEntity {
 
 
   protected function body(Entity $entity, $arrayName, $prefixField, $createArray = true){
-    $this->string .= "    \$json = " . $entity->getName("XxYy"). "Sqlo::_json(\$row, \"" . $prefixField. "\");
+    $this->string .= "    \$sqlo = new {$entity->getName('XxYy')}Sqlo;
+    \$json = \$sqlo->_json(\$row, '{$prefixField}');
     if(!empty(\$json)) " . $arrayName . " = \$json;
 
 ";
