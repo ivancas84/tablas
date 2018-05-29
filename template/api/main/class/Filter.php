@@ -7,6 +7,12 @@ class Filter {
     return $_REQUEST;
   }
 
+  public static function requestAllRequired(){
+    $request = self::requestAll();
+    if(empty($request)) throw new Exception("No existen parametros");
+    return $request;
+  }
+
   public static function post($name){
    return filter_input(INPUT_POST, $name);
   }
