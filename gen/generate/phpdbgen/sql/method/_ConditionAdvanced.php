@@ -17,19 +17,22 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
   public function _conditionAdvanced(\$field, \$option, \$value, \$prefix = ''){
     \$t = (empty(\$prefix)) ?  '" . $this->getEntity()->getAlias() . "'  : \$prefix;
     \$p = (empty(\$prefix)) ?  ''  : \$prefix . '_';
-  
+
     switch (\$field){
 ";
   }
 
   protected function condition(Entity $entity){
     foreach ( $entity->getFields() as $field) {
-      switch ( $field->getDataType() ) {
+      switch ( $field->getSubtype() ) {
         case "string":
-        case "text": $this->string($field->getName()); break;
+        case "textarea": $this->string($field->getName()); break;
+
         case "integer":
         case "float": $this->number($field->getName()); break;
-        case "boolean": $this->boolean($field->getName()); break;
+
+        case "checkbox": $this->boolean($field->getName()); break;
+
         case "date": $this->date($field->getName()); break;
       }
     }

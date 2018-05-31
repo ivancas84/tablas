@@ -19,11 +19,16 @@ abstract class Field {
   protected $unique; //flag para indicar si es un campo unico
 
   protected $subtype = null; //tipo de datos avanzado
+    //text texto simple
+    //textarea texto grande
     //checkbox Booleanos
+    //cuil Texto para cuil
+    //dni Texto para dni
+    //date
+    //timestamp
     //select_int Conjunto de enteros definido, los valores se definen en el atributo "selectValues"
     //select_text Conjunto de strings definido, los valores se definen en el atributo "selectValues"
 
-  protected $dataType = null; //tipo de datos general
   protected $typescriptType = null; //tipo de datos typescript
 
   protected $main = null; //flag para indicar si es un campo principal.
@@ -40,10 +45,9 @@ abstract class Field {
   protected $admin = true; //administracion de campo, al desactivarlo, no se incluye el campo en los formularios de administracion
 
   public function __construct() {
-    $this->defineDataType($this->type);
-    $this->defineSubtype($this->dataType, $this->fieldType);
-    $this->defineNotNull($this->dataType);
-    $this->redefineLength($this->length, $this->type, $this->dataType);
+    $this->defineSubtype($this->type, $this->fieldType);
+    $this->defineNotNull($this->subtype);
+    $this->redefineLength($this->length, $this->type, $this->subtype);
   }
 
   public static function name(){ return null; }
@@ -56,7 +60,6 @@ abstract class Field {
   //Metodo semiabstracto, debe sobrescribirse para aquellos fields que sean fk
   public function getEntityRef(){ return null; }
 
-  public function getDataType(){ return $this->dataType; }
   public function getDefault(){ return $this->default; }
   public function getFieldType(){ return $this->fieldType; }
   public function getLength(){ return $this->length; }
@@ -102,103 +105,50 @@ abstract class Field {
 
 
 
-  protected function defineNotNull($dataType){
+  protected function defineNotNull($subtype){
     if ( is_null($this->notNull) ) {
-      $this->notNull = ( ( $dataType == "boolean" ) ) ? true : false;
+      $this->notNull = ( ( $subtype == "checkbox" ) ) ? true : false;
     }
   }
 
-  protected function defineDataType($type){
-    if (is_null($this->dataType)) {
-      switch ( $type ) {
-        case "smallint":
-        case "mediumint":
-        case "int":
-        case "integer":
-        case "serial":
-        case "bigint": $this->dataType = "integer"; break;
-        case "tinyblob":
-        case "blob":
-        case "mediumblob":
-        case "longblog": $this->dataType = "blob"; break;
-        case "varchar":
-        case "char":
-        case "string":
-        case "tinytext": $this->dataType = "string"; break;
-        case "boolean":
-        case "bool":
-        case "tinyint": $this->dataType = "boolean"; break;
-        case "float":
-        case "real":
-        case "decimal": $this->dataType = "float"; break;
-        case "text": $this->dataType = "text"; break;
-        case "datetime":
-        case "timestamp": $this->dataType = "timestamp"; break;
-        default: $this->dataType = $this->type;
-      }
-    }
-  }
-
-  protected function defineTypescriptType($dataType, $fieldType){
-    if(is_null($this->typescriptType)){
+  protected function defineSubtype($type){
+    if (is_null($this->subtype)) {
       switch($fieldType){
         case "pk":
         case "nf":
-          switch($dataType){
-            case "string":
-            case "text":
-              $this->subtype = "string"; break;
-
+          switch ( $type ) {
+            case "smallint":
+            case "mediumint":
+            case "int":
             case "integer":
-            case "float":
-              $this->subtype = "number"; break;
-
-            case "date":
-            case "timestamp":
-            case "year":
-            case "time":
-              $this->subtype = "date"; break;
-
+            case "serial":
+            case "bigint": $this->subtype = "integer"; break;
+            case "tinyblob":
+            case "blob":
+            case "mediumblob":
+            case "longblog": $this->subtype = "blob"; break;
+            case "varchar":
+            case "char":
+            case "string":
+            case "tinytext": $this->subtype = "text"; break;
             case "boolean":
-              $this->subtype = "boolean"; break;
-
-            default: $this->subtype = "string"; break;
-          }
-        break;
-
-        case "fk": case "mu": case "_u":
-          $this->subtype = "typeahead";
-        break;
-      }
-    }
-  }
-
-  protected function defineSubtype($dataType, $fieldType){
-    if(is_null($this->subtype)){
-      switch($fieldType){
-        case "pk":
-        case "nf":
-          switch($dataType){
-            case "string": $this->subtype = "text"; break;
-            case "integer": $this->subtype = "integer"; break;
-            case "float": $this->subtype = "float"; break;
-            case "date": $this->subtype = "date"; break;
-            case "timestamp": $this->subtype = "timestamp"; break;
+            case "bool":
+            case "tinyint": $this->subtype = "checkbox"; break;
+            case "float":
+            case "real":
+            case "decimal": $this->subtype = "float"; break;
             case "text": $this->subtype = "textarea"; break;
-            case "blob": $this->subtype = "file_db"; break;
-            case "boolean": $this->subtype = "checkbox"; break;
-            case "time": $this->subtype = "time"; break;
-            case "year": $this->subtype = "year"; break;
-            default: $this->subtype = false; break;
+            case "datetime":
+            case "timestamp": $this->subtype = "timestamp"; break;
+            default: $this->subtype = $this->type;
           }
-        break;
-
         case "fk": case "mu": case "_u":
           $this->subtype = "typeahead";
         break;
       }
     }
   }
+
 
 
   protected function defineUpdateNull(){
@@ -206,7 +156,7 @@ abstract class Field {
   }
 
 
-  protected function redefineLength($length, $type, $dataType){
+  protected function redefineLength($length, $type, $subtype){
     if ($this->length === false || $this->length === null){
       switch ($type) {
         case "tinyint": $this->length = 3; break;
@@ -224,8 +174,8 @@ abstract class Field {
     }
 
     if ($this->length === false || $this->length === null) {
-      switch($dataType){
-        case "string": $this->length = 45; break;
+      switch($subtype){
+        case "text": $this->length = 45; break;
         case "cuil": $this->length = 11; break;
         case "dni": $this->length = 8; break;
       }
