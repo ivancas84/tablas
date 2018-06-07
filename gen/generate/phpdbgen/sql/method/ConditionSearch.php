@@ -121,15 +121,15 @@ class ClassSql_conditionSearch extends GenerateEntity{
     $fields = $entity->getFields();
 
     foreach ($fields as $field) {
-      switch ($field->getSubtype()) {
-        case "textarea": case "text": $this->text($field->getName(), $alias); break;
+      switch ($field->getDataType()) {
+        case "string": case "text": $this->text($field->getName(), $alias); break;
 
         case "integer": case "float": $this->number($field->getName(), $alias); break;
 
         case "date": $this->date($field->getName(), $alias); break;
 
         case "year": $this->year($field->getName(), $alias); break;
-        
+
         case "timestamp": $this->timestamp($field->getName(), $alias); break;
       }
     }

@@ -24,19 +24,21 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
 
   protected function condition(Entity $entity){
     foreach ( $entity->getFields() as $field) {
-      switch ( $field->getSubtype() ) {
+      switch ( $field->getDataType() ) {
+
         case "string":
-        case "textarea": $this->string($field->getName()); break;
+        case "text": $this->string($field->getName()); break;
 
         case "integer":
         case "float": $this->number($field->getName()); break;
 
-        case "checkbox": $this->boolean($field->getName()); break;
+        case "boolean": $this->boolean($field->getName()); break;
 
         case "date": $this->date($field->getName()); break;
       }
     }
-    unset($field);
+
+
   }
 
 

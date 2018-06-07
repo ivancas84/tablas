@@ -36,12 +36,12 @@ protected function start(){
 
     //redefinir valores de timestamp y date. Los valores timestamp y date se dividen en diferentes partes correspondientes a dia mes anio hora minutos y segundos. Dichas partes deben unirse en una sola variable
     foreach ( $nf as $field ) {
-      switch ( $field->getSubtype()) {
+      switch ( $field->getDataType()) {
         case "timestamp": $this->fecha($field, "date(\"Y-m-d H:i:s\")"); break;
         case "time":  $this->fecha($field, "date(\"H:i:s\")"); break;
         case "date": $this->fecha($field, "date(\"Y-m-d\")"); break;
         case "year": $this->fecha($field, "date(\"Y\")"); break;
-        case "string": case "textarea": case "text": case "password": $this->string($field); break;
+        case "string": case "text": $this->string($field); break;
         case "integer": case "float": $this->number($field); break;
         case "boolean": $this->boolean($field); break;
       }
@@ -125,7 +125,20 @@ protected function start(){
     $fk = $entity->getFieldsFk();
 
     foreach ( $fk as $field) {
-      $this->number($field);
+      $this->fk_($field);
+    }
+  }
+
+  protected function fk_(Field $field){
+    $default = ($field->getDefault()) ? $field->getDefault() : "\"null\"";
+
+    $this->string .= "    if(empty(\$data['" . $field->getName() . "'])) ";
+    if($field->isNotNull() && !$field->getDefault()){
+      $this->string .= "throw new Exception('dato obligatorio sin valor: " . $field->getName() . "');
+";
+    } else {
+      $this->string .= "\$data['" . $field->getName() . "'] = " . $default . ";
+";
     }
   }
 

@@ -126,6 +126,7 @@ class DbaMain {
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->_unique($render);
 
+
     $result = $db->query($sql);
     $rows = $db->fetchAll($result);
 
@@ -138,9 +139,9 @@ class DbaMain {
   public function unique($entity, $render = null){
     $sqlo = $this->entitySqlo($entity);
     $sql = $sqlo->unique($render);
-    
+
     if(empty($sql)) return null;
-    
+
     $db = self::dbInstance();
     $result = $db->query($sql);
     $rows = $db->fetchAll($result);
@@ -289,7 +290,6 @@ class DbaMain {
     if(!$this->transaction) $this->begin();
     $entity_ = $this->entity($entity);
     $data = $this->_persist($entity, $row);
-
     $this->update(["descripcion"=> $data["sql"], "detalle" => $entity_->getName() . $data["id"]]);
 
     return $data["id"];
@@ -511,7 +511,7 @@ LIMIT 10;
 
     return $rows_;
   }
-  
+
 
 
 }
