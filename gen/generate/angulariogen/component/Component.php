@@ -16,6 +16,7 @@ class GenerateComponent {
       $this->search($entity);
       $this->admin($entity);
       $this->fieldset($entity);
+      $this->fieldsetArray($entity);
 
     }
   }
@@ -40,6 +41,19 @@ class GenerateComponent {
     $gen = new ComponentFieldsetHtml($entity);
     $gen->generate();
   }
+
+
+  protected function fieldsetArray($entity){
+    require_once("generate/angulariogen/component/fieldsetArray/FieldsetArrayTs.php");
+    $gen = new ComponentFieldsetArrayTs($entity);
+    $gen->generate();
+
+    require_once("generate/angulariogen/component/fieldsetArray/FieldsetArrayHtml.php");
+    $gen = new ComponentFieldsetArrayHtml($entity);
+    $gen->generate();
+  }
+
+
 
   protected function search($entity){
     require_once("generate/angulariogen/component/search/SearchTs.php");

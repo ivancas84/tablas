@@ -20,7 +20,7 @@ class ComponentFieldsetArrayHtml extends GenerateFileEntity {
 
   protected function start() {
     $this->string .= "<fieldset *ngIf=\"fieldsetForm && enable\" [formArray]=\"fieldsetForm\">
-  <div *ngFor=\"let rows of fieldsetForm.controlsM let i=index [formGroupName]=\"i\">
+  <div *ngFor=\"let rows of fieldsetForm.controls\" let i=index [formGroupName]=\"i\">
 ";
   }
 
@@ -54,7 +54,11 @@ class ComponentFieldsetArrayHtml extends GenerateFileEntity {
 
 
   protected function end() {
-    $this->string .= "  </div>
+    $this->string .= "    <button (click)=\"removeRow(i)\" type=\"button\" >Agregar</button>
+
+  </div>
+  <button (click)=\"addRow()\" type=\"button\" >Agregar</button>
+
 </fieldset>
 ";
   }

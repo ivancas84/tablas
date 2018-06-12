@@ -18,13 +18,13 @@ import { FormBuilder } from '@angular/forms';
 
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 
-import { FieldsetComponent } from '../../main/component/fieldset-array/fieldset-array.component';
+import { FieldsetArrayComponent } from '../../main/component/fieldset-array/fieldset-array.component';
 
 @Component({
   selector: 'app-" . $this->entity->getName("xx-yy") . "-fieldset-array',
   templateUrl: './" . $this->entity->getName("xx-yy") . "-fieldset-array.component.html',
 })
-export class " . $this->entity->getName("XxYy") . "FieldsetArrayComponent extends FieldsetComponent {
+export class " . $this->entity->getName("XxYy") . "FieldsetArrayComponent extends FieldsetArrayComponent {
   constructor(protected fb: FormBuilder, protected dd: DataDefinitionService)  {
     super(fb, dd);
     this.entity = '" . $this->entity->getName() . "';
