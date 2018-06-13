@@ -17,14 +17,14 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
   }
 
 
-  protected function start(){
+  protected function start() {
     $this->string .= "  formGroup(sync: { [index: string]: any } = null): FormGroup {
-    return this.dd.fb.group({
+    let fg: FormGroup = this.dd.fb.group({
       id:'',
 ";
   }
 
-  protected function nf(){
+  protected function nf() {
     $fields = $this->getEntity()->getFieldsNf();
 
     foreach($fields as $field){
@@ -33,22 +33,24 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
         default: $this->defecto($field); //name, email
       }
     }
+
+    $this->string .= "    });
+";
   }
 
-  protected function fk(){
+  protected function fk() {
     $fields = $this->getEntity()->getFieldsFk();
 
     foreach($fields as $field){
       switch ( $field->getSubtype() ) {
-
-        default: $this->defecto($field); //name, email
+        default: $this->defectoFk($field); //name, email
       }
     }
   }
 
 
 
-  protected function u_(){
+  protected function u_() {
     $fields = $this->getEntity()->getFieldsU_();
     foreach($fields as $field){
       switch ( $field->getSubtype() ) {
@@ -58,8 +60,8 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
   }
 
 
-  protected function end(){
-    $this->string .= "    });
+  protected function end() {
+    $this->string .= "    return fg;
   }
 
 ";
@@ -81,7 +83,11 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
 
 
 
+  protected function defectoFk(Field $field) {
+      $validator = ($field->isNotNull()) ?  ", Validators.required" : "";
 
-
+      $this->string .= "    if(this.dd.isSync('{$field->getName()}', sync)) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
+";
+  }
 
 }
