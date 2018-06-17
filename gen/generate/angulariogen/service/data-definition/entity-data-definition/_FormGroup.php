@@ -17,14 +17,14 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
   }
 
 
-  protected function start(){
+  protected function start() {
     $this->string .= "  formGroup(sync: { [index: string]: any } = null): FormGroup {
     return this.dd.fb.group({
       id:'',
 ";
   }
 
-  protected function nf(){
+  protected function nf() {
     $fields = $this->getEntity()->getFieldsNf();
 
     foreach($fields as $field){
@@ -35,7 +35,7 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
     }
   }
 
-  protected function fk(){
+  protected function fk() {
     $fields = $this->getEntity()->getFieldsFk();
 
     foreach($fields as $field){
@@ -48,7 +48,7 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
 
 
 
-  protected function u_(){
+  protected function u_() {
     $fields = $this->getEntity()->getFieldsU_();
     foreach($fields as $field){
       switch ( $field->getSubtype() ) {
@@ -58,7 +58,7 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
   }
 
 
-  protected function end(){
+  protected function end() {
     $this->string .= "    });
   }
 
@@ -78,9 +78,6 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
       else $this->string .= "      " . $field->getName() . ": '',
 ";
   }
-
-
-
 
 
 

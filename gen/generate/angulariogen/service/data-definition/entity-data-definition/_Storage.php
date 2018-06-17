@@ -5,7 +5,6 @@ require_once("generate/GenerateEntity.php");
 
 class EntityDataDefinition_Storage extends GenerateEntity {
 
-
   public function generate() {
     $this->start();
     $this->recursive($this->getEntity());
@@ -13,7 +12,6 @@ class EntityDataDefinition_Storage extends GenerateEntity {
 
     return $this->string;
   }
-
 
   protected function start(){
     $this->string .= "  storage(row: { [index: string]: any }){
@@ -56,25 +54,25 @@ class EntityDataDefinition_Storage extends GenerateEntity {
 
   protected function fk(Entity $entity, array $tablesVisited, array $names){
     $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
-    foreach ($fk as $field ) {
-      array_push($tablesVisited, $entity->getName());
-      array_push($names, $field->getName() . "_");
+    array_push($tablesVisited, $entity->getName());
 
-      $this->recursive($field->getEntityRef(), $tablesVisited, $names) ;
+    foreach ($fk as $field ) {
+      $namesAux = $names;
+      array_push($namesAux, $field->getName() . "_");
+
+      $this->recursive($field->getEntityRef(), $tablesVisited, $namesAux) ;
     }
   }
 
   protected function u_(Entity $entity, array $tablesVisited, array $names){
     $u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
+    array_push($tablesVisited, $entity->getName());
 
     foreach ($u_ as $field ) {
-      array_push($tablesVisited, $entity->getName());
-      array_push($names, $field->getAlias("_") . "_");
-      $this->fields($field->getEntity()->getName(), $names);
+      $namesAux = $names;
+      array_push($namesAux, $field->getAlias("_") . "_");
+      $this->fields($field->getEntity()->getName(), $namesAux);
     }
-
   }
-
-
 
 }
