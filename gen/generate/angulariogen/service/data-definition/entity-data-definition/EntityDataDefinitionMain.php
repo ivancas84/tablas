@@ -11,7 +11,7 @@ class EntityDataDefinitionMain extends GenerateFileEntity {
   }
 
   protected function start(){
-    $this->string .= "import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+    $this->string .= "import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';

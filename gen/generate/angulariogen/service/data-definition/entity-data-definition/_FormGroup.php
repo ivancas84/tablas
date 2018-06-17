@@ -19,7 +19,7 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
 
   protected function start() {
     $this->string .= "  formGroup(sync: { [index: string]: any } = null): FormGroup {
-    return this.dd.fb.group({
+    let fg: FormGroup = this.dd.fb.group({
       id:'',
 ";
   }
@@ -33,6 +33,9 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
         default: $this->defecto($field); //name, email
       }
     }
+
+    $this->string .= "    });
+";
   }
 
   protected function fk() {
@@ -40,8 +43,7 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
 
     foreach($fields as $field){
       switch ( $field->getSubtype() ) {
-
-        default: $this->defecto($field); //name, email
+        default: $this->defectoFk($field); //name, email
       }
     }
   }
@@ -59,7 +61,7 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
 
 
   protected function end() {
-    $this->string .= "    });
+    $this->string .= "    return fg;
   }
 
 ";
@@ -80,5 +82,12 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
   }
 
 
+
+  protected function defectoFk(Field $field) {
+      $validator = ($field->isNotNull()) ?  ", Validators.required" : "";
+
+      $this->string .= "    if(this.dd.isSync('{$field->getName()}', sync)) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
+";
+  }
 
 }

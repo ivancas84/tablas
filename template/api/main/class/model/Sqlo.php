@@ -151,32 +151,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     return $this->all($r);
   }
 
-  /* DEPRECATED?
-  //@override
-  public function getAll(array $ids, $render = NULL) {
-    $r = $this->render($render);
-
-    //Para dar soporte a distintos tipos de id, se define la condicion de ids a traves del metodo conditionAdvanced en vez de utilizar IN como se hacia habitualmente
-    $advanced = [];
-    for($i = 0; $i < count($ids); $i++){ array_push($advanced, ["id", "=", $ids[$i], "OR"]); }
-    if(!count($advanced)) return [];
-
-    //definir sql
-    $sql = "SELECT DISTINCT ";
-    $sql .= $this->sql->fieldsFull();
-    $sql .= $this->sql->fieldsAux();
-    $sql{strrpos($sql, ",")} = " "; //eliminar ultima coma de la definicion de fields
-    $sql .= $this->sql->from();
-    $sql .= $this->sql->join();
-    $sql .= $this->sql->joinAux();
-    $sql .= "WHERE " . $this->sql->conditionAdvanced($advanced);
-    $sql .= $this->sql->conditionAll($r, " AND");
-    $sql .= $this->sql->orderBy($r);
-    $sql .= ";
-";
-
-    return $sql;
-  }*/
+  
 
   //Implementacion auxiliar de unique
   //unique puede restringir el acceso a datos dependiendo del rol y la condicion auxiliar
