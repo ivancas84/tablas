@@ -35,9 +35,9 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
       switch ( $field->getSubtype() ) {
         case "checkbox": $this->checkbox($field); break;
         case "date": $this->date($field);  break;
+        case "timestamp": $this->timestamp($field); break;
         case "float": case "integer": case "cuil": case "dni": $this->number($field); break;
         // case "year": $this->date($field); break;
-        // case "timestamp": $this->timestamp($field); break;
         // case "time": $this->time($field); break;
         // case "select_text": $this->defecto($field); break;
         // case "select_int": $this->defecto($field); break;
@@ -89,7 +89,7 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
     $default = (!empty($field->getDefault())) ?  "'" . $field->getDefault() . "'" : "null";
     $this->string .= "    var value = (('" . $field->getName() . "' in row) && row['" . $field->getName() . "']) ? row['" . $field->getName() . "'] : " . $default . ";
     var date = this.dd.parser.date(value);
-    this.dd.parser.dateFormat(date,'object');
+    row_[\"" . $field->getName() . "\"] = this.dd.parser.dateFormat(date,'NgbDateStruct');
 
 ";
   }

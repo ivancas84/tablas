@@ -67,12 +67,19 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
 
   protected function date(Field $field) {
     $this->string .= "  <div class=\"form-group row\">
-    <label class=\"col-2 col-form-label\">" . $field->getName("Xx yy") . "</label>
+    <label class=\"col-2 col-form-label\">{$field->getName('Xx yy')}</label>
     <div class=\"col-10\">
-      <input class=\"form-control\" type=\"text\" formControlName=\"" . $field->getName() . "\"  [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
+      <div class=\"input-group\">
+        <input class=\"form-control\" placeholder=\"yyyy-mm-dd\" ngbDatepicker #d=\"ngbDatepicker\" formControlName=\"{$field->getName()}\"  [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
+        <div class=\"input-group-append\">
+          <button class=\"btn btn-outline-secondary\" (click)=\"d.toggle()\" type=\"button\">
+            <span class=\"oi oi-calendar\"></span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-  ";
+";
   }
 
 
