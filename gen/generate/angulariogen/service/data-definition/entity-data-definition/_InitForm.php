@@ -83,13 +83,20 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
   }
 
 
-
-
   protected function date(Field $field) {
     $default = (!empty($field->getDefault())) ?  "'" . $field->getDefault() . "'" : "null";
     $this->string .= "    var value = (('" . $field->getName() . "' in row) && row['" . $field->getName() . "']) ? row['" . $field->getName() . "'] : " . $default . ";
     var date = this.dd.parser.date(value);
     row_[\"" . $field->getName() . "\"] = this.dd.parser.dateFormat(date,'NgbDateStruct');
+
+";
+  }
+
+  protected function timestamp(Field $field) {
+    $default = (!empty($field->getDefault())) ?  "'" . $field->getDefault() . "'" : "null";
+    $this->string .= "    var value = (('" . $field->getName() . "' in row) && row['" . $field->getName() . "']) ? row['" . $field->getName() . "'] : " . $default . ";
+    var date = this.dd.parser.timestamp(value);
+    row_[\"" . $field->getName() . "\"] = this.dd.parser.timestampFormat(date,'NgbDateTimeStruct');
 
 ";
   }

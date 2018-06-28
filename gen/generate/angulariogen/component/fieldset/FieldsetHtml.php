@@ -33,7 +33,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
         case "date": $this->date($field);  break;
         //case "float": case "integer": case "cuil": case "dni": $this->number($field); break;
         // case "year": $this->date($field); break;
-        // case "timestamp": $this->timestamp($field); break;
+        case "timestamp": $this->timestamp($field); break;
         // case "time": $this->time($field); break;
         case "select_text": $this->selectValues($field); break;
         case "select_int": $this->selectValues($field); break;
@@ -70,9 +70,9 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     <label class=\"col-2 col-form-label\">{$field->getName('Xx yy')}</label>
     <div class=\"col-10\">
       <div class=\"input-group\">
-        <input class=\"form-control\" placeholder=\"yyyy-mm-dd\" ngbDatepicker #d=\"ngbDatepicker\" formControlName=\"{$field->getName()}\"  [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
+        <input class=\"form-control\" placeholder=\"yyyy-mm-dd\" ngbDatepicker #" . $field->getName("xxYy") . "=\"ngbDatepicker\" formControlName=\"{$field->getName()}\"  [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
         <div class=\"input-group-append\">
-          <button class=\"btn btn-outline-secondary\" (click)=\"d.toggle()\" type=\"button\">
+          <button class=\"btn btn-outline-secondary\" (click)=\"" . $field->getName("xxYy") . ".toggle()\" type=\"button\">
             <span class=\"oi oi-calendar\"></span>
           </button>
         </div>
@@ -80,6 +80,24 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     </div>
   </div>
 ";
+  }
+
+  protected function timestamp(Field $field) {
+    $this->string .= "  <div class=\"form-group row\">
+    <label class=\"col-2 col-form-label\">{$field->getName('Xx yy')}</label>
+    <div class=\"col-10\">
+      <div class=\"input-group\" formGroupName=\"{$field->getName()}\">
+        <input class=\"form-control\" placeholder=\"yyyy-mm-dd\" ngbDatepicker #" . $field->getName("xxYy") . "Date=\"ngbDatepicker\" formControlName=\"date\"  [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . ".date').invalid && (fieldsetForm.get('" . $field->getName() . ".date').dirty || fieldsetForm.get('" . $field->getName() . ".date').touched))}\">
+        <div class=\"input-group-append\">
+          <button class=\"btn btn-outline-secondary\" (click)=\"" . $field->getName("xxYy") . "Date.toggle()\" type=\"button\">
+            <span class=\"oi oi-calendar\"></span>
+          </button>
+        </div>
+        <ngb-timepicker formControlName=\"time\"></ngb-timepicker>
+      </div>
+    </div>
+  </div>
+  ";
   }
 
 
@@ -109,7 +127,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
         <label class=\"col-2 col-form-label\">" . $field->getName("Xx Yy") . ":</label>
         <div class=\"col-10\">
           <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
-            <option value=\"null\">--" . $field->getName("Xx Yy") . "--</option>
+            <option [ngValue]=\"null\">--" . $field->getName("Xx Yy") . "--</option>
 " ;
 
     foreach($field->getSelectValues() as $value) $this->string .= "            <option value=\"" . $value . "\">" . $value . "</option>
@@ -129,7 +147,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     <label class=\"col-2 col-form-label\">" . $field->getName("Xx Yy") . "</label>
     <div class=\"col-10\">
       <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
-        <option value=\"null\">--" . $field->getName("Xx Yy") . "--</option>
+        <option [ngValue]=\"null\">--" . $field->getName("Xx Yy") . "--</option>
         <option *ngFor=\"let option of options." . $field->getEntityRef()->getName() . "\" [value]=\"option.id\" >{{option.label}}</option>
       </select>
     </div>
