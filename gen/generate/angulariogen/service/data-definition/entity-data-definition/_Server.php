@@ -41,7 +41,8 @@ class EntityDataDefinition_Server extends GenerateEntity {
     foreach($fields as $field){
       switch ( $field->getSubtype() ) {
         // case "checkbox": $this->checkbox($field); break;
-        // case "date": $this->date($field);  break;
+        case "date": $this->date($field); break;
+        case "timestamp": $this->timestamp($field); break;
         // case "float": case "integer": case "cuil": case "dni": $this->number($field); break;
         // case "year": $this->date($field); break;
         // case "timestamp": $this->timestamp($field); break;
@@ -87,15 +88,22 @@ class EntityDataDefinition_Server extends GenerateEntity {
   }
 
 
-
-
   protected function date(Field $field) {
-    $default = (!empty($field->getDefault())) ?  "'" . $field->getDefault() . "'" : "null";
-    $this->string .= "    var value = (('" . $field->getName() . "' in row) && row['" . $field->getName() . "']) ? row['" . $field->getName() . "'] : " . $default . ";
-    row_[\"" . $field->getName() . "\"] = this.dd.parser.date(value);
+    $this->string .= "    if('" . $field->getName() . "' in row){
+      row_[\"" . $field->getName() . "\"] = this.dd.parser.ngbDateStructFormat(row['" . $field->getName() . "']);
+    }
 
 ";
   }
+
+  protected function timestamp(Field $field) {
+    $this->string .= "    if('" . $field->getName() . "' in row){
+      row_[\"" . $field->getName() . "\"] = this.dd.parser.ngbDateTimeStructFormat(row['" . $field->getName() . "']);
+    }
+
+";
+  }
+
 
   protected function checkbox(Field $field) {
     $default = settypebool($field->getDefault()) ? "true":"false";
