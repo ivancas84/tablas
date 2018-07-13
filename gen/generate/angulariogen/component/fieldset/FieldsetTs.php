@@ -12,7 +12,7 @@ class ComponentFieldsetTs extends GenerateFileEntity {
     parent::__construct($dir, $file, $entity);
   }
 
-  protected function generateCode(){
+  protected function start(){
     $this->string .= "import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
@@ -30,8 +30,44 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
     this.entity = '" . $this->entity->getName() . "';
     this.fieldset = '" . $this->entity->getName() . "';
   }
-}
+
 ";
+  }
+
+  protected function getters(){
+    foreach($this->entity->getFieldsNf() as $field){
+      $this->string .= "  get {$field->getName('xxYy')}() { return this.fieldsetForm.get('{$field->getName()}')}
+";
+    }
+    $this->string .= "
+";
+  }
+
+  protected function setChange(){
+    $this->string .= "  setChange(){
+";
+    foreach($this->entity->getFieldsNf() as $field){
+      if($field->isUnique()) $this->string .= "    this.changeUpdate('{$field->getName()}');
+";
+
+    }
+
+    $this->string .= "  }
+";
+  }
+
+
+  protected function end(){
+    $this->string .= "}
+";
+  }
+
+
+  protected function generateCode(){
+    $this->start();
+    $this->getters();
+    $this->setChange();
+    $this->end();
   }
 
 
