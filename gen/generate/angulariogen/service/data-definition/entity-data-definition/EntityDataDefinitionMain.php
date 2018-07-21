@@ -10,6 +10,25 @@ class EntityDataDefinitionMain extends GenerateFileEntity {
     parent::__construct($dir, $file, $entity);
   }
 
+  protected function generateCode(){
+    $this->start();
+    $this->storage();
+    $this->options();
+    $this->init();
+    $this->initForm();
+
+    $this->formGroup();
+    //$this->initMain();
+    $this->initFilters();
+
+    $this->serverFilters();
+    $this->server();
+
+    $this->label();
+    $this->end();
+
+  }
+
   protected function start(){
     $this->string .= "import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -21,12 +40,8 @@ import { DataDefinition } from '../../../main/service/data-definition/data-defin
 
 
 export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends DataDefinition {
+  entity: string = '{$this->entity->getName()}';
 
-";
-  }
-
-  protected function end(){
-    $this->string .= "}
 ";
   }
 
@@ -78,8 +93,6 @@ export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends Da
     $this->string .= $gen->generate();
   }
 
-
-
   protected function label(){
     require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Label.php");
     $gen = new EntityDataDefinition_Label($this->entity);
@@ -93,25 +106,11 @@ export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends Da
     $this->string .= $gen->generate();
   }
 
-
-  protected function generateCode(){
-    $this->start();
-    $this->storage();
-    $this->options();
-    $this->init();
-    $this->initForm();
-
-    $this->formGroup();
-    //$this->initMain();
-    $this->initFilters();
-
-    $this->serverFilters();
-    $this->server();
-
-    $this->label();
-    $this->end();
-
+  protected function end(){
+    $this->string .= "}
+";
   }
+
 
 
 }

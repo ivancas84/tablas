@@ -7,7 +7,6 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
 
 
   public function generate() {
-
     $this->start();
     $this->nf();
     $this->fk();
@@ -77,9 +76,13 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
   }
 
   protected function defecto(Field $field) {
-      if($field->isNotNull()) $this->string .= "      " . $field->getName() . ": ['', Validators.required ],
+    $this->string .= "      {$field->getName()}: ['', {
 ";
-      else $this->string .= "      " . $field->getName() . ": '',
+    if($field->isNotNull()) $this->string .= "        validators: Validators.required,
+";
+    if($field->isUnique()) $this->string .= "        asyncValidators: this.checkUniqueField('{$field->getName()}'),
+";
+    $this->string .= "      }],
 ";
   }
 
