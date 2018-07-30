@@ -19,6 +19,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { AdminComponent } from '../../main/component/admin/admin.component';
 
+import { MessageService } from '../../main/service/message/message.service';
 
 @Component({
   selector: 'app-" . $this->entity->getName("xx-yy") . "-admin',
@@ -26,7 +27,7 @@ import { AdminComponent } from '../../main/component/admin/admin.component';
 })
 export class " . $this->entity->getName("XxYy") . "AdminComponent extends AdminComponent {
 
-  constructor(protected fb: FormBuilder, protected route: ActivatedRoute, protected dd: DataDefinitionService)  {
+  constructor(protected fb: FormBuilder, protected route: ActivatedRoute, protected dd: DataDefinitionService, protected message: MessageService)  {
     super(fb, route, dd);
     this.entity = \"" . $this->entity->getName() . "\";
   }

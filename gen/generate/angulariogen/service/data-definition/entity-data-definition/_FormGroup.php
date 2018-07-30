@@ -30,6 +30,7 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
       switch ( $field->getSubtype() ) {
         case "checkbox": $this->checkbox($field); break;
         case "timestamp": $this->timestamp($field); break;
+        case "email": $this->email($field); break;
 
         default: $this->defecto($field); //name, email
       }
@@ -79,6 +80,19 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
     $this->string .= "      {$field->getName()}: ['', {
 ";
     if($field->isNotNull()) $this->string .= "        validators: Validators.required,
+";
+    if($field->isUnique()) $this->string .= "        asyncValidators: this.checkUniqueField('{$field->getName()}'),
+";
+    $this->string .= "      }],
+";
+  }
+
+  protected function email(Field $field) {
+    $validators = ($field->isNotNull()) ? "[Validators.required, Validators.email]" : "Validators.email";
+
+    $this->string .= "      {$field->getName()}: ['', {
+";
+    $this->string .= "        validators: {$validators},
 ";
     if($field->isUnique()) $this->string .= "        asyncValidators: this.checkUniqueField('{$field->getName()}'),
 ";

@@ -52,17 +52,6 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
   }
 
 
-  protected function end() {
-    $this->string .= "</fieldset>
-";
-  }
-
-
-
-
-
-
-
 
 
   protected function date(Field $field) {
@@ -77,7 +66,9 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
           </button>
         </div>
       </div>
-    </div>
+";
+      $this->templateError($field);
+      $this->string .= "    </div>
   </div>
 ";
   }
@@ -95,19 +86,25 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
         </div>
         <ngb-timepicker formControlName=\"time\"></ngb-timepicker>
       </div>
-    </div>
+";
+      //$this->templateError($field);
+      $this->string .= "    </div>
   </div>
-  ";
+";
   }
 
 
 
+
   protected function defecto(Field $field) {
+
     $this->string .= "  <div class=\"form-group row\">
     <label class=\"col-2 col-form-label\">" . $field->getName("Xx yy") . "</label>
     <div class=\"col-10\">
       <input class=\"form-control\" type=\"text\" formControlName=\"" . $field->getName() . "\"  [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
-    </div>
+";
+    $this->templateError($field);
+    $this->string .= "    </div>
   </div>
 ";
   }
@@ -118,25 +115,29 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     <label class=\"form-check-label\">
       <input class=\"form-check-input\" type=\"{$field->getName()}\" formControlName=\"addDomicilio\"> {$field->getName()}
     </label>
+    ";
+    $this->templateError($field);
+    $this->string .= "    </div>
   </div>
 ";
   }
 
   protected function selectValues(Field $field){
-    $this->string .= "      <div class=\"form-group row\">
-        <label class=\"col-2 col-form-label\">" . $field->getName("Xx Yy") . ":</label>
-        <div class=\"col-10\">
-          <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
-            <option [ngValue]=\"null\">--" . $field->getName("Xx Yy") . "--</option>
+    $this->string .= "  <div class=\"form-group row\">
+    <label class=\"col-2 col-form-label\">" . $field->getName("Xx Yy") . ":</label>
+    <div class=\"col-10\">
+      <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
+        <option [ngValue]=\"null\">--" . $field->getName("Xx Yy") . "--</option>
 " ;
 
     foreach($field->getSelectValues() as $value) $this->string .= "            <option value=\"" . $value . "\">" . $value . "</option>
 ";
 
-    $this->string .= "          </select>
-        </div>
-      </div>
-
+    $this->string .= "      </select>
+";
+    $this->templateError($field);
+    $this->string .= "    </div>
+  </div>
 ";
 
   }
@@ -150,19 +151,47 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
         <option [ngValue]=\"null\">--" . $field->getName("Xx Yy") . "--</option>
         <option *ngFor=\"let option of options." . $field->getEntityRef()->getName() . "\" [value]=\"option.id\" >{{option.label}}</option>
       </select>
-    </div>
+";
+    $this->templateError($field);
+    $this->string .= "    </div>
   </div>
 ";
   }
 
   protected function typeahead(Field $field) {
-
     $this->string .= "  <div *ngIf=\"isSync('" . $field->getName() . "')\" class=\"form-group row\">
     <label class=\"col-2 col-form-label\">" . $field->getName("Xx Yy") . "</label>
     <div class=\"col-10\">
       <app-fieldset-typeahead [entity]=\"'" . $field->getEntityRef()->getName() . "'\" [fieldsetForm]=\"fieldsetForm\" [field]=\"'" . $field->getName() . "'\"></app-fieldset-typeahead>
-    </div>
+";
+      $this->templateError($field);
+      $this->string .= "    </div>
   </div>
+";
+  }
+
+
+
+  protected function end() {
+    $this->string .= "</fieldset>
+";
+  }
+
+
+
+
+  protected function templateError(Field $field){
+    $this->string .= "      <div class=\"text-danger\" *ngIf=\"({$field->getName("xxYy")}.touched || {$field->getName("xxYy")}.dirty) && {$field->getName("xxYy")}.invalid\">
+";
+    if($field->isNotNull()) $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.required\">Debe completar valor</div>
+";
+    if($field->isUnique()) $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.notUnique\">El valor ya se encuentra utilizado</div>
+";
+    switch($field->getSubtype()) {
+      case "email": $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.email\">Debe ser un email válido</div>
+";
+    }
+    $this->string .= "      </div>
 ";
   }
 
