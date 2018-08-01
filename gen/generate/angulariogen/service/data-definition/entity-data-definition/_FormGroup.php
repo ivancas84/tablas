@@ -31,6 +31,8 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
         case "checkbox": $this->checkbox($field); break;
         case "timestamp": $this->timestamp($field); break;
         case "email": $this->email($field); break;
+        case "dni": $this->dni($field); break;
+
 
         default: $this->defecto($field); //name, email
       }
@@ -88,15 +90,30 @@ class EntityDataDefinition_FormGroup extends GenerateEntity {
   }
 
   protected function email(Field $field) {
-    $validators = ($field->isNotNull()) ? "[Validators.required, Validators.email]" : "Validators.email";
+    $validators = array("Validators.email");
+    if($field->isNotNull()) array_push($validators, "Validators.required");
+
+    $asyncValidators = array();
+    if($field->isUnique()) array_push($asyncValidators, "this.checkUniqueField('{$field->getName()}')");
 
     $this->string .= "      {$field->getName()}: ['', {
+        validators: [" . implode(',', $validators) . "],
+        asyncValidators: [" . implode(',', $asyncValidators) . "],
+      }],
 ";
-    $this->string .= "        validators: {$validators},
-";
-    if($field->isUnique()) $this->string .= "        asyncValidators: this.checkUniqueField('{$field->getName()}'),
-";
-    $this->string .= "      }],
+  }
+
+  protected function dni(Field $field) {
+    $validators = array("Validators.minLength(7)", "Validators.maxLength(9)", "Validators.pattern('^[0-9]*$')");
+    if($field->isNotNull()) array_push($validators, "Validators.required");
+
+    $asyncValidators = array();
+    if($field->isUnique()) array_push($asyncValidators, "this.checkUniqueField('{$field->getName()}')");
+
+    $this->string .= "      {$field->getName()}: ['', {
+        validators: [" . implode(',', $validators) . "],
+        asyncValidators: [" . implode(',', $asyncValidators) . "],
+      }],
 ";
   }
 

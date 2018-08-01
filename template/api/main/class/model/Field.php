@@ -23,12 +23,12 @@ abstract class Field {
     //text texto simple
     //textarea texto grande
     //checkbox Booleanos
-    //cuil Texto para cuil
-    //dni Texto para dni
     //date
     //timestamp
     //select_int Conjunto de enteros definido, los valores se definen en el atributo "selectValues"
     //select_text Conjunto de strings definido, los valores se definen en el atributo "selectValues"
+    //cuil Texto para cuil
+    //dni Texto para dni
 
   protected $typescriptType = null; //tipo de datos typescript
 

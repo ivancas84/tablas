@@ -188,12 +188,23 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     if($field->isUnique()) $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.notUnique\">El valor ya se encuentra utilizado</div>
 ";
     switch($field->getSubtype()) {
-      case "email": $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.email\">Debe ser un email válido</div>
-";
+      case "email": $this->templateErrorEmail($field); break;
+      case "dni": $this->templateErrorDni($field); break;
     }
     $this->string .= "      </div>
 ";
   }
 
+  protected function templateErrorEmail(Field $field) {
+    $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.email\">Debe ser un email válido</div>
+";
+  }
+
+  protected function templateErrorDni(Field $field) {
+    $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.pattern\">Ingrese solo números</div>
+        <div *ngIf=\"{$field->getName("xxYy")}.errors.minlength\">Longitud incorrecta</div>
+        <div *ngIf=\"{$field->getName("xxYy")}.errors.maxlength\">Longitud incorrecta</div>
+";
+  }
 
 }
