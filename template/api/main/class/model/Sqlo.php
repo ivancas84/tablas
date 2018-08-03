@@ -106,7 +106,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $sql .= $this->sql->from();
     $sql .= $this->sql->join();
     $sql .= $this->sql->joinAux();
-    $sql .= $this->sql->conditionAll($r);
+    $sql .= $this->sql->conditionAll($r->setAdvanced(), $r->setSearch());
     $sql .= ";
 ";
     return $sql;
@@ -116,7 +116,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
   public function all($render = NULL) {
     $r = $this->render($render);
 
-    if(!($fields = $this->sql->filterFields($r))) {
+    if(!($fields = $this->sql->filterFields($r->getFields()))) {
       $fields = $this->sql->fieldsFull();
       $fields .= $this->sql->fieldsAux();
       $fields{strrpos($fields, ",")} = " "; //eliminar ultima coma de la definicion de fields
@@ -127,18 +127,17 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $sql .= $this->sql->from();
     $sql .= $this->sql->join();
     $sql .= $this->sql->joinAux();
-    $sql .= $this->sql->conditionAll($r);
-    $sql .= $this->sql->orderBy($r);
-    $sql .= $this->sql->limit($r);
+    $sql .= $this->sql->conditionAll($r->getAdvanced(), $r->getSearch());
+    $sql .= $this->sql->orderBy($r->getOrder());
+    $sql .= $this->sql->limit($r->getPage(), $r->getSize());
     $sql .= ";
-  ";
+";
 
     return $sql;
   }
 
   //@override
   public function getAll(array $ids, $render = NULL) {
-
     $r = $this->render($render);
 
     //Para dar soporte a distintos tipos de id, se define la condicion de ids a traves del metodo conditionAdvanced en vez de utilizar IN como se hacia habitualmente
@@ -151,7 +150,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     return $this->all($r);
   }
 
-  
+
 
   //Implementacion auxiliar de unique
   //unique puede restringir el acceso a datos dependiendo del rol y la condicion auxiliar
@@ -200,7 +199,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $sql .= $this->sql->joinAux();
     $sql .= "WHERE ";
     $sql .= $conditionUniqueFields;
-    $sql .=  $this->sql->conditionAll($r, "AND");
+    $sql .=  $this->sql->conditionAll($r->setAdvanced(), $r->setSearch(), "AND");
 
     $sql .= ";
 ";
@@ -241,8 +240,6 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     //persistir datos
     $this->db->multiQueryTransaction($sql);
   }*/
-
-
 
 
 }

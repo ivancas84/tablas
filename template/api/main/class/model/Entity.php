@@ -22,10 +22,10 @@ abstract class Entity {
   public static function sna_(){ return static::s_() . static::n_() . " AS " . static::alias(); } //schema.nombre AS alias
   public static function a_(){ return static::alias() . "."; }
 
-  public function getS_() { return static::s_(); }
-  public function getSn_() { return static::sn_(); }
-  public function getSna_() { return static::sna_(); }
-  public function getN_() { return static::n_(); }
+  public function getS_() { return static::s_(); } //schema
+  public function getSn_() { return static::sn_(); } //schema name
+  public function getSna_() { return static::sna_(); } //schema name alias
+  public function getN_() { return static::n_(); } //name
 
 
 

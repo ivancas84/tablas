@@ -25,16 +25,16 @@ abstract class EntitySql {
     return $field_;
   }
 
-  public function filterFields(Render $render){
-    if(empty($render->getFields())) return false;
+  public function filterFields(array $fields = null){
+    if(empty($fields)) return false;
 
-    $fields = [];
-    foreach ($render->getFields() as $field){
+    $fields_ = [];
+    foreach ($fields as $field){
       $field_ = $this->mappingField($field);
-      array_push($fields, $field_ . " AS " . $field);
+      array_push($fields_, $field_ . " AS " . $field);
     }
 
-    return implode(", ", $fields);
+    return implode(", ", $fields_);
   }
 
 
@@ -114,10 +114,9 @@ abstract class EntitySql {
 ";
   }
 
-  public function limit(Render $render){
-    $page = (empty($render->getPage())) ? 1 : $render->getPage();
-    if ($render->getSize()) {
-        return " LIMIT " . $render->getSize() . " OFFSET " . ( ($page - 1) * $render->getSize()) . "
+  public function limit($page = 1, $size = false){
+    if ($size) {
+      return " LIMIT {$size} OFFSET " . ( ($page - 1) * $size ) . "
 ";
     }
     return "";
@@ -192,19 +191,14 @@ abstract class EntitySql {
   }
 
 
-
-  //***** Definir todas las condiciones *****
-  public function conditionAll(Render $render, $connect="WHERE"){
-    $condS = $this->conditionSearch($render->getSearch());
-    $sqlCond = concat($condS, $connect);
-    $condA = $this->conditionAdvanced($render->getAdvanced());
-    $sqlCond .= concat($condA, " AND", $connect, $sqlCond);
-    $condO = $this->conditionAux();
-    $sqlCond .= concat($condO, " AND", $connect, $sqlCond);
-    $condP = $render->getCondition();
-    $sqlCond .= concat($condP, " AND", $connect, $sqlCond);
+  //Definir todas las condiciones
+  public function conditionAll(array $advanced = null, $search = null, $connect="WHERE") {
+    $sqlCond = concat($this->conditionSearch($search), $connect);
+    $sqlCond .= concat($this->conditionAdvanced($advanced), " AND", $connect, $sqlCond);
+    $sqlCond .= concat($this->conditionAux(), " AND", $connect, $sqlCond);
     return $sqlCond;
   }
+
 
   //Filtrar campos unicos y definir condicion
   public function conditionUniqueFields(array $fields){
@@ -251,13 +245,12 @@ abstract class EntitySql {
   public function joinAux(){ return ""; } //Sobrescribir si existe relacion auxiliar
 
   //Ordenamiento de cadena de relaciones
-  public function orderBy(Render $render){
-    $orderByFields = $render->getOrder();
-    if(empty($orderByFields)) return "";
+  public function orderBy(array $order = null){
+    if(empty($order)) return "";
 
     $sql = '';
 
-    foreach($orderByFields as $key => $value){
+    foreach($order as $key => $value){
       $value = ((strtolower($value) == "asc") || ($value === true)) ? "asc" : "desc";
       $sql_ = $this->mappingField($key) . " IS NULL, ";
       $sql_ .= $this->mappingField($key) . " " . $value;
@@ -265,6 +258,23 @@ abstract class EntitySql {
     }
     return $sql;
   }
+
+
+  //Ordenamiento de cadena de relaciones (metodo nuevo no independiente que reemplazara al orderBy, el orderBy sera redefinido en las subclases para facilitar el soporte a pg
+  public function _order(array $order = null, $prefix = ""){
+    if(empty($order)) return "";
+
+    $sql = '';
+
+    foreach($order as $key => $value){
+      $value = ((strtolower($value) == "asc") || ($value === true)) ? "asc" : "desc";
+      $sql_ = $prefix . $key . " IS NULL, ";
+      $sql_ .= $prefix . $key . " " . $value;
+      $sql .= concat($sql_, ', ', ' ORDER BY', $sql);
+    }
+    return $sql;
+  }
+
 
 
   public function isUpdatable(array $row){
@@ -295,7 +305,7 @@ abstract class EntitySql {
   //Definir valor numerico para la base de datos
   //@param mixed $value Valor a definir.
   //  'null': Valor especial que indica que el campo debe definirse en null
-  //@throws Exception si value no se encuentra correctamente definido   
+  //@throws Exception si value no se encuentra correctamente definido
   public function numeric($value){
     if(is_null($value) || ($value === 'null')) return 'null';
 

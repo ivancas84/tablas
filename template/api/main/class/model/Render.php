@@ -23,7 +23,7 @@ class Render {
   }
 
   public function setFields(array $fields) { $this->fields = $fields; } //campos a devolver
-   
+
   public function setAdvanced (array $advanced) {$this->advanced = $advanced; }
 
   public function addAdvanced ($advanced) { $this->advanced = array_merge ( $this->advanced, $advanced ); }
@@ -65,7 +65,7 @@ class Render {
   public function setCondition($condition) { $this->condition = $condition; }
 
   public function getFields(){ return $this->fields; }
-  
+
   public function getSize(){ return $this->size; }
 
   public function getPage(){ return $this->page; }
@@ -78,5 +78,4 @@ class Render {
 
   public function getOrder(){ return $this->order; }
 
-  public function getCondition(){ return $this->condition; }
 }

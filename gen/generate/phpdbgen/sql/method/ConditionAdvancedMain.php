@@ -22,12 +22,13 @@ class ClassSql_conditionAdvancedMain extends GenerateEntityRecursive{
 
 
   protected function body(Entity $entity, $prefix){
-    $this->string .= "     \$sql = new {$entity->getName("XxYy")}Sql; if(\$c = \$sql->_conditionAdvanced(\$field, \$option, \$value, '{$prefix}')) return \$c;
+    $this->string .= "    \$sql = new {$entity->getName("XxYy")}Sql; if(\$c = \$sql->_conditionAdvanced(\$field, \$option, \$value, '{$prefix}')) return \$c;
 ";
   }
 
   protected function end(){
-    $this->string .= "  }
+    $this->string .= "    throw new Exception(\"No pudo definirse la condicion avanzada {\$field} {\$option} {\$value}\");
+  }
 
 ";
   }
