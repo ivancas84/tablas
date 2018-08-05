@@ -7,7 +7,7 @@
  * @param string &$string Codigo generado
  */
 class ClassSql_fieldsLabel extends GenerateEntity{
-	
+
 
   protected function isFeasibleNf(Entity $entity){
     $mf = $entity->getFieldsNf();
@@ -93,24 +93,23 @@ class ClassSql_fieldsLabel extends GenerateEntity{
 
     return $this->string;
   }
-  
+
   protected function start(){
     $this->string .= "
   //***** @override *****
   public function fieldsLabel(){
       return \"CONCAT_WS(', ', ";
   }
-	
+
   protected function end(){
     $this->string = rtrim($this->string);
     $this->string = rtrim($this->string, ", ");
-    $this->string .= ") AS label, 
-    \";
+    $this->string .= ") AS label\";
   }
 
 ";
   }
-  
+
 }
 
 ?>

@@ -27,8 +27,8 @@ class DbaMain {
   }
 
   public static function dbClose() {
-    //if (self::$dbInstance != null) self::$dbInstance->close();
-    //return self::$dbInstance;
+    if (self::$dbInstance != null) self::$dbInstance->close();
+    return self::$dbInstance;
   }
 
   //siguiente id

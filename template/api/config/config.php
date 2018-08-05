@@ -15,6 +15,7 @@ define("DATA_USER", "dbuser");
 define("DATA_PASS", "dbpass");
 define("DATA_HOST", "localhost");
 define("DATA_SCHEMA", "");
+define("DATA_DBMS", "mysql");
 define("DISABLE_ENTITIES", "");
 
 //raiz del modulo de administración

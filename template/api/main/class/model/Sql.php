@@ -25,6 +25,18 @@ abstract class EntitySql {
     return $field_;
   }
 
+  //Todos los metodos para obtener los fields de uso habitual se encuentran reunidos en uno solo
+  //@param $filter Solo se devolveran los campos definidos en el filtro
+  //@param $fieldsAdd Se adicionan los fields al conjunto devuelto
+  public function fieldsAll($filter = null, $fieldsAdd = null) {
+    if(!empty($filter)) $fields = $this->sql->filterFields($filter);
+    $fields = $this->sql->fieldsFull();
+    if(!empty($this->sql->fieldsAux())) $fields .= ",
+" . $this->sql->fieldsAux();
+    return $fields;
+  }
+
+
   public function filterFields(array $fields = null){
     if(empty($fields)) return false;
 
@@ -220,14 +232,24 @@ abstract class EntitySql {
 
 
   //Definir sql de campos
-  public function fieldsFull(){ return $this->_fields(); } //sobrescribir si existen relaciones
+  public function fieldsFull(){ return $this->fields(); } //sobrescribir si existen relaciones
 
 
 
   //Definir etiqueta (concatenar campos principales)
   //Puede requerir relaciones completas!!!
   public function fieldsLabel(){
-    return $this->entity->getAlias() . "." . $this->entity->getPk()->getName() . " AS label,
+    return $this->entity->getAlias() . "." . $this->entity->getPk()->getName() . " AS label
+";
+  }
+
+  //Definir etiqueta (concatenar campos principales)
+  //Sin relaciones
+  public function _fieldsLabel($prefix){
+    $t = (empty($prefix)) ?  'asig'  : $prefix;
+    $p = (empty($prefix)) ?  ''  : $prefix . '_';
+
+    return "{$t}." . $this->entity->getPk()->getName() . " AS {$p}label
 ";
   }
 
@@ -252,8 +274,8 @@ abstract class EntitySql {
 
     foreach($order as $key => $value){
       $value = ((strtolower($value) == "asc") || ($value === true)) ? "asc" : "desc";
-      $sql_ = $this->mappingField($key) . " IS NULL, ";
-      $sql_ .= $this->mappingField($key) . " " . $value;
+      $sql_ = $key . " IS NULL, ";
+      $sql_ .= $key . " " . $value;
       $sql .= concat($sql_, ', ', ' ORDER BY', $sql);
     }
     return $sql;
@@ -261,18 +283,9 @@ abstract class EntitySql {
 
 
   //Ordenamiento de cadena de relaciones (metodo nuevo no independiente que reemplazara al orderBy, el orderBy sera redefinido en las subclases para facilitar el soporte a pg
-  public function _order(array $order = null, $prefix = ""){
-    if(empty($order)) return "";
-
-    $sql = '';
-
-    foreach($order as $key => $value){
-      $value = ((strtolower($value) == "asc") || ($value === true)) ? "asc" : "desc";
-      $sql_ = $prefix . $key . " IS NULL, ";
-      $sql_ .= $prefix . $key . " " . $value;
-      $sql .= concat($sql_, ', ', ' ORDER BY', $sql);
-    }
-    return $sql;
+  protected function _order($field, $value){
+    $value = ((strtolower($value) == "asc") || ($value === true)) ? "asc" : "desc";
+    return "{$field} IS NULL, {$field} {$value}";
   }
 
 

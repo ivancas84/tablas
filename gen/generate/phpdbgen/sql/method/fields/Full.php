@@ -17,7 +17,7 @@ class ClassSql_fieldsFull extends GenerateEntityRecursive {
 
   protected function start(){
     $this->string .= "  public function fieldsFull(){
-    \$fields = \$this->_fields();
+    \$fields = \$this->fields() . ', ';
 ";
   }
 
@@ -28,13 +28,15 @@ class ClassSql_fieldsFull extends GenerateEntityRecursive {
   * @return string Codigo generado
   */
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    \$sql = new {$entity->getName("XxYy")}Sql; \$fields .= \$sql->_fields('{$prefix}');
+    $this->string .= "    \$sql = new {$entity->getName("XxYy")}Sql; \$fields .= \$sql->fields('{$prefix}') . ',
+';
 ";
-    //$field = "{$entity->getName("XxYy")}Sql::_fields('{$prefix}')";
-    //array_push($this->fields, $field);
+
   }
 
   protected function end(){
+    $pos = strrpos($this->string, ",");
+    $this->string = substr_replace($this->string , "" , $pos, 2);
     $this->string .= "    return \$fields;
   }
 

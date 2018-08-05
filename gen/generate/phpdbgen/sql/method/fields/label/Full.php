@@ -1,80 +1,53 @@
 <?php
 
-require_once("generate/phpdbgen/sql/method/fields/Fields.php");
+require_once("generate/GenerateEntityRecursive.php");
 
-class ClassSql_fieldsLabelFull extends GenerateEntity{
-
-  protected function end(){
-    $this->string .= "    \";
-  }
-";
-  }
-
-  public function fieldsConcat(Entity $entity, $prefixTable = "", $prefixField = ""){
-    $tableIdentification = (!empty($prefixTable)) ? $prefixTable : $entity->getAlias();
-
-    $mf = $entity->getFieldsByType(array("pk","nf"));
-
-    $this->string .= "CONCAT_WS(', ', ";
-
-    $existMain = false;
-    foreach ( $mf as $field ) {
-      if($field->isMain()) {
-        $existMain = true;
-        $this->string .= $tableIdentification . "." . $field->getName() . ", ";
-      }
-    }
-
-    if(!$existMain) $this->string .= $tableIdentification . ".id, ";
-
-
-    $this->string = rtrim($this->string);
-    $this->string = rtrim($this->string, ", ");
-    $this->string .= ") AS " . $prefixField . "label,
-";
-  }
-
-  protected function start(){
-    $this->string .= "
-  //***** @override *****
-  public function fieldsLabelFull(){
-    return \"";
-  }
-
-  protected function fk(Entity $entity, array $tablesVisited, $prefixTable, $prefixField){
-    $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
-    foreach ($fk as $field ) {
-      array_push($tablesVisited, $entity->getName());
-      $this->fieldsConcat($field->getEntityRef(), $prefixTable . $field->getAlias(), $prefixField . $field->getAlias() . "_") ;
-      $this->recursive($field->getEntityRef(), $tablesVisited, $prefixTable . $field->getAlias() . "_", $prefixField . $field->getAlias() . "_");
-    }
-  }
-
-  protected function u_(Entity $entity, array $tablesVisited, $prefixTable, $prefixField){
-    $u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
-
-    foreach ($u_ as $field ) {
-      array_push($tablesVisited, $entity->getName());
-      $this->string .= $this->fieldsConcat($field->getEntity(), $prefixTable . $field->getAlias("_"), $prefixField . $field->getAlias("_") . "_");
-    }
-
-  }
-
-
-  protected function recursive(Entity $entity, array $tablesVisited = NULL, $prefixTable = "", $prefixField = "") {
-    if(is_null($tablesVisited)) $tablesVisited = array();
-    $this->fk($entity, $tablesVisited, $prefixTable, $prefixField);
-    $this->u_($entity, $tablesVisited, $prefixTable, $prefixField);
-  }
-
+class ClassSql_fieldsLabelFull extends GenerateEntityRecursive {
+  public $fields = [];
 
   public function generate(){
     if(!$this->getEntity()->hasRelations()) return "";
+
     $this->start();
     $this->recursive($this->getEntity());
     $this->end();
     return $this->string;
   }
+
+
+  protected function start(){
+    $this->string .= "  public function fieldsLabelFull(){
+    \$fields = '';
+";
+  }
+
+  /**
+  * Generar sql distinct fields
+  * @param array $table Tabla de la estructura
+  * @param string $string Codigo generado hasta el momento
+  * @return string Codigo generado
+  */
+  protected function body(Entity $entity, $prefix){
+    $this->string .= "    \$sql = new {$entity->getName("XxYy")}Sql; \$fields .= \$sql->_fieldsLabel('{$prefix}') . ',
+';
+";
+    //$field = "{$entity->getName("XxYy")}Sql::_fields('{$prefix}')";
+    //array_push($this->fields, $field);
+  }
+
+  protected function end(){
+    $pos = strrpos($this->string, ",");
+    $this->string = substr_replace($this->string , "" , $pos, 2);
+    $this->string .= "    return \$fields;
+  }
+
+";
+  }
+
+
+
+
+
 
 
 }
