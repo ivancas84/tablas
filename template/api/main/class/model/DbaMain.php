@@ -67,6 +67,8 @@ class DbaMain {
   //retornar instancia de clase render en base a un conjunto de filtros de busqueda habituales
   public function render($entity, array $params = null) {
     $data = null;
+
+    //data es utilizado debido a la facilidad de comunicacion entre el cliente y el servidor. Se coloca todo el json directamente en una variable data que es convertida en el servidor.
     if(isset($params["data"])) {
       $data = $params["data"];
       unset($params["data"]);
@@ -79,7 +81,21 @@ class DbaMain {
     if(!isset($display["order"])) $display["order"] = [];
     if(!isset($display["filters"])) $display["filters"] = [];
 
-    foreach($params as $key => $value) array_push($display["filters"], [$key,"=",$params[$key]]);
+    foreach($params as $key => $value) {
+      switch($key){
+        case "size": case "page": case "search": //pueden redefinirse ciertos parametros la prioridad la tiene los que estan fuera del elemento data (parametros definidos directamente)
+          $display[$key] = $value;
+        break;
+        case "order":
+          $display["order"] = [$value=>"asc"]; //ordenamiento ascendente (se puede definir ordenamiento ascendente de un solo campo indicandolo en el parametro order, ejemplo order=campo)
+        break;
+        case "_order":
+          $display["order"] = [$value=>"desc"]; //ordenamiento descendente (se puede definir ordenamiento descendente de un solo campo indicandolo en el parametro _order, ejemplo _order=campo)
+        break;
+
+        default: array_push($display["filters"], [$key,"=",$params[$key]]);
+      }
+    }
 
     $entityObj = $this->entity($entity);
 

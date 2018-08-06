@@ -15,15 +15,16 @@ class ClassSql_order extends GenerateEntityRecursive{
 
   protected function start(){
     $this->string .= "  //@override
+  //Existe un método genérico pero solo funciona para MySql, este metodo permite dar soporte a los dos motores MySql y Postgres
   //Define ordenamiento, si el field ingresado no es mapeado, entonces no se define ordenamiento pero no genera error
-  public function order(array \$order) {
+  public function orderBy(array \$order = null) {
     if(empty(\$order)) return '';
 
     \$sql = '';
 
     foreach(\$order as \$key => \$value){
       if(\$field = \$this->_mappingField(\$key)){
-        \$sql_ = \$this->_order(\$key, \$value);
+        \$sql_ = \$this->_order('{$this->entity->getAlias()}.'.\$key, \$value); //el unico caso para el que debe definirse alias!
         \$sql .= concat(\$sql_, ', ', ' ORDER BY', \$sql);
         continue;
       }

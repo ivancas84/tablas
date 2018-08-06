@@ -28,25 +28,32 @@ abstract class EntitySql {
   //Todos los metodos para obtener los fields de uso habitual se encuentran reunidos en uno solo
   //@param $filter Solo se devolveran los campos definidos en el filtro
   //@param $fieldsAdd Se adicionan los fields al conjunto devuelto
-  public function fieldsAll($filter = null, $fieldsAdd = null) {
-    if(!empty($filter)) $fields = $this->sql->filterFields($filter);
-    $fields = $this->sql->fieldsFull();
-    if(!empty($this->sql->fieldsAux())) $fields .= ",
-" . $this->sql->fieldsAux();
+  public function fieldsAll(array $filterFields = null, $fieldsAdd = null) {
+    if(!empty($filterFields)){
+      $fields = $this->filterFields($filterFields);
+    } else {
+      $fields = $this->fieldsFull();
+      if(!empty($this->fieldsAux())) $fields .= ",
+{$this->fieldsAux()}";
+    }
+
+    if(!empty($fieldsAdd)) $fields .= ",
+{$fieldsAdd}";
+
     return $fields;
   }
 
+  //recibe un array de fields a filtrar
+  public function filterFields(array $filter = null){
+    if(empty($filter)) return false;
 
-  public function filterFields(array $fields = null){
-    if(empty($fields)) return false;
-
-    $fields_ = [];
-    foreach ($fields as $field){
+    $fields = [];
+    foreach ($filter as $field){
       $field_ = $this->mappingField($field);
-      array_push($fields_, $field_ . " AS " . $field);
+      array_push($fields, $field_ . " AS " . $field);
     }
 
-    return implode(", ", $fields_);
+    return implode(", ", $fields);
   }
 
 

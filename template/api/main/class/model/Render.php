@@ -3,14 +3,16 @@
 //Presentacion de datos
 class Render {
 
-  protected $fields;
+  protected $filter; //array de fields a filtrar (existentes)
   protected $advanced; //array multiple cuya raiz es [field,option,value], ejemplo: [["nombre","=","unNombre"],[["apellido","=","unApellido"],["apellido","=","otroApellido","OR"]]]
   protected $search;
-  protected $history;
   protected $order;
   protected $page;
   protected $size;
-  protected $condition; //condicion particular en la sintaxis del motor utilizado
+
+  protected $history; //true (historicos), false (activos), null (todos)
+
+
 
   public function __construct() {
     $this->advanced = array();
@@ -19,10 +21,7 @@ class Render {
     $this->page = 1;
     $this->size = false; //si es false o 0 se incluyen todas las paginas, no se define tamanio
     $this->search = null;
-    $this->condition = "";
   }
-
-  public function setFields(array $fields) { $this->fields = $fields; } //campos a devolver
 
   public function setAdvanced (array $advanced) {$this->advanced = $advanced; }
 
@@ -61,10 +60,6 @@ class Render {
   public function setSize($size) { $this->size = $size; }
 
   public function setPage($page) { $this->page = $page; }
-
-  public function setCondition($condition) { $this->condition = $condition; }
-
-  public function getFields(){ return $this->fields; }
 
   public function getSize(){ return $this->size; }
 

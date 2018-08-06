@@ -19,7 +19,7 @@ class GenerateClassSqlMain extends GenerateFileEntity{
     $this->conditionSearch();
     $this->filters();
     $this->conditionAux();
-    //$this->order();
+    $this->order();
     $this->end();
   }
 

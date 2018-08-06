@@ -116,10 +116,8 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
   public function all($render = NULL) {
     $r = $this->render($render);
 
-    
-
     $sql = "SELECT DISTINCT ";
-    $sql .= $this->sql->fieldsAll($r->getFields());
+    $sql .= $this->sql->fieldsAll();
     $sql .= $this->sql->from();
     $sql .= $this->sql->join();
     $sql .= $this->sql->joinAux();
@@ -156,9 +154,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     if(empty($conditionUniqueFields)) return null;
 
     $sql = "SELECT DISTINCT ";
-    $sql .= $this->sql->fieldsFull();
-    $sql .= $this->sql->fieldsAux();
-    $sql{strrpos($sql, ",")} = " "; //eliminar ultima coma de la definicion de fields
+    $sql .= $this->sql->fieldsAll();
     $sql .= $this->sql->from();
     $sql .= $this->sql->join();
     $sql .= $this->sql->joinAux();
@@ -179,17 +175,8 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $conditionUniqueFields = $this->sql->conditionUniqueFields($row);
     if(empty($conditionUniqueFields)) return null;
 
-    if(!empty($r->getFields())){
-      $fields = implode(",", $r->getFields());
-    } else {
-      $fields = $this->sql->fieldsFull();
-      $fields .= $this->sql->fieldsAux();
-      $fields{strrpos($fields, ",")} = " "; //eliminar ultima coma de la definicion de fields
-    }
-
-
     $sql = "SELECT DISTINCT ";
-    $sql .= $fields;
+    $sql .= $this->sql->fieldsAll();
     $sql .= $this->sql->from();
     $sql .= $this->sql->join();
     $sql .= $this->sql->joinAux();
