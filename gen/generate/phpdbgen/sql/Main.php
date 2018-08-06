@@ -19,7 +19,7 @@ class GenerateClassSqlMain extends GenerateFileEntity{
     $this->conditionSearch();
     $this->filters();
     $this->conditionAux();
-    $this->order();
+    //$this->order(); hay un metodo general que resuelve la tarea de ordenamiento para ambos motores
     $this->end();
   }
 

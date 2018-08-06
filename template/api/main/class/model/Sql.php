@@ -28,23 +28,13 @@ abstract class EntitySql {
   //Todos los metodos para obtener los fields de uso habitual se encuentran reunidos en uno solo
   //@param $filter Solo se devolveran los campos definidos en el filtro
   //@param $fieldsAdd Se adicionan los fields al conjunto devuelto
-  public function fieldsAll(array $filterFields = null, $fieldsAdd = null) {
-    if(!empty($filterFields)){
-      $fields = $this->filterFields($filterFields);
-    } else {
-      $fields = $this->fieldsFull();
-      if(!empty($this->fieldsAux())) $fields .= ",
-{$this->fieldsAux()}";
-    }
-
-    if(!empty($fieldsAdd)) $fields .= ",
-{$fieldsAdd}";
-
-    return $fields;
+  public function fieldsAll() {
+    return (!empty($this->fieldsAux())) ? "{$this->fieldsFull()},
+{$this->fieldsAux()}" : $this->fieldsFull();
   }
 
   //recibe un array de fields a filtrar
-  public function filterFields(array $filter = null){
+  public function filterFields(array $filter = null) {
     if(empty($filter)) return false;
 
     $fields = [];
@@ -124,7 +114,7 @@ abstract class EntitySql {
 
   protected function conditionAdvancedMain($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
 
-  public function _fields(){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos
+  public function fields(){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos
 
   public function fieldId(){ return $this->entity->getAlias() . "." . $this->entity->getPk()->getName(); } //Se define el identificador en un metodo independiente para facilitar la reimplementacion para aquellos casos en que el id tenga un nombre diferente al requerido, para el framework es obligatorio que todas las entidades tengan una pk con nombre "id"
 
@@ -279,12 +269,20 @@ abstract class EntitySql {
 
     $sql = '';
 
-    foreach($order as $key => $value){
-      $value = ((strtolower($value) == "asc") || ($value === true)) ? "asc" : "desc";
-      $sql_ = $key . " IS NULL, ";
-      $sql_ .= $key . " " . $value;
-      $sql .= concat($sql_, ', ', ' ORDER BY', $sql);
+    if(strpos(DATA_DBMS, 'my')) {
+      foreach($order as $key => $value){
+        $value = ((strtolower($value) == "asc") || ($value === true)) ? "asc" : "desc";
+        $sql_ = "{$this->mappingField($key)} IS NULL, {$this->mappingField($key)} {$value}";
+        $sql .= concat($sql_, ', ', ' ORDER BY', $sql);
+      }
+    } else {
+      foreach($order as $key => $value) {
+        $value = ((strtolower($value) == "asc") || ($value === true)) ? "asc" : "desc";
+        if($value == "desc") $value = "desc NULLS LAST";
+        $sql .= concat("{$key} {$value}", ', ', ' ORDER BY', $sql);
+      }
     }
+
     return $sql;
   }
 

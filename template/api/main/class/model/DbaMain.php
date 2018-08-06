@@ -87,11 +87,10 @@ class DbaMain {
           $display[$key] = $value;
         break;
         case "order":
-          $display["order"] = [$value=>"asc"]; //ordenamiento ascendente (se puede definir ordenamiento ascendente de un solo campo indicandolo en el parametro order, ejemplo order=campo)
+          $f_ = json_decode($value);
+          $display["order"] = stdclass_to_array($f_); //ordenamiento ascendente (se puede definir ordenamiento ascendente de un solo campo indicandolo en el parametro order, ejemplo order=campo)
         break;
-        case "_order":
-          $display["order"] = [$value=>"desc"]; //ordenamiento descendente (se puede definir ordenamiento descendente de un solo campo indicandolo en el parametro _order, ejemplo _order=campo)
-        break;
+
 
         default: array_push($display["filters"], [$key,"=",$params[$key]]);
       }
@@ -175,7 +174,7 @@ class DbaMain {
   //all
   public function all($entity, $render = null){
     $sqlo = $this->entitySqlo($entity);
-    $sql = $sqlo->all($render);
+    $sql = $sqlo->all($render);    
     $db = self::dbInstance();
     $result = $db->query($sql);
     return $db->fetchAll($result);
