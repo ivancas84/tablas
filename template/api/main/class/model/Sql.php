@@ -269,7 +269,7 @@ abstract class EntitySql {
 
     $sql = '';
 
-    if(strpos(DATA_DBMS, 'my')) {
+    if(strpos(DATA_DBMS, 'my') !== false) {
       foreach($order as $key => $value){
         $value = ((strtolower($value) == "asc") || ($value === true)) ? "asc" : "desc";
         $sql_ = "{$this->mappingField($key)} IS NULL, {$this->mappingField($key)} {$value}";
