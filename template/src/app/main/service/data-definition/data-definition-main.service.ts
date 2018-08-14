@@ -8,7 +8,6 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/operator/catch';
 
-
 import { SessionStorageService } from '../storage/session-storage.service';
 import { ParserService } from '../parser/parser.service';
 import { MessageService } from '../message/message.service';
@@ -60,6 +59,8 @@ export class DataDefinitionMainService {
       }
     );
   }
+
+
 
 
   get (entity: string, id: string|number): Observable<any> {
@@ -136,6 +137,16 @@ export class DataDefinitionMainService {
     );
   }
 
+  idOrNull (entity: string, display: Display = null): Observable<any> {
+    return this.ids(entity, display).mergeMap(
+      ids => {
+        if(ids.length > 1) return Observable.throw("La consulta retorno mas de un registro");
+        return (ids.length != 1) ? of(null) : of(ids[0]);
+      }
+    )
+  }
+
+
   count (entity: string, data: any = null): Observable<any> {
     let key = "_" + entity + "_count" + JSON.stringify(data);
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
@@ -149,12 +160,22 @@ export class DataDefinitionMainService {
     );
   }
 
+  //inicializacion de campos para ser presentados en un componente de una entidad determinada
+  //@param entity Entidad
+  //@param row Campos sin formatear, en el fieldset habitualmente se invoca a esta funcion para formatear los datos de forma tal que se adapten a los requerimientos del componente
+  //@param sync Sincronizacion de campos
+  //@return row Campos formateados, listos para ser presentados
   init (entity: string, row:{ [index: string]: any }, sync:{ [index: string]: any } = null): Observable<{ [index: string]: any }> {
     let ddi: DataDefinition = this.loader.getInstance(entity, this);
     return ddi.init(row, sync);
   }
 
 
+  //inicializacion de campos para ser presentados en el fieldset de una entidad determinada para un formulario
+  //@param entity Entidad
+  //@param row Campos sin formatear, en el fieldset habitualmente se invoca a esta funcion para formatear los datos de forma tal que se adapten a los requerimientos del componente
+  //@param sync Sincronizacion de campos
+  //@return row Campos formateados, listos para ser presentados
   initForm (entity: string, row:{ [index: string]: any }, sync:{ [index: string]: any } = null): Observable<{ [index: string]: any }> {
     let ddi: DataDefinition = this.loader.getInstance(entity, this);
     return ddi.initForm(row, sync);

@@ -74,28 +74,28 @@ abstract class EntitySql {
   //    ...
   //  )
   //  )
-  public function conditionAdvanced(array $advanced) {
-    if(!count($advanced)) return "";
-    $conditionMode = $this->conditionAdvancedRecursive($advanced);
+  public function conditionAdvanced(array $advanced = null, $prefix = "") {
+    if(empty($advanced)) return "";
+    $conditionMode = $this->conditionAdvancedRecursive($advanced, $prefix);
     return $conditionMode["condition"];
   }
 
-  public function conditionAdvancedRecursive(array $advanced){
+  private function conditionAdvancedRecursive(array $advanced, $prefix){
     if(!is_array($advanced[0])) {
       $mode = (empty($advanced[3])) ? "AND" : $advanced[3];
-      $condicion = $this->conditionAdvancedMain($advanced[0], $advanced[1], $advanced[2], "");
+      $condicion = $this->conditionAdvancedMain($advanced[0], $advanced[1], $advanced[2], $prefix);
       return ["condition" => $condicion, "mode" => $mode];
 
     } else {
-      return $this->conditionAdvancedIterable($advanced) ;
+      return $this->conditionAdvancedIterable($advanced, $prefix);
     }
   }
 
-  protected function conditionAdvancedIterable(array $advanced) {
+  private function conditionAdvancedIterable(array $advanced, $prefix) {
     $conditionModes = array();
 
     for($i = 0; $i < count($advanced); $i++){
-      $conditionMode = $this->conditionAdvancedRecursive($advanced[$i]);
+      $conditionMode = $this->conditionAdvancedRecursive($advanced[$i], $prefix);
       array_push($conditionModes, $conditionMode);
     }
 
@@ -111,8 +111,8 @@ abstract class EntitySql {
     return ["condition"=>"(".$condition.")", "mode"=>$modeReturn];
   }
 
-
-  protected function conditionAdvancedMain($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
+  //Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas  
+  protected function conditionAdvancedMain($field, $option, $value, $prefix = ""){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
 
   public function fields(){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos
 

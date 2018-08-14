@@ -23,13 +23,13 @@ class Render {
     $this->search = null;
   }
 
-  public function setAdvanced (array $advanced) {$this->advanced = $advanced; }
+  public function setAdvanced (array $advanced = null) { $this->advanced = $advanced; }
 
-  public function addAdvanced ($advanced) { $this->advanced = array_merge ( $this->advanced, $advanced ); }
+  public function addAdvanced ($advanced = null) { if($advanced) $this->advanced = array_merge ( $this->advanced, $advanced ); }
 
-  public function setSearch ($search) { $this->search = $search; }
+  public function setSearch ($search = null) { $this->search = $search; }
 
-  public function setHistory ($history) { $this->history = $history; }
+  public function setHistory ($history = null) { $this->history = $history; }
 
 
   //Ordenamiento
@@ -52,7 +52,7 @@ class Render {
     $this->order = array_merge($order, $orderDefault);
   }
 
-  public function setPagination($size, $page){
+  public function setPagination($size, $page) {
     $this->size = $size;
     $this->page = $page;
   }

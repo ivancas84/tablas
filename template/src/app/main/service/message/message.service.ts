@@ -5,7 +5,8 @@ export class MessageService {
   messages: string[] = [];
 
   add(message: string) {
-    this.messages.push(message);
+    if (this.messages.length == 3) this.messages.pop();
+    this.messages.unshift(message);
   }
 
   remove(index) {

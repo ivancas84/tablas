@@ -28,7 +28,7 @@ import { MessageService } from '../../main/service/message/message.service';
 export class " . $this->entity->getName("XxYy") . "AdminComponent extends AdminComponent {
 
   constructor(protected fb: FormBuilder, protected route: ActivatedRoute, protected dd: DataDefinitionService, protected message: MessageService)  {
-    super(fb, route, dd);
+    super(fb, route, dd, message);
     this.entity = \"" . $this->entity->getName() . "\";
   }
 

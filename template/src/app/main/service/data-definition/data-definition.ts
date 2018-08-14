@@ -1,12 +1,20 @@
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 
-import { DataDefinitionService } from '../../../service/data-definition/data-definition.service';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
+
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/observable/timer';
+
+import { DataDefinitionService } from '../../../service/data-definition/data-definition.service';
+import { Display } from '../../../main/class/display';
+
 
 export abstract class DataDefinition {
-
-  protected entity: string;
+  entity: string;
 
   constructor(protected dd: DataDefinitionService){ }
 
@@ -28,7 +36,22 @@ export abstract class DataDefinition {
     return of(ret);
   }
 
+  //custom async validator: verificar campo unico
+  checkUniqueField(fieldName: string): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      let display: Display = new Display;
+      display.filters = [fieldName, "=", control.value]
 
+      return Observable.timer(1000).mergeMap(()=> {
+        return this.dd.idOrNull(this.entity, display).map(
+          id => {
+            return (id && (id != control.parent.get("id").value)) ? { notUnique: true } : null
+          }
+        );
+      })
+
+    };
+  }
 
 
 }

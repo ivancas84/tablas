@@ -9,8 +9,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/forkJoin';
 
-
 import { DataDefinitionService } from '../../../service/data-definition/data-definition.service';
+import { MessageService } from '../../service/message/message.service';
 
 export class AdminComponent implements OnInit {
 
@@ -23,13 +23,23 @@ export class AdminComponent implements OnInit {
 
   adminForm: FormGroup; //formulario
 
-  constructor(protected fb: FormBuilder, protected route: ActivatedRoute, protected dd: DataDefinitionService)  {
+
+
+
+  constructor(protected fb: FormBuilder, protected route: ActivatedRoute, protected dd: DataDefinitionService, protected message: MessageService)  {
     //se crea un formulario vacio, se asignaran subformularios en subcomponentes mediante el metodo FormGroup.addControl
     this.adminForm = this.fb.group({});
     this.adminForm.disable();
     this.queryParams();
   }
 
+  //cambio de formulario (se recibe el id)
+  changeForm(event) {
+    if(event && event != this.id){
+        this.id = event;
+        this.getData();
+    }
+  }
 
   /*
   //getData realiza una consulta a los datos de una entidad
@@ -55,22 +65,28 @@ export class AdminComponent implements OnInit {
   }
 
   onSubmit() {
-    this.adminForm.disable();
-    let serverData: any[] = [];
-    var row = this.dd.server(this.entity, this.adminForm.value[this.entity]);
-    serverData.push({entity:this.entity, row:row});
-    this.dd.process(serverData).subscribe(
-      response => {
-        console.log(response)
-        this.id = response[0]["id"];
-      }
-    );
+    if (!this.adminForm.valid) {
+      this.message.add("Complete correctamente los campos del formulario");
+    } else {
+      this.message.add("Procesando");
+      let serverData: any[] = [];
+      var row = this.dd.server(this.entity, this.adminForm.value[this.entity]);
+      serverData.push({entity:this.entity, row:row});
+      this.dd.process(serverData).subscribe(
+        response => {
+          this.id = response[0]["id"];
+        }
+      );
+
+    }
+
+
   }
 
   getData() {
     this.dd.getOrNull(this.entity, this.id).subscribe(
       row => {
-        this.adminForm.enable();
+        if(!this.adminForm.enabled) this.adminForm.enable();
         this.data = row;
       },
       error => { console.log(error); }
@@ -84,8 +100,5 @@ export class AdminComponent implements OnInit {
       response => { this.getData(); }
     )
   }
-
-
-
 
 }
