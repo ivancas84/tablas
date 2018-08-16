@@ -33,6 +33,8 @@ abstract class EntitySql {
 {$this->fieldsAux()}" : $this->fieldsFull();
   }
 
+
+
   //recibe un array de fields a filtrar
   public function filterFields(array $filter = null) {
     if(empty($filter)) return false;
@@ -55,9 +57,9 @@ abstract class EntitySql {
   //@return "(condition) " //por las dudas dejar espacio despues de condicion
   //@example "(alias.field = value) "
   //@example "(pago.deleted = false) "
-  public function conditionAux(){ throw new BadMethodCallException("Not Implemented");  } //Llamar a cadena de metodos independientes
+  public function conditionAux(){ return $this->_conditionAux(); } //Llamar a cadena de metodos independientes
 
-
+  //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
   public function _conditionAux($prefix = ''){ return "";  } //Sobrescribir si existe condicion obligatoria
 
 
@@ -74,12 +76,14 @@ abstract class EntitySql {
   //    ...
   //  )
   //  )
+  //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
   public function conditionAdvanced(array $advanced = null, $prefix = "") {
     if(empty($advanced)) return "";
     $conditionMode = $this->conditionAdvancedRecursive($advanced, $prefix);
     return $conditionMode["condition"];
   }
 
+  //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
   private function conditionAdvancedRecursive(array $advanced, $prefix){
     if(!is_array($advanced[0])) {
       $mode = (empty($advanced[3])) ? "AND" : $advanced[3];
@@ -91,6 +95,7 @@ abstract class EntitySql {
     }
   }
 
+  //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
   private function conditionAdvancedIterable(array $advanced, $prefix) {
     $conditionModes = array();
 
@@ -111,7 +116,8 @@ abstract class EntitySql {
     return ["condition"=>"(".$condition.")", "mode"=>$modeReturn];
   }
 
-  //Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas  
+  //Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
+  //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
   protected function conditionAdvancedMain($field, $option, $value, $prefix = ""){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
 
   public function fields(){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos
@@ -254,14 +260,16 @@ abstract class EntitySql {
   public function fieldsLabelFull(){ return ""; }  //sobrescribir si existen relaciones y son consideradas como campos principales
 
   //Definir sql con campos auxiliares
-  public function fieldsAux(){ return ""; } //sobrescribir si se desean campos auxiliares
+  public function fieldsAux() { return $this->_fieldsAux(); }
+  public function _fieldsAux() { return ""; }
 
   //Definir sql con cadena de relaciones fk y u_
   public function join(){ return ""; } //Sobrescribir si existen relaciones fk u_
 
   //Definir sql con relacion auxiliar
   //Utilizada generalmente para restringir visualización, CUIDADO CON LA PERSISTENCIA!!! Las restricciones de visualización son también aplicadas al persistir, pudiendo no tener el efecto deseado.
-  public function joinAux(){ return ""; } //Sobrescribir si existe relacion auxiliar
+  public function joinAux() { return $this->_joinAux(); }
+  public function _joinAux() { return ""; }
 
   //Ordenamiento de cadena de relaciones
   public function orderBy(array $order = null){

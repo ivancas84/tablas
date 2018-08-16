@@ -116,15 +116,14 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
   public function all($render = NULL) {
     $r = $this->render($render);
 
-    $sql = "SELECT DISTINCT ";
-    $sql .= $this->sql->fieldsAll();
-    $sql .= $this->sql->from();
-    $sql .= $this->sql->join();
-    $sql .= $this->sql->joinAux();
-    $sql .= $this->sql->conditionAll($r->getAdvanced(), $r->getSearch());
-    $sql .= $this->sql->orderBy($r->getOrder());
-    $sql .= $this->sql->limit($r->getPage(), $r->getSize());
-    $sql .= ";
+    $sql = "SELECT DISTINCT
+{$this->sql->fieldsAll()}
+{$this->sql->from()}
+{$this->sql->join()}
+{$this->sql->joinAux()}
+{$this->sql->conditionAll($r->getAdvanced(), $r->getSearch())}
+{$this->sql->orderBy($r->getOrder())}
+{$this->sql->limit($r->getPage(), $r->getSize())}
 ";
 
     return $sql;

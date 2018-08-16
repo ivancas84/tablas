@@ -15,6 +15,29 @@ class DbaMain {
   public $sqlos = []; //instancias de sqlo en uso (permite evitar que se instancien multiples objetos iguales)
   public $entities = []; //instancias de entities en uso (permite evitar que se instancien multiples objetos iguales)
 
+  public static $sqlos_ = [];
+  public static $sqls_ = [];
+
+
+
+  public static function sqlo($entity) {
+    if(!array_key_exists($entity, self::$sqlos_)){
+      $sqloName = snake_case_to("XxYy", $entity) . "Sqlo";
+      $sqlo = new $sqloName;
+      self::$sqlos_[$entity] = $sqlo;
+    }
+    return self::$sqlos_[$entity];
+  }
+
+  public static function sql($entity) {
+    if(!array_key_exists($entity, self::$sqls_)){
+      $sqlName = snake_case_to("XxYy", $entity) . "Sql";
+      $sql = new $sqlName;
+      self::$sqls_[$entity] = $sql;
+    }
+    return self::$sqls_[$entity];
+  }
+
 
 
   public static function dbInstance() {
@@ -122,12 +145,7 @@ class DbaMain {
 
   //retornar instancia de Sqlo
   public function entitySqlo($entity) {
-    if(!array_key_exists($entity, $this->sqlos)){
-      $sqloName = snake_case_to("XxYy", $entity) . "Sqlo";
-      $sqlo = new $sqloName;
-      $this->sqlos[$entity] = $sqlo;
-    }
-    return $this->sqlos[$entity];
+    return self::sqlo($entity);
   }
 
   //cantidad
@@ -174,7 +192,7 @@ class DbaMain {
   //all
   public function all($entity, $render = null){
     $sqlo = $this->entitySqlo($entity);
-    $sql = $sqlo->all($render);    
+    $sql = $sqlo->all($render);
     $db = self::dbInstance();
     $result = $db->query($sql);
     return $db->fetchAll($result);
