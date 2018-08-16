@@ -5,6 +5,8 @@ require_once("generate/GenerateEntityRecursive.php");
 class ClassSql_conditionAux extends GenerateEntityRecursive{
 
   public function generate(){
+    if(!$this->getEntity()->hasRelations()) return "";
+
     $this->start();
     $this->recursive($this->getEntity());
     $this->end();
@@ -27,7 +29,7 @@ class ClassSql_conditionAux extends GenerateEntityRecursive{
   }
 
   protected function end(){
-    $this->string .= "    return (empty(\$cond)) ? '' : \"({\$cond})\";
+    $this->string .= "    return (empty(\$sqlCond)) ? '' : \"({\$sqlCond})\";
   }
 ";
   }

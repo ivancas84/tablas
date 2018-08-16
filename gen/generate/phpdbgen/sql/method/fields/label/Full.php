@@ -28,7 +28,7 @@ class ClassSql_fieldsLabelFull extends GenerateEntityRecursive {
   * @return string Codigo generado
   */
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    \$sql = new {$entity->getName("XxYy")}Sql; \$fields .= \$sql->_fieldsLabel('{$prefix}') . ',
+    $this->string .= "    \$fields .= Dba::sql('{$entity->getName()}')->_fieldsLabel('{$prefix}') . ',
 ';
 ";
     //$field = "{$entity->getName("XxYy")}Sql::_fields('{$prefix}')";

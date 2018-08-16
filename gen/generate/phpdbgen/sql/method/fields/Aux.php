@@ -2,7 +2,7 @@
 
 require_once("generate/GenerateEntityRecursive.php");
 
-class ClassSql_fieldsFull extends GenerateEntityRecursive {
+class ClassSql_fieldsAux extends GenerateEntityRecursive {
   public $fields = [];
 
   public function generate(){
@@ -16,8 +16,9 @@ class ClassSql_fieldsFull extends GenerateEntityRecursive {
 
 
   protected function start(){
-    $this->string .= "  public function fieldsFull(){
-    \$fields = \$this->fields() . ', ';
+    $this->string .= "  public function fieldsAux(){
+    \$fields = \$this->_fieldsAux();
+
 ";
   }
 
@@ -28,15 +29,16 @@ class ClassSql_fieldsFull extends GenerateEntityRecursive {
   * @return string Codigo generado
   */
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    \$fields .= Dba::sql('{$entity->getName()}')->fields('{$prefix}') . ',
-';
+    $this->string .= "    \$fields_ = Dba::sql('{$entity->getName()}')->_fieldsAux('{$prefix}');
+    \$fields .= concat(\$fields_, ', ', '', \$fields);
+
 ";
 
   }
 
   protected function end(){
-    $pos = strrpos($this->string, ",");
-    $this->string = substr_replace($this->string , "" , $pos, 2);
+    //$pos = strrpos($this->string, ",");
+    //$this->string = substr_replace($this->string , "" , $pos, 2);
     $this->string .= "    return \$fields;
   }
 

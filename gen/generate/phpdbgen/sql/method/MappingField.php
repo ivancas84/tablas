@@ -17,7 +17,7 @@ class ClassSql_mappingField extends GenerateEntity{
     $this->string .= "
   //@override
   public function mappingField(\$field){
-    \$field_ = \$this->_mappingField(\$field);
+    \$field_ = \$this->_mappingField(\$field); if(\$field_) return \$field_;
 ";
   }
 
@@ -59,8 +59,7 @@ class ClassSql_mappingField extends GenerateEntity{
 
 
   protected function end(){
-    $this->string .= "    if(!\$field_) throw new Exception(\"Campo no reconocido\");
-    return \$field_;
+    $this->string .= "    throw new Exception(\"Campo no reconocido\");
   }
 ";
   }
@@ -68,10 +67,7 @@ class ClassSql_mappingField extends GenerateEntity{
 
 
   protected function mappingFieldRelation(Entity $entity, $prefix) {
-    $this->string .= "    if(!\$field_) {
-      \$sql = new " . $entity->getName("XxYy") . "Sql();
-      \$field_ = \$sql->_mappingField(\$field, '" . $prefix . "');
-    }
+    $this->string .= "    \$field_ = Dba::sql('{$entity->getName()}')->_mappingField(\$field, '" . $prefix . "'); if(\$field_) return \$field_;
 ";
   }
 

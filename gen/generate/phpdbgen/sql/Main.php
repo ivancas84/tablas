@@ -65,6 +65,7 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     require_once("generate/phpdbgen/sql/method/fields/label/Full.php");
 
 
+
     $gen = new ClassSql_fields($this->getEntity());
     $this->string .= $gen->generate();
 
@@ -79,12 +80,19 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
     $gen = new ClassSql_fieldsLabelFull($this->getEntity());
     $this->string .= $gen->generate();
+
+    require_once("generate/phpdbgen/sql/method/fields/Aux.php");
+    $gen = new ClassSql_fieldsAux($this->getEntity());
+    $this->string .= $gen->generate();
   }
 
   protected function methodJoin(){
     require_once("generate/phpdbgen/sql/method/Join.php");
-
     $gen = new ClassSql_join($this->getEntity());
+    $this->string .= $gen->generate();
+
+    require_once("generate/phpdbgen/sql/method/JoinAux.php");
+    $gen = new ClassSql_joinAux($this->getEntity());
     $this->string .= $gen->generate();
   }
 
