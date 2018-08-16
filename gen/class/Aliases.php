@@ -3,12 +3,12 @@
 
 //***** Creacion de alias no repetidos *****
 class Aliases{
-  
+
   var $name; //Nombre del cual se definira el alias
   var $aliases; //alias existentes para evitar duplcados
   var $reserved; //palabras reservadas para que no se definan como alias
   var $length;
-  
+
   public function __construct($name, array $aliases = NULL, $length = 3) {
     $this->name = $name;
     $this->aliases = $aliases;
@@ -16,15 +16,15 @@ class Aliases{
       $this->aliases = array();
     }
     $this->length = $length;
-    $this->reserved = array("not", "as");
+    $this->reserved = array("not", "as", "div");
   }
-  
-  
+
+
   public static function createAndGetAlias($name, array $aliases = NULL, $length = 3){
     $self = new Aliases($name, $aliases, $length);
     return $self->getAlias();
   }
-  
+
   /**
    * Definir alias
    * @param array $this->aliases Array de alias
