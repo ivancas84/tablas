@@ -7,13 +7,6 @@ class ClassSql_conditionSearch extends GenerateEntity{
   protected $or = false; //boolean. Flag para indicar si existe condicion de busqueda
 
 
-  public function defineOr() {
-    if(!$this->or){
-      $this->or = true;
-      return false;
-    }
-    return true;
-  }
 
 
   protected function fk(Entity $entity, array $tablesVisited, $prefix){
@@ -65,7 +58,7 @@ class ClassSql_conditionSearch extends GenerateEntity{
   //***** @override *****
   public function conditionSearch(\$search = \"\"){
     if(empty(\$search)) return '';
-    \$condition = \"\";
+    \$condition = \$this->_conditionSearch(\$search);
 
 ";
   }
@@ -78,68 +71,19 @@ class ClassSql_conditionSearch extends GenerateEntity{
 ";
   }
 
-  protected function text($fieldName, $alias){
-    $or = ($this->defineOr()) ? " OR " : "";
 
-    $this->string .= "    \$condition .= \"". $or . "\" . \$this->_conditionTextApprox(\"" . $alias . "." . $fieldName . "\", \$search);
-" ;
-
-  }
-
-  protected function number($fieldName, $alias){
-    $or = ($this->defineOr()) ? " OR " : "";
-
-    $this->string .= "    \$condition .= \"". $or . "\" . \$this->_conditionNumberApprox(\"" . $alias . "." . $fieldName . "\", \$search);
-" ;
-  }
-
-  protected function date($fieldName, $alias){
-    $or = ($this->defineOr()) ? " OR " : "";
-
-    $this->string .= "    \$condition .= \"". $or . "\" . \$this->_conditionDateApprox(\"" . $alias . "." . $fieldName . "\", \$search);
-" ;
-  }
-
-  protected function year($fieldName, $alias){
-    $or = ($this->defineOr()) ? " OR " : "";
-
-    $this->string .= "    \$condition .= \"". $or . "\" . \$this->_conditionYearApprox(\"" . $alias . "." . $fieldName . "\", \$search);
-" ;
-  }
-
-  protected function timestamp ($fieldName, $alias){
-    $or = ($this->defineOr()) ? " OR " : "";
-
-
-    $this->string .= "    \$condition .= \"". $or . "\" . \$this->_conditionTimestampApprox(\"" . $alias . "." . $fieldName . "\", \$search);
-" ;
-  }
 
 
 
   protected function condition(Entity $entity, $alias){
-    $fields = $entity->getFields();
-
-    foreach ($fields as $field) {
-      switch ($field->getDataType()) {
-        case "string": case "text": $this->text($field->getName(), $alias); break;
-
-        case "integer": case "float": $this->number($field->getName(), $alias); break;
-
-        case "date": $this->date($field->getName(), $alias); break;
-
-        case "year": $this->year($field->getName(), $alias); break;
-
-        case "timestamp": $this->timestamp($field->getName(), $alias); break;
-      }
-    }
+    $this->string .= "  \$condition .= \" OR \" . Dba::sql('{$entity->getName()}')->_conditionSearch(\$search, '{$alias}');
+";
   }
 
 
 
   public function generate(){
     $this->start();
-    $this->condition($this->getEntity(), $this->getEntity()->getAlias());
     $this->recursive($this->getEntity());
     $this->end();
     return $this->string;

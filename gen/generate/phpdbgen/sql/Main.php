@@ -98,8 +98,11 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
   protected function conditionSearch(){
     require_once("generate/phpdbgen/sql/method/ConditionSearch.php");
-
     $gen = new ClassSql_conditionSearch($this->getEntity());
+    $this->string .= $gen->generate();
+
+    require_once("generate/phpdbgen/sql/method/_ConditionSearch.php");
+    $gen = new ClassSql__conditionSearch($this->getEntity());
     $this->string .= $gen->generate();
 
   }

@@ -1,0 +1,118 @@
+<?php
+
+
+
+class ClassSql__conditionSearch extends GenerateEntity{
+
+  protected $or = false; //boolean. Flag para indicar si existe condicion de busqueda
+
+
+  public function defineOr() {
+    if(!$this->or){
+      $this->or = true;
+      return false;
+    }
+    return true;
+  }
+
+
+
+
+  protected function start(){
+    $this->string .= "
+  //***** @override *****
+  public function _conditionSearch(\$search = \"\", \$prefix = \"\"){
+    if(empty(\$search)) return '';
+    \$p = (\$prefix) ? \$prefix . '_' : '';
+    \$condition = \"\";
+
+";
+  }
+
+
+  public function generate(){
+    $this->start();
+    $this->condition($this->getEntity(), $this->getEntity()->getAlias());
+    $this->end();
+    return $this->string;
+  }
+
+
+
+
+  protected function end(){
+    $this->string .= "    return \"(\" . \$condition . \")\";
+  }
+
+";
+  }
+
+  protected function text($fieldName, $alias){
+    $or = ($this->defineOr()) ? " OR " : "";
+
+    $this->string .= "    \$field = \$this->_mappingField(\$p . '{$fieldName}', \$prefix);
+    \$condition .= \"". $or . "\" . \$this->_conditionTextApprox(\$field, \$search);
+" ;
+
+  }
+
+  protected function number($fieldName, $alias){
+    $or = ($this->defineOr()) ? " OR " : "";
+
+    $this->string .= "    \$field = \$this->_mappingField(\$p . '{$fieldName}', \$prefix);
+    \$condition .= \"". $or . "\" . \$this->_conditionNumberApprox(\$field, \$search);
+" ;
+  }
+
+  protected function date($fieldName, $alias){
+    $or = ($this->defineOr()) ? " OR " : "";
+
+    $this->string .= "    \$field = \$this->_mappingField(\$p . '{$fieldName}', \$prefix);
+    \$condition .= \"". $or . "\" . \$this->_conditionDateApprox(\$field, \$search);
+" ;
+  }
+
+  protected function year($fieldName, $alias){
+    $or = ($this->defineOr()) ? " OR " : "";
+
+    $this->string .= "    \$field = \$this->_mappingField(\$p . '{$fieldName}', \$prefix);
+    \$condition .= \"". $or . "\" . \$this->_conditionYearApprox(\$field, \$search);
+" ;
+  }
+
+  protected function timestamp ($fieldName, $alias){
+    $or = ($this->defineOr()) ? " OR " : "";
+
+
+    $this->string .= "    \$field = \$this->_mappingField(\$p . '{$fieldName}', \$prefix);
+    \$condition .= \"". $or . "\" . \$this->_conditionTimestampApprox(\$field, \$search);
+" ;
+  }
+
+
+
+  protected function condition(Entity $entity, $alias){
+    $fields = $entity->getFieldsByType(["pk", "nf"]);
+
+    foreach ($fields as $field) {
+      switch ($field->getDataType()) {
+        case "string": case "text": $this->text($field->getName(), $alias); break;
+
+        case "integer": case "float": $this->number($field->getName(), $alias); break;
+
+        case "date": $this->date($field->getName(), $alias); break;
+
+        case "year": $this->year($field->getName(), $alias); break;
+
+        case "timestamp": $this->timestamp($field->getName(), $alias); break;
+      }
+    }
+  }
+
+
+
+
+
+
+
+}

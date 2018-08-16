@@ -5,13 +5,7 @@ require_once("generate/GenerateEntityRecursive.php");
 
 class ClassSql_conditionAdvancedMain extends GenerateEntityRecursive{
 
-  public function generate(){
-    $this->start();
-    $this->recursive($this->getEntity());
-    $this->end();
 
-    return $this->string;
-  }
 
   protected function start(){
     $this->string .= "  //@override

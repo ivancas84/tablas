@@ -266,6 +266,20 @@ abstract class EntitySql {
   //Definir sql con cadena de relaciones fk y u_
   public function join(){ return ""; } //Sobrescribir si existen relaciones fk u_
 
+  //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
+  public function _join($field, $from, $to = null){
+    $p = (empty($to)) ? $this->getAlias() : $to;
+    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS {$to} ON ({$from}.$field = {$to}.{$this->entity->getPk()->getName()})
+";
+  }
+
+  //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
+  public function _joinR($field, $from, $to = null){
+    $p = (empty($to)) ? $this->getAlias() : $to;
+    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS {$to} ON ({$from}.{$this->entity->getPk()->getName()} = {$to}.$field)
+  ";
+  }
+
   //Definir sql con relacion auxiliar
   //Utilizada generalmente para restringir visualización, CUIDADO CON LA PERSISTENCIA!!! Las restricciones de visualización son también aplicadas al persistir, pudiendo no tener el efecto deseado.
   public function joinAux() { return $this->_joinAux(); }

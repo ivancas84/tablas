@@ -2,6 +2,28 @@
 
 
 class ClassSql_fields extends GenerateEntity {
+  public function generate(){
+    $this->start();
+    $this->fields();
+    $this->end();
+    return $this->string;
+  }
+
+
+
+
+
+
+
+
+  protected function start(){
+    $this->string .= "
+  public function fields(\$prefix = ''){
+    \$p = (empty(\$prefix)) ?  ''  : \$prefix . '_';
+    return '
+";
+  }
+
 
   /**
   * Generar sql distinct fields
@@ -13,10 +35,11 @@ class ClassSql_fields extends GenerateEntity {
     $pk = $this->getEntity()->getPk();
     $nfFk = $this->getEntity()->getFieldsByType(["nf","fk"]);
 
-    $this->string .= "{\$t}." . $this->getEntity()->getPk()->getName() . " AS {\$p}" . $this->getEntity()->getPk()->getName() . ", ";
-
+    $this->string .= "' . \$this->_mappingField(\$p.'{$this->getEntity()->getPk()->getName()}', \$prefix) . ' AS ' . \$p.'{$this->getEntity()->getPk()->getName()},
+";
     foreach ( $nfFk as $field ) {
-      $this->string .=  "{\$t}." . $field->getName() . " AS {\$p}" . $field->getName() . ", ";
+      $this->string .= "' . \$this->_mappingField(\$p.'{$field->getName()}', \$prefix) . ' AS ' . \$p.'{$field->getName()},
+";
 
     }
 
@@ -26,31 +49,14 @@ class ClassSql_fields extends GenerateEntity {
   }
 
 
-
   protected function end(){
-    $this->string .= "\";
+    $this->string .= "';
   }
 
-";
-  }
-
-
-  protected function start(){
-    $this->string .= "
-  public function fields(\$prefix = ''){
-    \$t = (empty(\$prefix)) ?  '" . $this->getEntity()->getAlias() . "'  : \$prefix;
-    \$p = (empty(\$prefix)) ?  ''  : \$prefix . '_';
-
-    return \"";
+  ";
   }
 
 
-  public function generate(){
-    $this->start();
-    $this->fields();
-    $this->end();
-    return $this->string;
-  }
 
 
 }

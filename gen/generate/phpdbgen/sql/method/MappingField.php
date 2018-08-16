@@ -59,7 +59,7 @@ class ClassSql_mappingField extends GenerateEntity{
 
 
   protected function end(){
-    $this->string .= "    throw new Exception(\"Campo no reconocido\");
+    $this->string .= "    throw new Exception(\"Campo no reconocido \" . \$field);
   }
 ";
   }

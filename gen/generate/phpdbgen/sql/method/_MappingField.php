@@ -11,14 +11,12 @@ class ClassSql__mappingField extends GenerateEntity{
   }
 
 
-
-
   protected function start(){
     $this->string .= "
   //@override
   public function _mappingField(\$field, \$prefix=''){
     \$prf = (empty(\$prefix)) ? '' : \$prefix . '_';
-    \$prt = (empty(\$prefix)) ? '" . $this->getEntity()->getAlias() . ".' : \$prefix . '.';
+    \$prt = (empty(\$prefix)) ? '" . $this->getEntity()->getAlias() . "' : \$prefix;
 
     switch (\$field) {
 ";
@@ -26,7 +24,7 @@ class ClassSql__mappingField extends GenerateEntity{
 
   protected function main(){
     foreach ($this->getEntity()->getFields() as $field){
-      $this->string .= "      case \$prf.'" . $field->getName() . "': return \$prt.\"" . $field->getName() . "\";
+      $this->string .= "      case \$prf.'" . $field->getName() . "': return \$prt.\"." . $field->getName() . "\";
 ";
     }
   }

@@ -15,9 +15,9 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
   protected function start(){
     $this->string .= "  //@override
   public function _conditionAdvanced(\$field, \$option, \$value, \$prefix = ''){
-    \$t = (empty(\$prefix)) ?  '" . $this->getEntity()->getAlias() . "'  : \$prefix;
     \$p = (empty(\$prefix)) ?  ''  : \$prefix . '_';
 
+    \$f = \$this->_mappingField(\$field, \$prefix);
     switch (\$field){
 ";
   }
@@ -45,25 +45,24 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
 
 
   protected function string($fieldName){
-    $this->string .= "       case \"{\$p}" . $fieldName . "\": return \$this->conditionText(\"{\$t}." . $fieldName . "\", \$value, \$option);
+    $this->string .= "       case \"{\$p}" . $fieldName . "\": return \$this->conditionText(\$f, \$value, \$option);
 " ;
 
   }
 
 
   protected function number($fieldName){
-    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionNumber(\"{\$t}." . $fieldName . "\", \$value, \$option);
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionNumber(\$f, \$value, \$option);
 " ;
 	}
 
   protected function date($fieldName){
-    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionDate(\"{\$t}." . $fieldName . "\", \$value, \$option);
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionDate(\$f, \$value, \$option);
 " ;
   }
 
   protected function boolean($fieldName){
-    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionBoolean(\"{\$t}." . $fieldName . "\", \$value);
-" ;
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionBoolean(\$f, \$value); " ;
   }
 
 
