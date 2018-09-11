@@ -100,7 +100,9 @@ class Tablas {
     $gen = new IncludeEntityClasses($this->tablesInfo);
     $gen->generate();
 
-
+    require_once("generate/tablas/UserEntityClasses.php");
+    $gen = new UserEntityClasses($this->tablesInfo);
+    $gen->generateIfNotExists();
   }
 
 

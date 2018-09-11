@@ -85,9 +85,11 @@ abstract class EntitySql {
 
   //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
   private function conditionAdvancedRecursive(array $advanced, $prefix){
-    if(!is_array($advanced[0])) {
-      $mode = (empty($advanced[3])) ? "AND" : $advanced[3];
-      $condicion = $this->conditionAdvancedMain($advanced[0], $advanced[1], $advanced[2], $prefix);
+    if(!is_array($advanced[0])) { //si en la posicion 0 es un string significa que es un campo a buscar, caso contrario es un nuevo conjunto (array) de campos que debe ser recorrido
+      $option = (empty($advanced[1])) ? "=" : $advanced[1]; //por defecto se define "="
+      $value = (empty($advanced[2])) ? null : $advanced[2]; //hay opciones de configuracion que pueden no definir valores
+      $mode = (empty($advanced[3])) ? "AND" : $advanced[3];  //el modo indica la concatenacion con la opcion precedente, se usa en un mismo conjunto (array) de opciones
+      $condicion = $this->conditionAdvancedMain($advanced[0], $option, $value, $prefix);
       return ["condition" => $condicion, "mode" => $mode];
 
     } else {
@@ -119,6 +121,19 @@ abstract class EntitySql {
   //Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
   //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
   protected function conditionAdvancedMain($field, $option, $value, $prefix = ""){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
+
+  protected function valueComparison($field, $option, array $value, $prefix){
+    $flag = false;
+    $condition = "";
+    foreach($value as $field){
+      $f = $this->_mappingField($field, $prefix);
+      if($flag) $condition .= " {$option} ";
+      $condition .= $f;
+      $flag = true;
+    }
+
+
+  }
 
   public function fields(){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos
 

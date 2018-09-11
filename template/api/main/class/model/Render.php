@@ -25,7 +25,7 @@ class Render {
 
   public function setAdvanced (array $advanced = null) { $this->advanced = $advanced; }
 
-  public function addAdvanced ($advanced = null) { if($advanced) $this->advanced = array_merge ( $this->advanced, $advanced ); }
+  public function addAdvanced ($advanced = null) { if(!empty($advanced)) array_push ( $this->advanced, $advanced ); }
 
   public function setSearch ($search = null) { $this->search = $search; }
 

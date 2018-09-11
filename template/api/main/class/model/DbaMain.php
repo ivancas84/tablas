@@ -49,9 +49,10 @@ class DbaMain {
     return self::$dbInstance;
   }
 
-  public static function dbClose() {
-    if (self::$dbInstance != null) self::$dbInstance->close();
-    return self::$dbInstance;
+  //$dbInstance Instancia de la clase db que será finalizada
+  public static function dbClose($dbInstance) {
+    //if (self::$dbInstance != null) self::$dbInstance->close();
+    //return self::$dbInstance;
   }
 
   //siguiente id
@@ -109,7 +110,7 @@ class DbaMain {
         case "size": case "page": case "search": //pueden redefinirse ciertos parametros la prioridad la tiene los que estan fuera del elemento data (parametros definidos directamente)
           $display[$key] = $value;
         break;
-        case "order":
+        case "order": //ejemplo http://localhost/programacion/api/curso/all?order={%22horario%22:%22asc%22}
           $f_ = json_decode($value);
           $display["order"] = stdclass_to_array($f_); //ordenamiento ascendente (se puede definir ordenamiento ascendente de un solo campo indicandolo en el parametro order, ejemplo order=campo)
         break;
