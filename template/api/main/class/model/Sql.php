@@ -17,7 +17,7 @@ abstract class EntitySql {
     //Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren.
     //Ademas, ciertos metodos requieren determinar el motor de base de datos para definir la sintaxis SQL adecuada
 
-  public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); }
+  public function _mappingField($field, $prefix = ""){ throw new BadMethodCallException("Not Implemented"); }
 
   public function mappingField($field){
     $field_ = $this->_mappingField($field);
@@ -33,20 +33,6 @@ abstract class EntitySql {
 {$this->fieldsAux()}" : $this->fieldsFull();
   }
 
-
-
-  //recibe un array de fields a filtrar
-  public function filterFields(array $filter = null) {
-    if(empty($filter)) return false;
-
-    $fields = [];
-    foreach ($filter as $field){
-      $field_ = $this->mappingField($field);
-      array_push($fields, $field_ . " AS " . $field);
-    }
-
-    return implode(", ", $fields);
-  }
 
 
   //***** metodos abstractos *****
@@ -76,33 +62,34 @@ abstract class EntitySql {
   //    ...
   //  )
   //  )
-  //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
-  public function conditionAdvanced(array $advanced = null, $prefix = "") {
+  public function conditionAdvanced(array $advanced = null) {
     if(empty($advanced)) return "";
-    $conditionMode = $this->conditionAdvancedRecursive($advanced, $prefix);
+    $conditionMode = $this->conditionAdvancedRecursive($advanced);
     return $conditionMode["condition"];
   }
 
-  //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
-  private function conditionAdvancedRecursive(array $advanced, $prefix){
+
+  private function conditionAdvancedRecursive(array $advanced){
     if(!is_array($advanced[0])) { //si en la posicion 0 es un string significa que es un campo a buscar, caso contrario es un nuevo conjunto (array) de campos que debe ser recorrido
       $option = (empty($advanced[1])) ? "=" : $advanced[1]; //por defecto se define "="
       $value = (empty($advanced[2])) ? null : $advanced[2]; //hay opciones de configuracion que pueden no definir valores
       $mode = (empty($advanced[3])) ? "AND" : $advanced[3];  //el modo indica la concatenacion con la opcion precedente, se usa en un mismo conjunto (array) de opciones
-      $condicion = $this->conditionAdvancedMain($advanced[0], $option, $value, $prefix);
+
+      $condicion = $this->conditionAdvancedDefined($advanced[0], $option, $value);
+      if(!$condicion) $condicion = $this->conditionAdvancedMain($advanced[0], $option, $value);
       return ["condition" => $condicion, "mode" => $mode];
 
     } else {
-      return $this->conditionAdvancedIterable($advanced, $prefix);
+      return $this->conditionAdvancedIterable($advanced);
     }
   }
 
   //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
-  private function conditionAdvancedIterable(array $advanced, $prefix) {
+  private function conditionAdvancedIterable(array $advanced) {
     $conditionModes = array();
 
     for($i = 0; $i < count($advanced); $i++){
-      $conditionMode = $this->conditionAdvancedRecursive($advanced[$i], $prefix);
+      $conditionMode = $this->conditionAdvancedRecursive($advanced[$i]);
       array_push($conditionModes, $conditionMode);
     }
 
@@ -120,20 +107,18 @@ abstract class EntitySql {
 
   //Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
   //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
-  protected function conditionAdvancedMain($field, $option, $value, $prefix = ""){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
+  protected function conditionAdvancedMain($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
 
-  protected function valueComparison($field, $option, array $value, $prefix){
-    $flag = false;
-    $condition = "";
-    foreach($value as $field){
-      $f = $this->_mappingField($field, $prefix);
-      if($flag) $condition .= " {$option} ";
-      $condition .= $f;
-      $flag = true;
+  protected function conditionAdvancedDefined($field, $option, $value){
+    switch($field){
+      case "compare_fields":
+        $f1 = $this->mappingField($value[0]);
+        $f2 = $this->mappingField($value[1]);
+        return "({$f1} {$option} {$f2})";
+      break;
     }
-
-
   }
+
 
   public function fields(){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos
 
@@ -222,7 +207,7 @@ abstract class EntitySql {
 
 
   //Definir todas las condiciones
-  public function conditionAll(array $advanced = null, $search = null, $connect="WHERE") {
+  public function conditionAll(array $advanced = null, $search = null, $connect = "WHERE") {
     $sqlCond = concat($this->conditionSearch($search), $connect);
     $sqlCond .= concat($this->conditionAdvanced($advanced), " AND", $connect, $sqlCond);
     $sqlCond .= concat($this->conditionAux(), " AND", $connect, $sqlCond);
