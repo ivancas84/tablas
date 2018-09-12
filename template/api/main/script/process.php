@@ -9,62 +9,58 @@ try{
   $f_ =  json_decode($f);
   $data = stdclass_to_array($f_);
 
-  $dba = new Dba(); try {
 
-    $response = [];
-    foreach($data as $persist){
-      $entity = $persist["entity"];
-      $row = (!empty($persist["row"])) ? $persist["row"]: null;
-      $rows = (!empty($persist["rows"])) ? $persist["rows"]: [];
-      $params = (!empty($persist["params"])) ? $persist["params"]: [];
-
+  $response = [];
+  foreach($data as $persist){
+    $entity = $persist["entity"];
+    $row = (!empty($persist["row"])) ? $persist["row"]: null;
+    $rows = (!empty($persist["rows"])) ? $persist["rows"]: [];
+    $params = (!empty($persist["params"])) ? $persist["params"]: [];
 
 
 
 
 
-      //***** row *****
-      if(!empty($row)){
-        $id = $dba->persist($entity, $row);
-        array_push($response, ["entity" => $entity, "id" => $id]);
-      }
 
-
-
-      //***** rows *****
-      if(count($rows)){
-        $render = array();
-        foreach($params as $fieldName => $fieldValue) array_push($render, ["field" => $fieldName, 'value' => $fieldValue]);
-        $ids = $dba->ids($entity, $render);
-
-        $idsReturn = array(); //claves persisitidas a retornar
-
-        foreach($rows as $row){
-          if(!empty($params)) foreach($params as $key => $value) $row[$key] = $value; //combinar datos a persisitir con los parametros
-
-          //eliminar las pks persistidas del array de pks previamente consultado
-          if(!empty($row["id"])) {
-            $key = array_search($row["id"], $ids);
-            if($key !== false) unset($ids[$key]);
-          }
-
-          $id = $dba->persist($entity, $row);
-
-          array_push($idsReturn, $id);
-        }
-
-        foreach($ids as $id_) $dba->delete($entity, $id_);
-
-        array_push($response, ["entity" => $entity, "ids" => $idsReturn]);
-      }
+    //***** row *****
+    if(!empty($row)){
+      $id = $dba->persist($entity, $row);
+      array_push($response, ["entity" => $entity, "id" => $id]);
     }
 
-    $dba->commit();
 
-    echo json_encode($response);
 
-  } finally { $dba::dbClose(); }
+    //***** rows *****
+    if(count($rows)){
+      $render = array();
+      foreach($params as $fieldName => $fieldValue) array_push($render, ["field" => $fieldName, 'value' => $fieldValue]);
+      $ids = $dba->ids($entity, $render);
 
+      $idsReturn = array(); //claves persisitidas a retornar
+
+      foreach($rows as $row){
+        if(!empty($params)) foreach($params as $key => $value) $row[$key] = $value; //combinar datos a persisitir con los parametros
+
+        //eliminar las pks persistidas del array de pks previamente consultado
+        if(!empty($row["id"])) {
+          $key = array_search($row["id"], $ids);
+          if($key !== false) unset($ids[$key]);
+        }
+
+        $id = Dba::persist($entity, $row);
+
+        array_push($idsReturn, $id);
+      }
+
+      foreach($ids as $id_) Dba::delete($entity, $id_);
+
+      array_push($response, ["entity" => $entity, "ids" => $idsReturn]);
+    }
+  }
+
+  Dba::commit();
+
+  echo json_encode($response);
 
 } catch (Exception $ex){
   error_log($ex->getTraceAsString());

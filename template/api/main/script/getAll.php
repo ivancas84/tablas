@@ -9,11 +9,9 @@ try{
   $ids =  json_decode($ids_);
   //$filter = stdclass_to_array($f_);
 
-  $dba = new Dba(); try {
-    $rows_ = $dba->getAll(ENTITY, $ids);
-    $rows = $dba->json(ENTITY, $rows_);
-    echo json_encode($rows);
-  } finally { $dba::dbClose(); }
+  $rows_ = Dba::getAll(ENTITY, $ids);
+  $rows = Dba::sqlo(ENTITY)->jsonAll($rows_);
+  echo json_encode($rows);
 
 } catch (Exception $ex) {
   error_log($ex->getTraceAsString());

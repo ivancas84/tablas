@@ -12,13 +12,10 @@ try{
   //el uso de parametros es dinamico
   //se puede definir un parametro opcional "data" que posee un string en formato json para facilitar el uso de tipos basicos
 
-  $dba = new Dba(); try {
-    $rows_ = $dba->unique(ENTITY, $params);
-    $sqlo = $dba->entitySqlo(ENTITY);
-    $rows = $sqlo->json($rows_);
-    echo json_encode($rows);
-
-  } finally { $dba::dbClose(); }
+    $row_ = Dba::unique(ENTITY, $params);
+    if(!$row_) return null;
+    $row = Dba::sqlo(ENTITY)->json($row_);
+    echo json_encode($row);
 
 } catch (Exception $ex) {
   error_log($ex->getTraceAsString());

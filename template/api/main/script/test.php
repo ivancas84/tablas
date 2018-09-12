@@ -3,16 +3,14 @@
 
 require_once("class/model/Dba.php");
 try{
-  $dba = new Dba(); try {
 
     $render = new Render();
     $render->setAdvanced(["numero","=",true]);
     $render->setOrder(["numero"=>"asc"]);
-    $rows = $dba->all("sede", $render);
+    $rows = Dba::all("sede", $render);
 
     echo json_encode($rows);
 
-  } finally { $dba::dbClose(); }
 
 } catch (Exception $ex) {
   http_response_code(500);

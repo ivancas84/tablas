@@ -10,13 +10,10 @@ try{
   //el uso de parametros es dinamico
   //se puede definir un parametro opcional "data" que posee un string en formato json para facilitar el uso de tipos basicos
 
-  $dba = new Dba(); try {
-    $render = $dba->render(ENTITY, $params);
-    $rows_ = $dba->all(ENTITY, $render);
-    $rows = $dba->json(ENTITY, $rows_);
-    echo json_encode($rows);
-
-  } finally { $dba::dbClose(); }
+  $render = Dba::render(ENTITY, $params);
+  $rows_ = Dba::all(ENTITY, $render);
+  $rows = Dba::sqlo(ENTITY)->jsonAll($rows_);
+  echo json_encode($rows);
 
 } catch (Exception $ex) {
   error_log($ex->getTraceAsString());

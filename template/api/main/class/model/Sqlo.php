@@ -18,9 +18,29 @@ abstract class EntitySqlo {
 
   public function _json(array $row, $prefix = "") { throw new BadMethodCallException("No implementado"); }
   public function json(array $row) { return $this->_json($row); }
+  public function jsonAll(array $rows){
+    $rows_ = [];
+
+    foreach($rows as $row){
+      $row_ = $this->json($row);
+      array_push($rows_, $row_);
+    }
+
+    return $rows_;
+  }
 
   public function _values(array $row, $prefix = "") { throw new BadMethodCallException("No implementado"); }
   public function values(array $row) { return $this->_values($row); }
+  public function valuesAll(array $rows){
+    $rows_ = [];
+
+    foreach($rows as $row){
+      $row_ = $this->values($row);
+      array_push($rows_, $row_);
+    }
+
+    return $rows_;
+  }
 
   public function nextPk(){ return $this->db->uniqId(); }
   //Definir clase de presentacion
