@@ -10,6 +10,7 @@ try{
   $data = stdclass_to_array($f_);
 
 
+
   $response = [];
   foreach($data as $persist){
     $entity = $persist["entity"];
@@ -24,7 +25,7 @@ try{
 
     //***** row *****
     if(!empty($row)){
-      $id = $dba->persist($entity, $row);
+      $id = Dba::persist($entity, $row);
       array_push($response, ["entity" => $entity, "id" => $id]);
     }
 
@@ -34,7 +35,7 @@ try{
     if(count($rows)){
       $render = array();
       foreach($params as $fieldName => $fieldValue) array_push($render, ["field" => $fieldName, 'value' => $fieldValue]);
-      $ids = $dba->ids($entity, $render);
+      $ids = Dba::ids($entity, $render);
 
       $idsReturn = array(); //claves persisitidas a retornar
 
@@ -56,6 +57,7 @@ try{
 
       array_push($response, ["entity" => $entity, "ids" => $idsReturn]);
     }
+
   }
 
   Dba::commit();

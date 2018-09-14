@@ -53,7 +53,7 @@ class DbaMain {
   //$dbInstance Instancia de la clase db que será finalizada
   public static function dbClose() {
     self::$dbCount--;
-    if(!self::$dbCount) self::$dbInstance->close(); //cuando todos los recursos liberan la base de datos se cierra
+    if(!self::$dbCount === 0) self::$dbInstance->close(); //cuando todos los recursos liberan la base de datos se cierra
     return true;
   }
 
@@ -301,7 +301,7 @@ class DbaMain {
   }
 
   //begin transaction
-  public static function begin($id = null){
+  public static function begin($id = null) {
     if(self::$transaction) throw new Exception("Ya existe una transaccion iniciada");
 
     if(!empty($id)){
@@ -364,7 +364,7 @@ WHERE id = " . $this->id . ";";
 
 
   //verificar transacciones
-  public function check(){
+  public static function check(){
     $timestampCheck = (!empty($_SESSION["check_transaction"])) ? $_SESSION["check_transaction"] : null;
     $_SESSION["check_transaction"] = date("Y-m-d H:i:s");
 
@@ -520,13 +520,13 @@ LIMIT 10;
   }
 
   public static function fetchAllTimeAr($sql){
-    $db = Dba::dbInstance();
+    $db = self::dbInstance();
     try {
       $db->query("SET lc_time_names = 'es_AR';");
       $result = $db->query($sql);
       return $db->fetchAll($result);
     } finally {
-      Dba::dbClose();
+      self::dbClose();
     }
   }
 
