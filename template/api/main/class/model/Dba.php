@@ -6,20 +6,29 @@ require_once("config/entityClasses.php");
 require_once("function/snake_case_to.php");
 require_once("class/db/My.php");
 require_once("class/db/Pg.php");
+require_once("function/toString.php");
+require_once("class/model/Transaction.php");
 
 //Facilita el acceso a la base de datos y clases del modelo
-class DbaMain {
+class Dba {
 
   public static $dbInstance = NULL; //conexion con una determinada db
   public static $dbCount = 0;
   public static $sqlos = [];
   public static $sqls = [];
   public static $entities = [];
-  public static $transaction = null;
 
+  //singleton Entity
+  public static function entity($entity){
+    if(!array_key_exists($entity, self::$entities)){
+      $entityName = snake_case_to("XxYy", $entity) . "Entity";
+      $entity_ = new $entityName;
+      self::$entities[$entity] = $entity_;
+    }
+    return self::$entities[$entity];
+  }
 
-
-
+  //singleton sqlo
   public static function sqlo($entity) {
     if(!array_key_exists($entity, self::$sqlos)){
       $sqloName = snake_case_to("XxYy", $entity) . "Sqlo";
@@ -29,6 +38,7 @@ class DbaMain {
     return self::$sqlos[$entity];
   }
 
+  //singleton sql
   public static function sql($entity) {
     if(!array_key_exists($entity, self::$sqls)){
       $sqlName = snake_case_to("XxYy", $entity) . "Sql";
@@ -38,10 +48,10 @@ class DbaMain {
     return self::$sqls[$entity];
   }
 
-
-  //se abre un único recurso de la base de datos y se mantiene abierto hasta que finaliza la ejecucion
+  //singleton db
+  //cuando se abren varios recursos de db instance se incrementa un contador, al cerrarse recursos se decrementa. Si el contador llega a 0 se cierra la instancia de la base
   public static function dbInstance() {
-    if (self::$dbInstance === null) {
+    if (!self::$dbCount) {
       (DATA_DBMS == "pg") ?
         self::$dbInstance = new DbSqlPg(DATA_HOST, DATA_USER, DATA_PASS, DATA_DBNAME, DATA_SCHEMA) :
         self::$dbInstance = new DbSqlMy(DATA_HOST, DATA_USER, DATA_PASS, DATA_DBNAME, DATA_SCHEMA);
@@ -50,32 +60,27 @@ class DbaMain {
     return self::$dbInstance;
   }
 
-  //$dbInstance Instancia de la clase db que será finalizada
+  //cerrar conexiones a la base de datos
   public static function dbClose() {
     self::$dbCount--;
     if(!self::$dbCount) self::$dbInstance->close(); //cuando todos los recursos liberan la base de datos se cierra
-    return true;
+    return self::$dbInstance;
   }
 
-  //siguiente id
-  public static function nextId($entity) {
-    //mysql (php5.5+)
-    usleep(1); //evita que genere el mismo id para procesadores rapidos
+  //identificador unico
+  public function uniqId(){
+    usleep(1); //con esto se evita que los procesadores modernos generen el mismo id
     return hexdec(uniqid());
+  }
+
+  //siguiente identificador
+  public static function nextId($entity) {
+    return self::uniqId(); //mysql
 
     //postgresql
     $sql = "select nextval('" . self::entity($entity)->getSn_() . "_id_seq')";
     $row = self::fetchRow($sql);
     return $row[0];
-  }
-
-  public static function uniqId(){
-    $db = self::dbInstance();
-    try {
-      return $db->uniqId();
-    } finally {
-      self::dbClose();
-    }
   }
 
   //es persistible?
@@ -91,10 +96,8 @@ class DbaMain {
     return $sqlo->sql->isInsertable($row); //3) Si 1 no dio resultado, verificar si es insertable
   }
 
-
-
-  //retornar instancia de clase render en base a un conjunto de filtros de busqueda habituales
-  public static function render($entity, array $params = null) {
+  //para facilitar la generacion de render, se puede definir un array $display
+  public static function display(array $params){
     $data = null;
 
     //data es utilizado debido a la facilidad de comunicacion entre el cliente y el servidor. Se coloca todo el json directamente en una variable data que es convertida en el servidor.
@@ -125,6 +128,11 @@ class DbaMain {
       }
     }
 
+    return $display;
+  }
+
+  //generar render a partir de un display
+  public static function render($entity, array $display = null) {
     $render = new Render();
 
     $render->setPagination($display["size"], $display["page"]);
@@ -137,22 +145,11 @@ class DbaMain {
     return $render;
   }
 
-  //retornar instancia de entity
-  public static function entity($entity){
-    if(!array_key_exists($entity, self::$entities)){
-      $entityName = snake_case_to("XxYy", $entity) . "Entity";
-      $entity_ = new $entityName;
-      self::$entities[$entity] = $entity_;
-    }
-    return self::$entities[$entity];
-  }
-
-
   //cantidad
   public static function count($entity, $render = null){
     $sql = self::sqlo($entity)->count($render);
     $row = self::fetchAssoc($sql);
-    return $row["num_rows"];
+    return intval($row["num_rows"]);
   }
 
   //busqueda estricta por campos unicos
@@ -161,7 +158,7 @@ class DbaMain {
     $rows = self::fetchAll($sql);
 
     if(count($rows) > 1) throw new Exception("La busqueda estricta por campos unicos de " . $this->entity->getName() . " retorno mas de un resultado");
-    if(count($rows) == 1) return $rows[0];
+    if(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
     return null;
   }
 
@@ -172,29 +169,29 @@ class DbaMain {
 
     $rows = self::fetchAll($sql);
     if(count($rows) > 1) throw new Exception("La busqueda por campos unicos de " . $this->entity->getName() . " retorno mas de un resultado");
-    if(count($rows) == 1) return $rows[0];
+    if(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
     return null;
   }
 
   //all
   public static function all($entity, $render = null){
     $sql = self::sqlo($entity)->all($render);
-    return self::fetchAll($sql);
+    $rows = self::fetchAll($sql);
+    return self::sqlo($entity)->jsonAll($rows);
   }
 
   //ids
   public static function ids($entity, $render = null){
     $sql = self::sqlo($entity)->all($render);
-    return self::fetchAllColumns($sql, 0);
+    $ids = self::fetchAllColumns($sql, 0);
+    return array_walk($ids, "toString"); //los ids son tratados como string para evitar un error que se genera en Angular (se resta un numero en los enteros largos)
   }
-
-
 
   //id
   public static function id($render = null) {
     $ids = self::ids($render);
     if(count($ids) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($ids) == 1) return $ids[0];
+    elseif(count($ids) == 1) return (string)$ids[0];//los ids son tratados como string para evitar un error que se genera en Angular (se resta un numero en los enteros largos)
     else throw new Exception("La consulta no arrojó resultados");
   }
 
@@ -202,35 +199,35 @@ class DbaMain {
   public static function idOrNull($render = null) {
     $ids = self::ids($render);
     if(count($ids) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($ids) == 1) return $ids[0];
+    elseif(count($ids) == 1) return (string)$ids[0]; //los ids son tratados como string para evitar un error que se genera en Angular (se resta un numero en los enteros largos)
     else return null;
   }
-
 
   //get
   public static function get($entity, $id, $render = null) {
     $rows = self::getAll($entity, [$id], $render);
     if (!count($rows)) throw new Exception("La búsqueda por id no arrojó ningun resultado");
-    return $rows[0];
+    return self::sqlo($entity)->json($rows[0]);
   }
 
   //get or null
   public static function getOrNull($entity, array $id, $render = null){
     $rows = self::getAll($entity, [$id], $render);
-    return (!count($rows)) ? null : $rows[0];
+    return (!count($rows)) ? null : return self::sqlo($entity)->json($rows[0]);
   }
 
   //get all
   public static function getAll($entity, array $ids, $render = null){
     $sql = self::sqlo($entity)->getAll($ids, $render);
-    return self::fetchAll($sql);
+    $rows = self::fetchAll($sql);
+    return self::sqlo($entity)->jsonAll($rows);
   }
 
   //row
   public static function one($entity, $render = null) {
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($rows) == 1) return $rows[0];
+    elseif(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
     else throw new Exception("La consulta no arrojó resultados");
   }
 
@@ -238,25 +235,23 @@ class DbaMain {
   public static function oneOrNull($entity, $render = null) {
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($rows) == 1) return $rows[0];
+    elseif(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
     else return null;
   }
 
-
   //deleteAll
   public static function deleteAll($entity, $ids){
-    if(!self::$transaction) self::begin();
+    if(!Transaction::$id) Transaction::begin();
     $data = self::sqlo($entity)->deleteAll($ids);
     $transaction_ids = preg_filter('/^/', $entity, $ids);
-    self::update(["descripcion"=> $data["sql"], "detalle" => implode(",",$transaction_ids)]);
-    return $data["ids"];
+    Transaction::update(["descripcion"=> $data["sql"], "detalle" => implode(",",$transaction_ids)]);
+    return array_walk($data["ids"], "toString");
   }
-
 
   //delete
   public static function delete($entity, $id){
     $ids = self::deleteAll($entity, [$id]);
-    return $ids[0];
+    return (string)$ids[0];
   }
 
   //es eliminable?
@@ -278,7 +273,7 @@ class DbaMain {
     return "Esta asociado a " . implode(', ', array_unique($entities)) . ".";
   }
 
-
+  //verificar y generar sql
   public static function _persist($entity, array $row){
     $sqlo = self::sqlo($entity);
     $row_ = self::_unique($entity, $row); //1) consultar valores a partir de los datos (CUIDADO UTILIZAR _unique en vez de unique para no restringir datos con condiciones auxiliares)
@@ -291,210 +286,16 @@ class DbaMain {
     else { return $sqlo->insert($row); } //3) Si 1 no dio resultado, definir pk e insertar
   }
 
-  //persist
+  //generar sql y guardar transaccion
   public static function persist($entity, array $row){
-    if(!self::$transaction) self::begin();
+    if(!Transaction::$id) Transaction::begin();
     $data = self::_persist($entity, $row);
-    self::update(["descripcion"=> $data["sql"], "detalle" => self::entity($entity)->getName() . $data["id"]]);
+    Transaction::update(["descripcion"=> $data["sql"], "detalle" => self::entity($entity)->getName() . $data["id"]]);
 
-    return $data["id"];
+    return (string)$data["id"];
   }
 
-  //begin transaction
-  public static function begin($id = null){
-    if(self::$transaction) throw new Exception("Ya existe una transaccion iniciada");
-
-    if(!empty($id)){
-      if(empty($_SESSION["transaction"][$id])) throw new Exception("El id de transaccion es incorrecto");
-      self::$transaction = $id;
-      return $id;
-    }
-
-    self::$transaction = self::uniqId();
-
-    $_SESSION["transaction"][self::$transaction] = [
-      "sql" => null,
-      "tipo" => "begin",
-      "descripcion" => "",
-      "detalle" => "",
-      "alta" => date("Y-m-d h:i:s"),
-      "actualizado" => date("Y-m-d h:i:s"),
-    ];
-    return self::$transaction;
-  }
-
-  /*
-  public function update(array $data){
-    $d = $this->db->escapeString($data["descripcion"]);
-    $de = $this->db->escapeString($data["detalle"]);
-
-    $query = "
-UPDATE transaccion
-SET descripcion = CONCAT_WS(' ', descripcion, '" . $d . "'),
-detalle = CONCAT_WS(',', detalle, '" . $de . "'),
-tipo = 'transaction'
-WHERE id = " . $this->id . ";";
-
-    $db->query($query);
-    return $this->id;
-
-  }*/
-
-  //actualizar transaccion
-  public static function update(array $data){
-    if(empty(self::$transaction)) throw new UnexpectedValueException("Id de transaccion no definido");
-
-    if(!empty($data["descripcion"])){
-      if(!empty($_SESSION["transaction"][self::$transaction]["descripcion"])) $_SESSION["transaction"][self::$transaction]["descripcion"] .= " ";
-      $_SESSION["transaction"][self::$transaction]["descripcion"] .= $data["descripcion"];
-    }
-
-    if(!empty($data["detalle"])){
-      if(!empty($_SESSION["transaction"][self::$transaction]["detalle"])) $_SESSION["transaction"][self::$transaction]["detalle"] .= ",";
-      $_SESSION["transaction"][self::$transaction]["detalle"] .= $data["detalle"];
-    }
-
-    if(!empty($data["tipo"])) $_SESSION["transaction"][self::$transaction]["tipo"] .= $data["tipo"];
-
-    $_SESSION["transaction"][self::$transaction]["actualizado"] = date("Y-m-d h:i:s");
-
-    return self::$transaction;
-  }
-
-
-
-  //verificar transacciones
-  public function check(){
-    $timestampCheck = (!empty($_SESSION["check_transaction"])) ? $_SESSION["check_transaction"] : null;
-    $_SESSION["check_transaction"] = date("Y-m-d H:i:s");
-
-    if(!isset($timestampCheck)) return "CLEAR";
-
-    $query = "
-SELECT id, detalle, actualizado
-FROM transaccion
-WHERE tipo = 'commit'
-AND actualizado > '" . $timestampCheck . "'
-ORDER BY actualizado ASC
-LIMIT 20;
-";
-    $db = self::dbInstance();
-    $result = $db->query($query);
-    $numRows = intval($db->numRows($result));
-
-    if($numRows > 0){
-      if($numRows == 20) return "CLEAR";
-
-      $rows = $db->fetchAll($result);
-
-      $de = "";
-      foreach($rows as $row){
-        $d = $row["detalle"];
-        if(!empty($de)) $de .= ",";
-        $de .= $d;
-      }
-      return array_unique(explode(",", $de));
-    }
-  }
-
-  /*
-  public function check(){
-    require_once("class/Transaction.php");
-
-    $transaction = new Transaction();
-    $details = $transaction->check();
-    echo json_encode($details);
-    require_once("class/session/Php.php");
-    require_once("class/db/Db.php");
-
-    $session = new SessionPhp();
-    $timestampCheck = $session->get("check_transaction");
-    $timestampLastCheck = $session->get("last_check_transaction");
-
-    if(!isset($timestampCheck) || !isset($timestampLastCheck)) {
-      $session->set("check_transaction", date("Y-m-d H:i:s"));
-      $session->set("last_check_transaction", date("Y-m-d H:i:s"));
-      exit("CLEAR");
-    }
-
-    $db = new Db();
-    try{
-      $query = "
-SELECT id, detalle, fecha
-FROM transaccion
-WHERE tipo = 'commit'
-AND fecha > '" . $timestampCheck . "'
-AND fecha <= '" . $timestampLastCheck . "'
-ORDER BY fecha ASC
-LIMIT 10;
-";
-      $result = $db->query($query);
-      $numRows = intval($db->numRows($result));
-
-      if($numRows > 0){
-        if($numRows== 10){
-          $session->set("check_transaction", date("Y-m-d H:i:s"));
-          $session->set("last_check_transaction", date("Y-m-d H:i:s"));
-
-        } else {
-          $rows = $db->fetchAll($result);
-
-          $lastRow = $rows[$numRows-1];
-          $session->set("check_transaction", $lastRow["fecha"]);
-          $session->set("last_check_transaction", $lastRow["fecha"]);
-          $lastId = $lastRow["id"];
-          $lastDate = DateTime::createFromFormat("Y-m-d H:i:s", $lastRow["fecha"]);
-
-          $details = array();
-          foreach($rows as $row){
-            $d = $row["detalle"];
-            array_push($details, $d);
-          }
-
-          echo implode(",", $details);
-        }
-      } else { $session->set("last_check_transaction", date("Y-m-d H:i:s")); }
-    } finally { $db->close(); }
-  }*/
-
-  //rollback transaction
-  public static function rollback(){
-    if(empty(self::$transaction)) throw new UnexpectedValueException("Id de transaccion no definido");
-    unset($_SESSION["transaction"][self::$transaction]);
-    self::$transaction = null;
-  }
-
-  //commit transaction
-  public static function commit(){
-    if(empty(self::$transaction)) throw new UnexpectedValueException("Id de transaccion no definido");
-
-    $db = self::dbInstance();
-    try {
-      $id = $db->escapeString(self::$transaction);
-      $descripcion = $_SESSION["transaction"][self::$transaction]["descripcion"];
-      $detalle = $_SESSION["transaction"][self::$transaction]["detalle"];
-      $tipo = $_SESSION["transaction"][self::$transaction]["tipo"];
-      $fecha = $_SESSION["transaction"][self::$transaction]["actualizado"];
-
-      $queryTransaction = "
-        INSERT INTO transaccion (id, actualizado, descripcion, detalle, tipo)
-        VALUES (" . $id . ", '" . $fecha . "', '" . $db->escapeString($descripcion) . "', '" . $db->escapeString($detalle) . "', '" . $tipo . "');
-      ";
-
-      $db->query($queryTransaction);
-
-      $queryPersist = $descripcion;
-      $queryPersist .= "UPDATE transaccion SET tipo = 'commit', actualizado = '" . date("Y-m-d H:i:s") . "' WHERE id = " . $id . ";";
-      $db->multiQueryTransaction($queryPersist);
-
-      unset($_SESSION["transaction"][self::$transaction]);
-      self::$transaction = null;
-    } finally {
-      self::dbClose();
-    }
-  }
-
-
+  //query and fetch result
   public static function fetchRow($sql){
     $db = self::dbInstance();
     try {
@@ -503,6 +304,7 @@ LIMIT 10;
     } finally { self::dbClose(); }
   }
 
+  //query and fetch result
   public static function fetchAssoc($sql){
     $db = self::dbInstance();
     try {
@@ -511,6 +313,7 @@ LIMIT 10;
     } finally { self::dbClose(); }
   }
 
+  //query and fetch result
   public static function fetchAll($sql){
     $db = self::dbInstance();
     try {
@@ -519,6 +322,7 @@ LIMIT 10;
     } finally { self::dbClose(); }
   }
 
+  //query and fetch result
   public static function fetchAllTimeAr($sql){
     $db = Dba::dbInstance();
     try {
@@ -530,6 +334,7 @@ LIMIT 10;
     }
   }
 
+  //query and fetch result
   public static function fetchAllColumns($sql, $column){
     $db = self::dbInstance();
     try {

@@ -1,0 +1,126 @@
+<?
+
+require_once("class/model/Dba.php");
+require_once("class/FileCache.php");
+
+class Transaction {
+
+  self::$id = null; //las transacciones se guardan en sesion mientras se estan ejecutando para poderlas administrar tambien desde el cliente
+
+  //begin transaction
+  public static function begin($id = null){
+    if(self::$id) throw new Exception("Ya existe una transaccion iniciada");
+
+    if(!empty($id)){
+      if(empty($_SESSION["transaction"][$id])) throw new Exception("El id de transaccion es incorrecto");
+      self::$id = $id;
+      return $id;
+    }
+
+    self::$id = self::uniqId();
+
+    $_SESSION["transaction"][self::$id] = [
+      "sql" => null,
+      "tipo" => "begin",
+      "descripcion" => "",
+      "detalle" => "",
+      "alta" => date("Y-m-d h:i:s"),
+      "actualizado" => date("Y-m-d h:i:s"),
+    ];
+    return self::$id;
+  }
+
+  //actualizar transaccion
+  public static function update(array $data){
+    if(empty(self::$id)) throw new UnexpectedValueException("Id de transaccion no definido");
+
+    if(!empty($data["descripcion"])){
+      if(!empty($_SESSION["transaction"][self::$id]["descripcion"])) $_SESSION["transaction"][self::$id]["descripcion"] .= " ";
+      $_SESSION["transaction"][self::$id]["descripcion"] .= $data["descripcion"];
+    }
+
+    if(!empty($data["detalle"])){
+      if(!empty($_SESSION["transaction"][self::$id]["detalle"])) $_SESSION["transaction"][self::$id]["detalle"] .= ",";
+      $_SESSION["transaction"][self::$id]["detalle"] .= $data["detalle"];
+    }
+
+    if(!empty($data["tipo"])) $_SESSION["transaction"][self::$id]["tipo"] .= $data["tipo"];
+
+    $_SESSION["transaction"][self::$id]["actualizado"] = date("Y-m-d h:i:s");
+
+    return self::$id;
+  }
+
+  //existen nuevas transacciones?
+  public function check(){
+    $timestampCheck = (!empty($_SESSION["check_transaction"])) ? $_SESSION["check_transaction"] : null;
+    $_SESSION["check_transaction"] = date("Y-m-d H:i:s");
+
+    if(!isset($timestampCheck)) return "CLEAR";
+    $timestampTransaction = FileCache::get("transaction"); //se obtiene ultima transaccion en formato "Y-m-d H:i:s"
+    return ($timestampCheck < $timestampTransaction) ? true : false;
+  }
+
+  //obtener transacciones a partir de cierta fecha
+  //$timestamp: string en formato Y-m-d H:i:s
+  public function get($timestamp) {
+    $query = "
+SELECT id, detalle, actualizado
+FROM transaccion
+WHERE tipo = 'commit'
+AND actualizado > '" . $timestamp . "'
+ORDER BY actualizado ASC
+LIMIT 20;
+";
+    $db = self::dbInstance();
+    $result = $db->query($query);
+    $numRows = intval($db->numRows($result));
+
+    if($numRows > 0){
+      if($numRows == 20) return "CLEAR";
+
+      $rows = $db->fetchAll($result);
+
+      $de = [];
+      foreach($rows as $row) array_push($de, $row["detalle"]);
+      return array_unique($de);
+    }
+  }
+
+  //rollback transaction
+  public static function rollback(){
+    if(empty(self::$id)) throw new UnexpectedValueException("Id de transaccion no definido");
+    unset($_SESSION["transaction"][self::$id]);
+    self::$id = null;
+  }
+
+  //commit transaction
+  public static function commit(){
+    if(empty(self::$id)) throw new UnexpectedValueException("Id de transaccion no definido");
+
+    $db = Dba::dbInstance();
+    try {
+      $id = $db->escapeString(self::$id);
+      $descripcion = $db->escapeString($_SESSION["transaction"][self::$id]["descripcion"]);
+      $detalle = $db->escapeString($_SESSION["transaction"][self::$id]["detalle"]);
+      $tipo = $db->escapeString($_SESSION["transaction"][self::$id]["tipo"]);
+      $fecha = $_SESSION["transaction"][self::$id]["actualizado"];
+
+      $queryTransaction = "
+        INSERT INTO transaccion (id, actualizado, descripcion, detalle, tipo)
+        VALUES (" . $id . ", '" . $fecha . "', '" . $descripcion . "', '" .$detalle . "', '" . $tipo . "');
+      ";
+
+      $db->query($queryTransaction);
+
+      $commitDate = date("Y-m-d H:i:s");
+      $queryPersist = $descripcion . " UPDATE transaccion SET tipo = 'commit', actualizado = '" . $commitDate . "' WHERE id = " . $id . ";";
+      $db->multiQueryTransaction($queryPersist);
+
+      unset($_SESSION["transaction"][self::$id]);
+      self::$id = null;
+      FileCache::set("transaction", $commitDate);
+    }
+    finally { Dba::dbClose(); }
+  }
+}
