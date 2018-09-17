@@ -5,7 +5,7 @@ require_once("class/FileCache.php");
 
 class Transaction {
 
-  self::$id = null; //las transacciones se guardan en sesion mientras se estan ejecutando para poderlas administrar tambien desde el cliente
+  public static $id = null; //las transacciones se guardan en sesion mientras se estan ejecutando para poderlas administrar tambien desde el cliente
 
   //begin transaction
   public static function begin($id = null){
@@ -51,24 +51,29 @@ class Transaction {
     return self::$id;
   }
 
-  //existen nuevas transacciones?
-  public function check(){
+  //estado de la cache
+  //CLEAR debe limpiarse toda la cache
+  //false no debe ejecutarse ninguna accion
+  //timestamp Se han ejecutado transacciones posteriores a la fecha indicada
+  public static function checkStatus(){
     $timestampCheck = (!empty($_SESSION["check_transaction"])) ? $_SESSION["check_transaction"] : null;
     $_SESSION["check_transaction"] = date("Y-m-d H:i:s");
 
     if(!isset($timestampCheck)) return "CLEAR";
     $timestampTransaction = FileCache::get("transaction"); //se obtiene ultima transaccion en formato "Y-m-d H:i:s"
-    return ($timestampCheck < $timestampTransaction) ? true : false;
+    return ($timestampCheck < $timestampTransaction) ? $timestampCheck : false;
   }
 
-  //obtener transacciones a partir de cierta fecha
-  //$timestamp: string en formato Y-m-d H:i:s
-  public function get($timestamp) {
+  //detalle de la cache
+  public function checkDetails() {
+    $status = self::checkStatus();
+    if(!$status || $status == "CLEAR") return $status;
+
     $query = "
 SELECT id, detalle, actualizado
 FROM transaccion
 WHERE tipo = 'commit'
-AND actualizado > '" . $timestamp . "'
+AND actualizado > '{$status}'
 ORDER BY actualizado ASC
 LIMIT 20;
 ";

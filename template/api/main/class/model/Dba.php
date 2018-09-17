@@ -184,7 +184,8 @@ class Dba {
   public static function ids($entity, $render = null){
     $sql = self::sqlo($entity)->all($render);
     $ids = self::fetchAllColumns($sql, 0);
-    return array_walk($ids, "toString"); //los ids son tratados como string para evitar un error que se genera en Angular (se resta un numero en los enteros largos)
+    array_walk($ids, "toString"); //los ids son tratados como string para evitar un error que se genera en Angular (se resta un numero en los enteros largos)
+    return $ids;
   }
 
   //id
@@ -213,7 +214,7 @@ class Dba {
   //get or null
   public static function getOrNull($entity, array $id, $render = null){
     $rows = self::getAll($entity, [$id], $render);
-    return (!count($rows)) ? null : return self::sqlo($entity)->json($rows[0]);
+    return (!count($rows)) ? null : self::sqlo($entity)->json($rows[0]);
   }
 
   //get all
@@ -239,20 +240,8 @@ class Dba {
     else return null;
   }
 
-  //deleteAll
-  public static function deleteAll($entity, $ids){
-    if(!Transaction::$id) Transaction::begin();
-    $data = self::sqlo($entity)->deleteAll($ids);
-    $transaction_ids = preg_filter('/^/', $entity, $ids);
-    Transaction::update(["descripcion"=> $data["sql"], "detalle" => implode(",",$transaction_ids)]);
-    return array_walk($data["ids"], "toString");
-  }
 
-  //delete
-  public static function delete($entity, $id){
-    $ids = self::deleteAll($entity, [$id]);
-    return (string)$ids[0];
-  }
+
 
   //es eliminable?
   public static function isDeletable($entity, array $ids){
@@ -274,7 +263,7 @@ class Dba {
   }
 
   //verificar y generar sql
-  public static function _persist($entity, array $row){
+  public static function persist($entity, array $row){
     $sqlo = self::sqlo($entity);
     $row_ = self::_unique($entity, $row); //1) consultar valores a partir de los datos (CUIDADO UTILIZAR _unique en vez de unique para no restringir datos con condiciones auxiliares)
 
@@ -286,14 +275,6 @@ class Dba {
     else { return $sqlo->insert($row); } //3) Si 1 no dio resultado, definir pk e insertar
   }
 
-  //generar sql y guardar transaccion
-  public static function persist($entity, array $row){
-    if(!Transaction::$id) Transaction::begin();
-    $data = self::_persist($entity, $row);
-    Transaction::update(["descripcion"=> $data["sql"], "detalle" => self::entity($entity)->getName() . $data["id"]]);
-
-    return (string)$data["id"];
-  }
 
   //query and fetch result
   public static function fetchRow($sql){

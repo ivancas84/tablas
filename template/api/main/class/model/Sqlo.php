@@ -76,13 +76,13 @@ abstract class EntitySqlo {
   //Formatear valores y definir sql de insercion
   //La insercion tiene en cuenta todos los campos correspondientes a la tabla, si no estan definidos, les asigna "null" o valor por defecto
   //Puede incluirse un id en el array de parametro, si no esta definido se definira uno automaticamente
-  //@return array("id" => "identificador insertado", "sql" => "sql de insercion")
+  //@return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
   public function insert(array $row) {
     $r = $this->initializeInsertSql($row);
     $r_ = $this->formatSql($r);
     $sql = $this->_insertSql($r_);
 
-    return array("id" => $r["id"], "sql" => $sql);
+    return array("id" => $r["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
   }
 
 
@@ -90,13 +90,13 @@ abstract class EntitySqlo {
   //Formatear valores y definir sql de actualizacion
   //La actualizacion solo tiene en cuenta los campos definidos, los que no estan definidos, no seran considerados manteniendo su valor previo.
   //No se puede actualizar el id
-  //@return array("id" => "identificador insertado", "sql" => "sql de insercion")
+  //@return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
   public function update(array $row) {
     $r = $this->initializeUpdateSql($row);
     $r_ = $this->formatSql($r);
     $sql = $this->_updateSql($r_);
 
-    return array("id" => $r["id"], "sql" => $sql);
+    return array("id" => $r["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
   }
 
 
