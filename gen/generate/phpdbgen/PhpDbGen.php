@@ -8,13 +8,6 @@ class PhpDbGen {
     $this->structure = $structure;
   }
 
-
-  public function dba(){
-    require_once("generate/phpdbgen/dba/Dba.php");
-    $gen = new ClassDba();
-    $gen->generateIfNotExists();
-  }
-
   protected function sqlo(Entity $entity){
     require_once("generate/phpdbgen/sqlo/Main.php");
     $gen = new ClassSqloMain($entity);
@@ -48,7 +41,6 @@ class PhpDbGen {
   }
 
   public function generate(){
-    $this->dba();
     $this->includeModelClasses();
 
     foreach($this->structure as $entity) {
