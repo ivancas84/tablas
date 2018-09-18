@@ -1,5 +1,6 @@
 <?php
 
+
 //Comportamiento comun recursivo
 abstract class GenerateEntityRecursive extends GenerateEntity{
 

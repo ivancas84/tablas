@@ -57,28 +57,12 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
   }
 
   protected function methodFields(){
-
-    require_once("generate/phpdbgen/sql/method/fields/Full.php");
     require_once("generate/phpdbgen/sql/method/fields/Fields.php");
-    require_once("generate/phpdbgen/sql/method/fields/label/Label.php");
-    require_once("generate/phpdbgen/sql/method/fields/label/_Label.php");
-    require_once("generate/phpdbgen/sql/method/fields/label/Full.php");
-
-
-
     $gen = new ClassSql_fields($this->getEntity());
     $this->string .= $gen->generate();
 
+    require_once("generate/phpdbgen/sql/method/fields/Full.php");
     $gen = new ClassSql_fieldsFull($this->getEntity());
-    $this->string .= $gen->generate();
-
-    $gen = new ClassSql__fieldsLabel($this->getEntity());
-    $this->string .= $gen->generate();
-
-    $gen = new ClassSql_fieldsLabel($this->getEntity());
-    $this->string .= $gen->generate();
-
-    $gen = new ClassSql_fieldsLabelFull($this->getEntity());
     $this->string .= $gen->generate();
 
     require_once("generate/phpdbgen/sql/method/fields/Aux.php");

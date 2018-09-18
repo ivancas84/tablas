@@ -15,6 +15,11 @@ abstract class EntitySqlo {
   protected $db;     //Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren. Puede requerirse adicionalmente determinar el motor de base de datos para definir la sintaxis adecuada
   protected $sql;    //EntitySql. Atributo auxiliar para facilitar la definicion de consultas sql
 
+  public function _label(array $row, $prefix = ""){
+    $p = (empty($prefix)) ?  ''  : $prefix . '_';
+    return $row["{$p}id"];
+  }
+  public function label(array $row, $prefix = ""){ return $this->_label($row, $prefix); }
 
   public function _json(array $row, $prefix = "") { throw new BadMethodCallException("No implementado"); }
   public function json(array $row) { return $this->_json($row); }

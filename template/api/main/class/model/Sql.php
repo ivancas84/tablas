@@ -238,24 +238,6 @@ abstract class EntitySql {
   public function fieldsFull(){ return $this->fields(); } //sobrescribir si existen relaciones
 
 
-
-  //Definir etiqueta (concatenar campos principales)
-  //Puede requerir relaciones completas!!!
-  public function fieldsLabel(){
-    return $this->entity->getAlias() . "." . $this->entity->getPk()->getName() . " AS label
-";
-  }
-
-  //Definir etiqueta (concatenar campos principales)
-  //Sin relaciones
-  public function _fieldsLabel($prefix){
-    $t = (empty($prefix)) ?  'asig'  : $prefix;
-    $p = (empty($prefix)) ?  ''  : $prefix . '_';
-
-    return "{$t}." . $this->entity->getPk()->getName() . " AS {$p}label
-";
-  }
-
   //Definir sql de campos de cadena de relaciones
   public function fieldsLabelFull(){ return ""; }  //sobrescribir si existen relaciones y son consideradas como campos principales
 

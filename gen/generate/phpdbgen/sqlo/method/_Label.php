@@ -6,8 +6,7 @@
  * @param array $table Tabla de la estructura
  * @param string &$string Codigo generado
  */
-class ClassSql__fieldsLabel extends GenerateEntity{
-
+class ClassSqlo__label extends GenerateEntity{
 
   protected function isFeasible(){
     $nf = $this->entity->getFieldsNf();
@@ -29,31 +28,27 @@ class ClassSql__fieldsLabel extends GenerateEntity{
   protected function start(){
     $this->string .= "
   //***** @override *****
-  public function _fieldsLabel(\$prefix){
-    \$t = (empty(\$prefix)) ?  '{$this->entity->getAlias()}'  : \$prefix;
+  public function _label(\$row, \$prefix = ''){
     \$p = (empty(\$prefix)) ?  ''  : \$prefix . '_';
 
-    return \"CONCAT_WS(', ', ";
+    \$fields = [];
+";
   }
 
   public function body(){
     $nf = $this->entity->getFieldsByType(array("pk","nf"));
 
     foreach ( $nf as $field ) {
-      if($field->isMain()){ $this->string .= "{\$t}.{$field->getName()}, "; }
+      if($field->isMain()) $this->string .= "    array_push(\$fields, \$row[\"{\$p}{$field->getName()}\"]);
+";
     }
   }
 
-
   protected function end(){
-    $this->string = rtrim($this->string); //borrar espacios de mas
-    $this->string = rtrim($this->string, ", "); //borrar ultima coma
-    $this->string .= ") AS {\$p}label\";
+    $this->string .= "    return implode(' ', \$fields);
   }
-
 ";
   }
 
-}
 
-?>
+}

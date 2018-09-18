@@ -1,9 +1,7 @@
 
 <?php
 
-
 class ClassSqlo_json extends GenerateEntity {
-
 
    public function generate(){
     if (!$this->entity->hasRelations()) return;

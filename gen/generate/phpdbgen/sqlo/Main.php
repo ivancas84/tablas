@@ -93,26 +93,34 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
     $this->string .= GenerateClassDataSqlMethodUploadSqlIndex::createAndGetString($this->getEntity());
   }
 
-  protected function _json(){
+
+  protected function json(){
     require_once("generate/phpdbgen/sqlo/method/_Json.php");
     $gen = new ClassSqlo__json($this->getEntity());
     $this->string .= $gen->generate();
-  }
 
-  protected function json(){
     require_once("generate/phpdbgen/sqlo/method/Json.php");
     $gen = new ClassSqlo_json($this->getEntity());
     $this->string .= $gen->generate();
   }
 
 
-  protected function _values(){
+    protected function label(){
+      require_once("generate/phpdbgen/sqlo/method/_Label.php");
+      $gen = new ClassSqlo__label($this->getEntity());
+      $this->string .= $gen->generate();
+
+      require_once("generate/phpdbgen/sqlo/method/Label.php");
+      $gen = new ClassSqlo_label($this->getEntity());
+      $this->string .= $gen->generate();
+    }
+
+
+  protected function values(){
     require_once("generate/phpdbgen/sqlo/method/_Values.php");
     $gen = new ClassSqlo__values($this->getEntity());
     $this->string .= $gen->generate();
-  }
 
-  protected function values(){
     require_once("generate/phpdbgen/sqlo/method/Values.php");
     $gen = new ClassSqlo_values($this->getEntity());
     $this->string .= $gen->generate();
@@ -128,12 +136,9 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
     $this->formatSql();
     $this->uploadSql();
     $this->uploadSqlIndex();
-    $this->_json();
     $this->json();
-    $this->_values();
+    $this->label();
     $this->values();
-
-
    }
 
 
