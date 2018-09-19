@@ -126,7 +126,7 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
     $this->uploadSql();
     $this->uploadSqlIndex();
     $this->json();
-    $this->values();
+    //$this->values(); deprecated
    }
 
 

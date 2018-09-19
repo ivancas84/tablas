@@ -34,6 +34,17 @@ class PhpDbGen {
 
   }
 
+  protected function values(Entity $entity){
+    require_once("generate/phpdbgen/values/Main.php");
+    $gen = new ClassValuesMain($entity);
+    $gen->generate();
+
+    require_once("generate/phpdbgen/values/Values.php");
+    $gen = new ClassValues($entity);
+    $gen->generateIfNotExists();
+  }
+  
+
   protected function IncludeModelClasses(){
     require_once("generate/phpdbgen/includeModelClasses/IncludeModelClasses.php");
     $gen = new IncludeModelClasses($this->structure);
@@ -46,6 +57,7 @@ class PhpDbGen {
     foreach($this->structure as $entity) {
       $this->sqlo($entity);
       $this->sql($entity);
+      $this->values($entity);
     }
   }
 
