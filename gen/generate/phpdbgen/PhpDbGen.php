@@ -43,16 +43,20 @@ class PhpDbGen {
     $gen = new ClassValues($entity);
     $gen->generateIfNotExists();
   }
-  
 
-  protected function IncludeModelClasses(){
-    require_once("generate/phpdbgen/includeModelClasses/IncludeModelClasses.php");
+
+  protected function Includes(){
+    require_once("generate/phpdbgen/include/IncludeModelClasses.php");
     $gen = new IncludeModelClasses($this->structure);
+    $gen->generate();
+
+    require_once("generate/phpdbgen/include/IncludeValuesClasses.php");
+    $gen = new IncludeValuesClasses($this->structure);
     $gen->generate();
   }
 
   public function generate(){
-    $this->includeModelClasses();
+    $this->includes();
 
     foreach($this->structure as $entity) {
       $this->sqlo($entity);

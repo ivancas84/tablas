@@ -36,7 +36,7 @@ class " . $this->getEntity()->getName("XxYy") . "ValuesMain extends EntityValues
 
 
   protected function properties(){
-    foreach($this->entity->getFields() as $field) $this->string .= "  public \${$field->getName('xxYy')};
+    foreach($this->entity->getFieldsByType(["pk", "nf", "fk"]) as $field) $this->string .= "  public \${$field->getName('xxYy')};
 ";
   }
 
