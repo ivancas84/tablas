@@ -105,15 +105,7 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
   }
 
 
-    protected function label(){
-      require_once("generate/phpdbgen/sqlo/method/_Label.php");
-      $gen = new ClassSqlo__label($this->getEntity());
-      $this->string .= $gen->generate();
 
-      require_once("generate/phpdbgen/sqlo/method/Label.php");
-      $gen = new ClassSqlo_label($this->getEntity());
-      $this->string .= $gen->generate();
-    }
 
 
   protected function values(){
@@ -121,9 +113,6 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
     $gen = new ClassSqlo__values($this->getEntity());
     $this->string .= $gen->generate();
 
-    require_once("generate/phpdbgen/sqlo/method/Values.php");
-    $gen = new ClassSqlo_values($this->getEntity());
-    $this->string .= $gen->generate();
   }
 
 
@@ -137,7 +126,6 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
     $this->uploadSql();
     $this->uploadSqlIndex();
     $this->json();
-    $this->label();
     $this->values();
    }
 
