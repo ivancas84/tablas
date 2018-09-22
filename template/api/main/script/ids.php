@@ -9,7 +9,8 @@ try{
   //el uso de parametros es dinamico
   //se puede definir un parametro opcional "data" que posee un string en formato json para facilitar el uso de tipos basicos
 
-  $render = Dba::render(ENTITY, $params);
+  $display = Dba::display($params);
+  $render = Dba::render(ENTITY, $display);
   $ids = Dba::ids(ENTITY, $render);
   echo json_encode($ids);
 

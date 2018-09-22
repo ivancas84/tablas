@@ -8,13 +8,6 @@ class PhpDbGen {
     $this->structure = $structure;
   }
 
-
-  public function dba(){
-    require_once("generate/phpdbgen/dba/Dba.php");
-    $gen = new ClassDba();
-    $gen->generateIfNotExists();
-  }
-
   protected function sqlo(Entity $entity){
     require_once("generate/phpdbgen/sqlo/Main.php");
     $gen = new ClassSqloMain($entity);
@@ -41,19 +34,34 @@ class PhpDbGen {
 
   }
 
-  protected function IncludeModelClasses(){
-    require_once("generate/phpdbgen/includeModelClasses/IncludeModelClasses.php");
+  protected function values(Entity $entity){
+    require_once("generate/phpdbgen/values/Main.php");
+    $gen = new ClassValuesMain($entity);
+    $gen->generate();
+
+    require_once("generate/phpdbgen/values/Values.php");
+    $gen = new ClassValues($entity);
+    $gen->generateIfNotExists();
+  }
+
+
+  protected function Includes(){
+    require_once("generate/phpdbgen/include/IncludeModelClasses.php");
     $gen = new IncludeModelClasses($this->structure);
+    $gen->generate();
+
+    require_once("generate/phpdbgen/include/IncludeValuesClasses.php");
+    $gen = new IncludeValuesClasses($this->structure);
     $gen->generate();
   }
 
   public function generate(){
-    $this->dba();
-    $this->includeModelClasses();
+    $this->includes();
 
     foreach($this->structure as $entity) {
       $this->sqlo($entity);
       $this->sql($entity);
+      $this->values($entity);
     }
   }
 

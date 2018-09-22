@@ -3,8 +3,7 @@
 require_once("class/model/Dba.php");
 
 try{
-
-  $details = Dba::check();
+  $details = Transaction::checkDetails();
   echo json_encode(["data" => $details]);
 
 } catch (Exception $ex) {

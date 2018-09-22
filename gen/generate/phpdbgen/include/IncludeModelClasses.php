@@ -1,6 +1,6 @@
 <?php
 
-require_once("generate/Generate.php");
+require_once("generate/GenerateFile.php");
 
 class IncludeModelClasses extends GenerateFile{
 
@@ -8,7 +8,6 @@ class IncludeModelClasses extends GenerateFile{
   public function __construct(array $structure){
     $this->structure = $structure;
     parent::__construct(PATH_ROOT."api/config/", "modelClasses.php");
-
   }
 
   protected function generateCode(){

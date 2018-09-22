@@ -15,7 +15,7 @@ class ClassSqlo__values extends GenerateEntity {
   protected function start(){
     $this->string .= "
   //@override
-  public function _values(array \$row, \$prefix = \"\"){
+  public function _values(array \$row){
     if(empty(\$row)) return null;
     \$row_ = [];
 ";
@@ -23,7 +23,7 @@ class ClassSqlo__values extends GenerateEntity {
 
   protected function pk(){
     $field = $this->getEntity()->getPk();
-    $this->string .= "    if(isset(\$row[\$prefix . \"" . $field->getName() . "\"])) \$row_[\"" . $field->getName() . "\"] = (is_null(\$row[\$prefix . \"" . $field->getName() . "\"])) ? null : (string)\$row[\$prefix . \"" . $field->getName() . "\"]; //la pk se trata como string debido a un comportamiento erratico en angular 2 que al tratarlo como integer resta 1 en el valor
+    $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$row_[\"" . $field->getName() . "\"] = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : (string)\$row[\"" . $field->getName() . "\"]; //la pk se trata como string debido a un comportamiento erratico en angular 2 que al tratarlo como integer resta 1 en el valor
 ";
   }
 
@@ -33,13 +33,13 @@ class ClassSqlo__values extends GenerateEntity {
 
 
       switch($field->getDataType()){
-        case "integer": $this->string .= "    if(isset(\$row[\$prefix . \"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\$prefix . \"" . $field->getName() . "\"])) ? null : intval(\$row[\$prefix . \"" . $field->getName() . "\"]);
+        case "integer": $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : intval(\$row[\"" . $field->getName() . "\"]);
 ";
         break;
-        case "float": $this->string .= "    if(isset(\$row[\$prefix . \"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\$prefix . \"" . $field->getName() . "\"])) ? null : floatval(\$row[\$prefix . \"" . $field->getName() . "\"]);
+        case "float": $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : floatval(\$row[\"" . $field->getName() . "\"]);
         ";
         break;
-        case "boolean": $this->string .= "    if(isset(\$row[\$prefix . \"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\$prefix . \"" . $field->getName() . "\"])) ? null : settypebool(\$row[\$prefix . \"" . $field->getName() . "\"]);
+        case "boolean": $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : settypebool(\$row[\"" . $field->getName() . "\"]);
 ";
         break;
 
@@ -48,24 +48,24 @@ class ClassSqlo__values extends GenerateEntity {
         case "timestamp": $this->timestamp($field); break;
 
 
-        default: $this->string .= "    if(isset(\$row[\$prefix . \"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\$prefix . \"" . $field->getName() . "\"])) ? null : (string)\$row[\$prefix . \"" . $field->getName() . "\"];
+        default: $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : (string)\$row[\"" . $field->getName() . "\"];
 ";
       }
     }
   }
 
   protected function date(Field $field){
-    $this->string .= "    if(isset(\$row[\$prefix . \"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\$prefix . \"" . $field->getName() . "\"])) ? null : DateTime::createFromFormat('Y-m-d', \$row[\$prefix . \"" . $field->getName() . "\"]);
+    $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : DateTime::createFromFormat('Y-m-d', \$row[\"" . $field->getName() . "\"]);
 ";
   }
 
   protected function time(Field $field){
-    $this->string .= "    if(isset(\$row[\$prefix . \"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\$prefix . \"" . $field->getName() . "\"])) ? null : DateTime::createFromFormat('H:i:s', \$row[\$prefix . \"" . $field->getName() . "\"]);
+    $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : DateTime::createFromFormat('H:i:s', \$row[\"" . $field->getName() . "\"]);
 ";
   }
 
   protected function timestamp(Field $field){
-    $this->string .= "    if(isset(\$row[\$prefix . \"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\$prefix . \"" . $field->getName() . "\"])) ? null : DateTime::createFromFormat('Y-m-d H:i:s', \$row[\$prefix . \"" . $field->getName() . "\"]);
+    $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : DateTime::createFromFormat('Y-m-d H:i:s', \$row[\"" . $field->getName() . "\"]);
 ";
   }
 
