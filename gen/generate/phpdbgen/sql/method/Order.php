@@ -1,6 +1,6 @@
 <?php
 
-
+//NO UTILIZADO, SE DEJA COMO REFERENCIA
 require_once("generate/GenerateEntityRecursive.php");
 
 class ClassSql_order extends GenerateEntityRecursive{

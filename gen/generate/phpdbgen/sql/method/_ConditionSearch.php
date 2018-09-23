@@ -21,9 +21,9 @@ class ClassSql__conditionSearch extends GenerateEntity{
   protected function start(){
     $this->string .= "
   //***** @override *****
-  public function _conditionSearch(\$search = \"\", \$prefix = \"\"){
+  public function _conditionSearch(\$search = \"\"){
     if(empty(\$search)) return '';
-    \$p = (\$prefix) ? \$prefix . '_' : '';
+    \$p = \$this->prf();
     \$condition = \"\";
 
 ";
@@ -50,7 +50,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
   protected function text($fieldName, $alias){
     $or = ($this->defineOr()) ? " OR " : "";
 
-    $this->string .= "    \$field = \$this->_mappingField(\$p . '{$fieldName}', \$prefix);
+    $this->string .= "    \$field = \$this->_mappingField(\$p.'{$fieldName}');
     \$condition .= \"". $or . "\" . \$this->_conditionTextApprox(\$field, \$search);
 " ;
 
@@ -59,7 +59,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
   protected function number($fieldName, $alias){
     $or = ($this->defineOr()) ? " OR " : "";
 
-    $this->string .= "    \$field = \$this->_mappingField(\$p . '{$fieldName}', \$prefix);
+    $this->string .= "    \$field = \$this->_mappingField(\$p.'{$fieldName}');
     \$condition .= \"". $or . "\" . \$this->_conditionNumberApprox(\$field, \$search);
 " ;
   }
@@ -67,7 +67,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
   protected function date($fieldName, $alias){
     $or = ($this->defineOr()) ? " OR " : "";
 
-    $this->string .= "    \$field = \$this->_mappingField(\$p . '{$fieldName}', \$prefix);
+    $this->string .= "    \$field = \$this->_mappingField(\$p.'{$fieldName}');
     \$condition .= \"". $or . "\" . \$this->_conditionDateApprox(\$field, \$search);
 " ;
   }
@@ -75,7 +75,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
   protected function year($fieldName, $alias){
     $or = ($this->defineOr()) ? " OR " : "";
 
-    $this->string .= "    \$field = \$this->_mappingField(\$p . '{$fieldName}', \$prefix);
+    $this->string .= "    \$field = \$this->_mappingField(\$p.'{$fieldName}');
     \$condition .= \"". $or . "\" . \$this->_conditionYearApprox(\$field, \$search);
 " ;
   }
@@ -84,7 +84,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
     $or = ($this->defineOr()) ? " OR " : "";
 
 
-    $this->string .= "    \$field = \$this->_mappingField(\$p . '{$fieldName}', \$prefix);
+    $this->string .= "    \$field = \$this->_mappingField(\$p.'{$fieldName}');
     \$condition .= \"". $or . "\" . \$this->_conditionTimestampApprox(\$field, \$search);
 " ;
   }

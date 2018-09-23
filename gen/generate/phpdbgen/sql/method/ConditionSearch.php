@@ -58,13 +58,14 @@ class ClassSql_conditionSearch extends GenerateEntity{
   //***** @override *****
   public function conditionSearch(\$search = \"\"){
     if(empty(\$search)) return '';
-    \$condition = \$this->_conditionSearch(\$search);
-
+    \$condition = \$this->_conditionSearch(\$search) . \"
 ";
   }
 
 
   protected function end(){
+    $pos = strrpos($this->string, " .");
+    $this->string = substr_replace($this->string , ";" , $pos, 4);
     $this->string .= "    return \"(\" . \$condition . \")\";
   }
 
@@ -76,7 +77,7 @@ class ClassSql_conditionSearch extends GenerateEntity{
 
 
   protected function condition(Entity $entity, $alias){
-    $this->string .= "  \$condition .= \" OR \" . Dba::sql('{$entity->getName()}')->_conditionSearch(\$search, '{$alias}');
+    $this->string .= " OR \" . Dba::sql('{$entity->getName()}', '{$alias}')->_conditionSearch(\$search) . \"
 ";
   }
 

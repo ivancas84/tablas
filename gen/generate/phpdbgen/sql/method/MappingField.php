@@ -17,7 +17,7 @@ class ClassSql_mappingField extends GenerateEntity{
     $this->string .= "
   //@override
   public function mappingField(\$field){
-    \$field_ = \$this->_mappingField(\$field); if(\$field_) return \$field_;
+    if(\$f = \$this->_mappingField(\$field)) return \$f;
 ";
   }
 
@@ -67,7 +67,7 @@ class ClassSql_mappingField extends GenerateEntity{
 
 
   protected function mappingFieldRelation(Entity $entity, $prefix) {
-    $this->string .= "    \$field_ = Dba::sql('{$entity->getName()}')->_mappingField(\$field, '" . $prefix . "'); if(\$field_) return \$field_;
+    $this->string .= "    if(\$f = Dba::sql('{$entity->getName()}', '" . $prefix . "')->_mappingField(\$field)) return \$f;
 ";
   }
 

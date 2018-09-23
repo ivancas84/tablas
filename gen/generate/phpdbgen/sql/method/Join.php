@@ -9,13 +9,14 @@ class ClassSql_join extends GenerateEntity {
     $this->string .= "
   //@override
   public function join(){
-    \$sql = '';
-";
+    return ";
 
   }
 
   protected function end(){
-    $this->string .= "    return \$sql;
+    $pos = strrpos($this->string, ".");
+    $this->string = substr_replace($this->string , ";" , $pos, 3);
+    $this->string .= "      
   }
 ";
   }
@@ -28,8 +29,8 @@ class ClassSql_join extends GenerateEntity {
       $pk = $field->getEntityRef()->getPk();
       $prefixTemp = $prefixAux . $field->getAlias();
 
-      $this->string .= "    \$sql .= Dba::sql('{$field->getEntityRef()->getName()}')->_join('{$field->getName()}', '{$tableAux}', '{$prefixTemp}');
-";
+      $this->string .= "Dba::sql('{$field->getEntityRef()->getName()}', '{$prefixTemp}')->_join('{$field->getName()}', '{$tableAux}') . '
+' . ";
 
       $this->recursive($field->getEntityRef(), $tablesVisited, $prefixTemp);
     }
@@ -43,8 +44,8 @@ class ClassSql_join extends GenerateEntity {
       $pk = $field->getEntityRef()->getPk();
       $prefixTemp = $prefixAux . $fieldAlias ;
 
-      $this->string .= "    \$sql .= Dba::sql('{$field->getEntity()->getName()}')->_joinR('{$field->getName()}', '{$tableAux}', '{$prefixTemp}');
-";
+      $this->string .= "Dba::sql('{$field->getEntity()->getName()}', '{$prefixTemp}')->_joinR('{$field->getName()}', '{$tableAux}') . '
+' . ";
 
       //$this->string .= $this->recursive($field->getEntity(), $tablesVisited, $prefixTemp);
 

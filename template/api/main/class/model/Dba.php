@@ -38,14 +38,12 @@ class Dba {
     return self::$sqlos[$entity];
   }
 
-  //singleton sql
-  public static function sql($entity) {
-    if(!array_key_exists($entity, self::$sqls)){
-      $sqlName = snake_case_to("XxYy", $entity) . "Sql";
-      $sql = new $sqlName;
-      self::$sqls[$entity] = $sql;
-    }
-    return self::$sqls[$entity];
+  //crear instancias de sql
+  public static function sql($entity, $prefix = NULL) {
+    $sqlName = snake_case_to("XxYy", $entity) . "Sql";
+    $sql = new $sqlName;
+    if($prefix) $sql->prefix = $prefix;
+    return $sql;
   }
 
   //singleton db
