@@ -108,16 +108,13 @@ WHERE " . $this->entity->getPk()->getName() . " = " . $r["id"] . ";
   public function count($render = NULL) {
     $r = $this->render($render);
 
-    $sql = "
+    return "
 SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
+{$this->sql->from()}
+{$this->sql->join()}
+{$this->sql->joinAux()}
+{$this->sql->conditionAll($r->getAdvanced(), $r->getSearch())}
 ";
-    $sql .= $this->sql->from();
-    $sql .= $this->sql->join();
-    $sql .= $this->sql->joinAux();
-    $sql .= $this->sql->conditionAll($r->getAdvanced(), $r->getSearch());
-    $sql .= ";
-";
-    return $sql;
   }
 
 
@@ -160,17 +157,14 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $conditionUniqueFields = $this->sql->conditionUniqueFields($row);
     if(empty($conditionUniqueFields)) return null;
 
-    $sql = "SELECT DISTINCT ";
-    $sql .= $this->sql->fieldsAll();
-    $sql .= $this->sql->from();
-    $sql .= $this->sql->join();
-    $sql .= $this->sql->joinAux();
-    $sql .= "WHERE ";
-    $sql .= $conditionUniqueFields;
-    $sql .= ";
+    return "SELECT DISTINCT
+{$this->sql->fieldsAll()}
+{$this->sql->from()}
+{$this->sql->join()}
+{$this->sql->joinAux()}
+WHERE
+{$conditionUniqueFields}
 ";
-
-    return $sql;
   }
 
 
@@ -182,19 +176,15 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $conditionUniqueFields = $this->sql->conditionUniqueFields($row);
     if(empty($conditionUniqueFields)) return null;
 
-    $sql = "SELECT DISTINCT ";
-    $sql .= $this->sql->fieldsAll();
-    $sql .= $this->sql->from();
-    $sql .= $this->sql->join();
-    $sql .= $this->sql->joinAux();
-    $sql .= "WHERE ";
-    $sql .= $conditionUniqueFields;
-    $sql .=  $this->sql->conditionAll($r->getAdvanced(), $r->getSearch(), "AND");
-
-    $sql .= ";
+    return "SELECT DISTINCT
+{$this->sql->fieldsAll()}
+{$this->sql->from()}
+{$this->sql->join()}
+{$this->sql->joinAux()}
+WHERE
+{$conditionUniqueFields}
+{$this->sql->conditionAll($r->getAdvanced(), $r->getSearch(), 'AND')}
 ";
-
-    return $sql;
   }
 
 
