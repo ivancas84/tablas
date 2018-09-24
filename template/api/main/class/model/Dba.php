@@ -206,13 +206,13 @@ class Dba {
   public static function get($entity, $id, $render = null) {
     $rows = self::getAll($entity, [$id], $render);
     if (!count($rows)) throw new Exception("La búsqueda por id no arrojó ningun resultado");
-    return self::sqlo($entity)->json($rows[0]);
+    return $rows[0];
   }
 
   //get or null
   public static function getOrNull($entity, array $id, $render = null){
     $rows = self::getAll($entity, [$id], $render);
-    return (!count($rows)) ? null : self::sqlo($entity)->json($rows[0]);
+    return (!count($rows)) ? null : $rows[0];
   }
 
   //get all
