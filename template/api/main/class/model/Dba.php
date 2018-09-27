@@ -19,7 +19,7 @@ class Dba {
   public static $entities = [];
 
   //singleton Entity
-  public static function entity($entity){
+  public static function entity($entity) {
     if(!array_key_exists($entity, self::$entities)){
       $entityName = snake_case_to("XxYy", $entity) . "Entity";
       $entity_ = new $entityName;
@@ -174,7 +174,7 @@ class Dba {
   //all
   public static function all($entity, $render = null){
     $sql = self::sqlo($entity)->all($render);
-    $rows = self::fetchAll($sql);
+    $rows = self::fetchAll($sql);    
     return self::sqlo($entity)->jsonAll($rows);
   }
 
