@@ -4,29 +4,22 @@ require_once("class/model/sql/curso/Main.php");
 
 class CursoSql extends CursoSqlMain {
 
+  public function _mappingField($field) {
+    $field_ = parent::_mappingField($field);
 
-  public function _mappingField($field, $prefix='') {
-    $field_ = parent::_mappingField($field, $prefix);
-
-    $prf = (empty($prefix)) ? '' : $prefix . '_';
-    $aux = (empty($prefix)) ? 'horario' : $prf."horario";
-    $aux2 = (empty($prefix)) ? 'pa' : $prf . "pa";
-
+    $prf = $this->prf();
 
     switch ($field) {
-      case $prf.'horario': return $aux.".horario";
-      case $prf.'profesor_activo': return $aux2.".id";
+      case $prf.'horario': return $prf."horario.horario";
+      case $prf.'profesor_activo': return $prf . "pa.id";
 
       default: return $field_;
     }
   }
 
-
-
-  //JOIN HORARIO: todos los horarios asociados al curso pueden ser concatenados en uno solo (ver fieldHorario)
-  public function _joinAux($prefix = ""){
-    $p = (empty($prefix)) ? '' : $prefix . '_';
-    $t = (empty($prefix)) ? 'curs.' : $prefix . '.';
+  public function _joinAux(){
+    $p = $this->prf();
+    $t = $this->prt();
 
     return "
 LEFT JOIN (
@@ -41,7 +34,7 @@ LEFT JOIN (
   AND comision.publicar
   AND plan.id !=3
   GROUP BY curso.id
-) AS {$p}horario ON ({$p}horario.curso = {$t}id)
+) AS {$p}horario ON ({$p}horario.curso = {$t}.id)
 ";
   }
 

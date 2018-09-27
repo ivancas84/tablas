@@ -9,161 +9,155 @@ class IdPersonaSqlMain extends EntitySql{
   }
 
   //@override
-  public function _mappingField($field, $prefix=''){
-    $prf = (empty($prefix)) ? '' : $prefix . '_';
-    $prt = (empty($prefix)) ? 'ip' : $prefix;
+  public function _mappingField($field){
+    $p = $this->prf();
+    $t = $this->prt();
 
     switch ($field) {
-      case $prf.'id': return $prt.".id";
-      case $prf.'nombres': return $prt.".nombres";
-      case $prf.'apellidos': return $prt.".apellidos";
-      case $prf.'sobrenombre': return $prt.".sobrenombre";
-      case $prf.'fecha_nacimiento': return $prt.".fecha_nacimiento";
-      case $prf.'tipo_documento': return $prt.".tipo_documento";
-      case $prf.'numero_documento': return $prt.".numero_documento";
-      case $prf.'email': return $prt.".email";
-      case $prf.'genero': return $prt.".genero";
-      case $prf.'cuil': return $prt.".cuil";
-      case $prf.'alta': return $prt.".alta";
+      case $p.'id': return $t.".id";
+      case $p.'nombres': return $t.".nombres";
+      case $p.'apellidos': return $t.".apellidos";
+      case $p.'sobrenombre': return $t.".sobrenombre";
+      case $p.'fecha_nacimiento': return $t.".fecha_nacimiento";
+      case $p.'tipo_documento': return $t.".tipo_documento";
+      case $p.'numero_documento': return $t.".numero_documento";
+      case $p.'email': return $t.".email";
+      case $p.'genero': return $t.".genero";
+      case $p.'cuil': return $t.".cuil";
+      case $p.'alta': return $t.".alta";
+      case $p.'telefonos': return $t.".telefonos";
       default: return null;
     }
   }
 
   //@override
   public function mappingField($field){
-    $field_ = $this->_mappingField($field); if($field_) return $field_;
-    $field_ = Dba::sql('alumno')->_mappingField($field, 'alumper'); if($field_) return $field_;
+    if($f = $this->_mappingField($field)) return $f;
+    if($f = Dba::sql('alumno', 'alumper')->_mappingField($field)) return $f;
     throw new Exception("Campo no reconocido " . $field);
   }
 
-  public function fields($prefix = ''){
-    $p = (empty($prefix)) ?  ''  : $prefix . '_';
+  public function fields(){
+    //No todos los campos se extraen de la entidad, por eso es necesario mapearlos
+    $p = $this->prf();
     return '
-' . $this->_mappingField($p.'id', $prefix) . ' AS ' . $p.'id,
-' . $this->_mappingField($p.'nombres', $prefix) . ' AS ' . $p.'nombres,
-' . $this->_mappingField($p.'apellidos', $prefix) . ' AS ' . $p.'apellidos,
-' . $this->_mappingField($p.'sobrenombre', $prefix) . ' AS ' . $p.'sobrenombre,
-' . $this->_mappingField($p.'fecha_nacimiento', $prefix) . ' AS ' . $p.'fecha_nacimiento,
-' . $this->_mappingField($p.'tipo_documento', $prefix) . ' AS ' . $p.'tipo_documento,
-' . $this->_mappingField($p.'numero_documento', $prefix) . ' AS ' . $p.'numero_documento,
-' . $this->_mappingField($p.'email', $prefix) . ' AS ' . $p.'email,
-' . $this->_mappingField($p.'genero', $prefix) . ' AS ' . $p.'genero,
-' . $this->_mappingField($p.'cuil', $prefix) . ' AS ' . $p.'cuil,
-' . $this->_mappingField($p.'alta', $prefix) . ' AS ' . $p.'alta';
+' . $this->_mappingField($p.'id') . ' AS ' . $p.'id,
+' . $this->_mappingField($p.'nombres') . ' AS ' . $p.'nombres,
+' . $this->_mappingField($p.'apellidos') . ' AS ' . $p.'apellidos,
+' . $this->_mappingField($p.'sobrenombre') . ' AS ' . $p.'sobrenombre,
+' . $this->_mappingField($p.'fecha_nacimiento') . ' AS ' . $p.'fecha_nacimiento,
+' . $this->_mappingField($p.'tipo_documento') . ' AS ' . $p.'tipo_documento,
+' . $this->_mappingField($p.'numero_documento') . ' AS ' . $p.'numero_documento,
+' . $this->_mappingField($p.'email') . ' AS ' . $p.'email,
+' . $this->_mappingField($p.'genero') . ' AS ' . $p.'genero,
+' . $this->_mappingField($p.'cuil') . ' AS ' . $p.'cuil,
+' . $this->_mappingField($p.'alta') . ' AS ' . $p.'alta,
+' . $this->_mappingField($p.'telefonos') . ' AS ' . $p.'telefonos';
   }
 
     public function fieldsFull(){
-    $fields = $this->fields() . ', ';
-    $fields .= Dba::sql('alumno')->fields('alumper') . '';
-    return $fields;
-  }
-
-  public function fieldsLabelFull(){
-    $fields = '';
-    $fields .= Dba::sql('alumno')->_fieldsLabel('alumper') . '';
+    $fields = $this->fields() . ',
+' . Dba::sql('alumno', 'alumper')->fields() . '
+';
     return $fields;
   }
 
   public function fieldsAux(){
     $fields = $this->_fieldsAux();
 
-    $fields_ = Dba::sql('alumno')->_fieldsAux('alumper');
-    $fields .= concat($fields_, ', ', '', $fields);
-
+    if($f = Dba::sql('alumno', 'alumper')->_fieldsAux()) $fields .= concat($f, ', ', '', $fields);
     return $fields;
   }
 
 
   //@override
   public function join(){
-    $sql = '';
-    $sql .= Dba::sql('alumno')->_joinR('persona', 'ip', 'alumper');
-    return $sql;
+    return Dba::sql('alumno', 'alumper')->_joinR('persona', 'ip') . '
+' ;      
   }
-public function joinAux(){
-    $join = $this->_joinAux() . '
-';
-    $sql = new AlumnoSql; $join .= $sql->_joinAux('alumper') . '
-';
-    return $join;
+  public function joinAux(){
+    $join = "";
+    if($j = $this->_joinAux()) $join .= "{$j}
+";
+    if ($j = Dba::sql('alumno', 'alumper')->_joinAux()) $join .= "{$j}
+";
+  return $join;
   }
 
 
   //***** @override *****
   public function conditionSearch($search = ""){
     if(empty($search)) return '';
-    $condition = $this->_conditionSearch($search);
-
-  $condition .= " OR " . Dba::sql('alumno')->_conditionSearch($search, 'alumper');
+    $condition = $this->_conditionSearch($search) . "
+ OR " . Dba::sql('alumno', 'alumper')->_conditionSearch($search);
     return "(" . $condition . ")";
   }
 
 
   //***** @override *****
-  public function _conditionSearch($search = "", $prefix = ""){
+  public function _conditionSearch($search = ""){
     if(empty($search)) return '';
-    $p = ($prefix) ? $prefix . '_' : '';
+    $p = $this->prf();
     $condition = "";
 
-    $field = $this->_mappingField($p . 'id', $prefix);
+    $field = $this->_mappingField($p.'id');
     $condition .= "" . $this->_conditionNumberApprox($field, $search);
-    $field = $this->_mappingField($p . 'nombres', $prefix);
+    $field = $this->_mappingField($p.'nombres');
     $condition .= " OR " . $this->_conditionTextApprox($field, $search);
-    $field = $this->_mappingField($p . 'apellidos', $prefix);
+    $field = $this->_mappingField($p.'apellidos');
     $condition .= " OR " . $this->_conditionTextApprox($field, $search);
-    $field = $this->_mappingField($p . 'sobrenombre', $prefix);
+    $field = $this->_mappingField($p.'sobrenombre');
     $condition .= " OR " . $this->_conditionTextApprox($field, $search);
-    $field = $this->_mappingField($p . 'fecha_nacimiento', $prefix);
+    $field = $this->_mappingField($p.'fecha_nacimiento');
     $condition .= " OR " . $this->_conditionDateApprox($field, $search);
-    $field = $this->_mappingField($p . 'tipo_documento', $prefix);
+    $field = $this->_mappingField($p.'tipo_documento');
     $condition .= " OR " . $this->_conditionTextApprox($field, $search);
-    $field = $this->_mappingField($p . 'numero_documento', $prefix);
+    $field = $this->_mappingField($p.'numero_documento');
     $condition .= " OR " . $this->_conditionTextApprox($field, $search);
-    $field = $this->_mappingField($p . 'email', $prefix);
+    $field = $this->_mappingField($p.'email');
     $condition .= " OR " . $this->_conditionTextApprox($field, $search);
-    $field = $this->_mappingField($p . 'genero', $prefix);
+    $field = $this->_mappingField($p.'genero');
     $condition .= " OR " . $this->_conditionTextApprox($field, $search);
-    $field = $this->_mappingField($p . 'cuil', $prefix);
+    $field = $this->_mappingField($p.'cuil');
     $condition .= " OR " . $this->_conditionTextApprox($field, $search);
-    $field = $this->_mappingField($p . 'alta', $prefix);
+    $field = $this->_mappingField($p.'alta');
     $condition .= " OR " . $this->_conditionTimestampApprox($field, $search);
+    $field = $this->_mappingField($p.'telefonos');
+    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
     return "(" . $condition . ")";
   }
 
   //@override
-  public function _conditionAdvanced($field, $option, $value, $prefix = ''){
-    $p = (empty($prefix)) ?  ''  : $prefix . '_';
+  public function _conditionAdvanced($field, $option, $value){
+    $p = $this->prf();
 
-    $f = $this->_mappingField($field, $prefix);
+    $f = $this->_mappingField($field);
     switch ($field){
       case "{$p}id": return $this->conditionNumber($f, $value, $option);
-       case "{$p}nombres": return $this->conditionText($f, $value, $option);
-       case "{$p}apellidos": return $this->conditionText($f, $value, $option);
-       case "{$p}sobrenombre": return $this->conditionText($f, $value, $option);
+      case "{$p}nombres": return $this->conditionText($f, $value, $option);
+      case "{$p}apellidos": return $this->conditionText($f, $value, $option);
+      case "{$p}sobrenombre": return $this->conditionText($f, $value, $option);
       case "{$p}fecha_nacimiento": return $this->conditionDate($f, $value, $option);
-       case "{$p}tipo_documento": return $this->conditionText($f, $value, $option);
-       case "{$p}numero_documento": return $this->conditionText($f, $value, $option);
-       case "{$p}email": return $this->conditionText($f, $value, $option);
-       case "{$p}genero": return $this->conditionText($f, $value, $option);
-       case "{$p}cuil": return $this->conditionText($f, $value, $option);
+      case "{$p}tipo_documento": return $this->conditionText($f, $value, $option);
+      case "{$p}numero_documento": return $this->conditionText($f, $value, $option);
+      case "{$p}email": return $this->conditionText($f, $value, $option);
+      case "{$p}genero": return $this->conditionText($f, $value, $option);
+      case "{$p}cuil": return $this->conditionText($f, $value, $option);
+      case "{$p}telefonos": return $this->conditionText($f, $value, $option);
     }
   }
 
   //@override
-  protected function conditionAdvancedMain($field, $option, $value, $prefix = '') {
-    $p = (empty($prefix)) ?  ''  : $prefix . '_';
-
-    if($c = $this->_conditionAdvanced($field, $option, $value, $prefix)) return $c;
-    $sql = new AlumnoSql; if($c = $sql->_conditionAdvanced($field, $option, $value, $p.'alumper')) return $c;
+  protected function conditionAdvancedMain($field, $option, $value) {
+    if($c = $this->_conditionAdvanced($field, $option, $value)) return $c;
+    if($c = Dba::sql('alumno','alumper')->_conditionAdvanced($field, $option, $value)) return $c;
     throw new Exception("No pudo definirse la condicion avanzada {$field} {$option} {$value}");
   }
 
   //@override
   public function conditionAux() {
     $sqlCond = $this->_conditionAux();
-    $sql = new AlumnoSql; $cond = $sql->_conditionAux('alumper');
-    $sqlCond .= concat($cond, ' AND', '', $sqlCond);
-
+    if($cond = Dba::sql('alumno', 'alumper')->_conditionAux()) $sqlCond .= concat($cond, ' AND', '', $sqlCond);
     return (empty($sqlCond)) ? '' : "({$sqlCond})";
   }
 
