@@ -22,9 +22,7 @@ class ClassSql_conditionAux extends GenerateEntityRecursive{
   }
 
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    \$sql = new {$entity->getName("XxYy")}Sql; \$cond = \$sql->_conditionAux('{$prefix}');
-    \$sqlCond .= concat(\$cond, ' AND', '', \$sqlCond);
-
+    $this->string .= "    if(\$cond = Dba::sql('{$entity->getName()}', '{$prefix}')->_conditionAux()) \$sqlCond .= concat(\$cond, ' AND', '', \$sqlCond);
 ";
   }
 

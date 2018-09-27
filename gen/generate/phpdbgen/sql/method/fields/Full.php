@@ -17,8 +17,8 @@ class ClassSql_fieldsFull extends GenerateEntityRecursive {
 
   protected function start(){
     $this->string .= "  public function fieldsFull(){
-    \$fields = \$this->fields() . ', ';
-";
+    \$fields = \$this->fields() . ',
+' . ";
   }
 
   /**
@@ -28,16 +28,17 @@ class ClassSql_fieldsFull extends GenerateEntityRecursive {
   * @return string Codigo generado
   */
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    \$fields .= Dba::sql('{$entity->getName()}')->fields('{$prefix}') . ',
-';
-";
+    $this->string .= "Dba::sql('{$entity->getName()}', '{$prefix}')->fields() . ',
+' . ";
 
   }
 
   protected function end(){
     $pos = strrpos($this->string, ",");
-    $this->string = substr_replace($this->string , "" , $pos, 2);
-    $this->string .= "    return \$fields;
+    $this->string = substr_replace($this->string , "" , $pos, 6);
+    $this->string .= "
+';
+    return \$fields;
   }
 
 ";

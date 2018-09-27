@@ -15,7 +15,7 @@ class ClassValues__construct extends GenerateEntity {
   protected function start(){
     $this->string .= "
   //@override
-  public function __construct(array \$row){
+  public function __construct(array \$row = NULL){
     if(empty(\$row)) return;
 ";
   }

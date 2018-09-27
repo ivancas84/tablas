@@ -12,12 +12,20 @@ require_once("class/db/Interface.php");
 //Esta clase ofrece soporte y traduccion para motores MySql (prioritario) y Postgresql. Si se dificulta la traduccion para motores no prioritarios entonces no se definen los metodos
 abstract class EntitySql {
 
-  protected $entity; //Entity. Configuracion de la tabla
-  protected $db;
+  public $prefix = '';
+  public $entity; //Entity. Configuracion de la tabla
+  public $db;
     //Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren.
     //Ademas, ciertos metodos requieren determinar el motor de base de datos para definir la sintaxis SQL adecuada
 
-  public function _mappingField($field, $prefix = ""){ throw new BadMethodCallException("Not Implemented"); }
+  //prefijo orientado a los fields
+  public function prf(){ return (empty($this->prefix)) ?  ''  : $this->prefix . '_'; }
+
+  //prefijo orientado a la tabla
+  public function prt(){ return (empty($this->prefix)) ?  $this->entity->getAlias() : $this->prefix; }
+
+
+  public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); }
 
   public function mappingField($field){
     $field_ = $this->_mappingField($field);
@@ -45,8 +53,7 @@ abstract class EntitySql {
   //@example "(pago.deleted = false) "
   public function conditionAux(){ return $this->_conditionAux(); } //Llamar a cadena de metodos independientes
 
-  //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
-  public function _conditionAux($prefix = ''){ return "";  } //Sobrescribir si existe condicion obligatoria
+  public function _conditionAux(){ return "";  } //Sobrescribir si existe condicion obligatoria
 
 
   //Busqueda avanzada
@@ -84,7 +91,6 @@ abstract class EntitySql {
     }
   }
 
-  //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
   private function conditionAdvancedIterable(array $advanced) {
     $conditionModes = array();
 
@@ -106,7 +112,6 @@ abstract class EntitySql {
   }
 
   //Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
-  //@param $prefix El prefijo permite extender los metodos de definición de consulta a otras clases
   protected function conditionAdvancedMain($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
 
   protected function conditionAdvancedDefined($field, $option, $value){
@@ -249,16 +254,16 @@ abstract class EntitySql {
   public function join(){ return ""; } //Sobrescribir si existen relaciones fk u_
 
   //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
-  public function _join($field, $from, $to = null){
-    $p = (empty($to)) ? $this->getAlias() : $to;
-    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS {$to} ON ({$from}.$field = {$to}.{$this->entity->getPk()->getName()})
+  public function _join($field, $from){
+    $t = $this->prt();
+    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS $t ON ($from.$field = $t.{$this->entity->getPk()->getName()})
 ";
   }
 
   //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
-  public function _joinR($field, $from, $to = null){
-    $p = (empty($to)) ? $this->getAlias() : $to;
-    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS {$to} ON ({$from}.{$this->entity->getPk()->getName()} = {$to}.$field)
+  public function _joinR($field, $from){
+    $t = $this->prt();
+    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS $t ON ($from.{$this->entity->getPk()->getName()} = $t.$field)
   ";
   }
 

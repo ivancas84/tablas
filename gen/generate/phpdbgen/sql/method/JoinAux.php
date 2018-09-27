@@ -17,8 +17,9 @@ class ClassSql_joinAux extends GenerateEntityRecursive {
 
   protected function start(){
     $this->string .= "  public function joinAux(){
-    \$join = \$this->_joinAux() . '
-';
+    \$join = \"\";
+    if(\$j = \$this->_joinAux()) \$join .= \"{\$j}
+\";
 ";
   }
 
@@ -29,16 +30,16 @@ class ClassSql_joinAux extends GenerateEntityRecursive {
   * @return string Codigo generado
   */
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    \$sql = new {$entity->getName("XxYy")}Sql; \$join .= \$sql->_joinAux('{$prefix}') . '
-';
+    $this->string .= "    if (\$j = Dba::sql('{$entity->getName()}', '{$prefix}')->_joinAux()) \$join .= \"{\$j}
+\";
 ";
 
   }
 
   protected function end(){
-    $pos = strrpos($this->string, ",");
-    $this->string = substr_replace($this->string , "" , $pos, 2);
-    $this->string .= "    return \$join;
+    //$pos = strrpos($this->string, ".");
+    //$this->string = substr_replace($this->string , ";" , $pos, 3);
+    $this->string .= "  return \$join;
   }
 
 ";

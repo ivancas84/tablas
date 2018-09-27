@@ -14,6 +14,7 @@ class ClassValues_getters extends GenerateEntity {
          case "date": $this->dateTime($field, 'd/m/Y'); break;
          case "time": $this->dateTime($field, 'h:i'); break;
          case "timestamp": $this->dateTime($field, 'd/m/Y h:i'); break;
+         case "boolean": $this->boolean($field); break;
          default: $this->defecto($field);
 
        }
@@ -28,6 +29,10 @@ class ClassValues_getters extends GenerateEntity {
 ";
   }
 
+  protected function boolean(Field $field){
+    $this->string .= "  public function {$field->getName('xxYy')}() { return (\$this->{$field->getName('xxYy')}) ? 'Sí' : 'No'; }
+";
+  }
 
   protected function defecto(Field $field){
     $this->string .= "  public function {$field->getName('xxYy')}() { return \$this->{$field->getName('xxYy')}; }

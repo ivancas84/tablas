@@ -14,10 +14,10 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
 
   protected function start(){
     $this->string .= "  //@override
-  public function _conditionAdvanced(\$field, \$option, \$value, \$prefix = ''){
-    \$p = (empty(\$prefix)) ?  ''  : \$prefix . '_';
+  public function _conditionAdvanced(\$field, \$option, \$value){
+    \$p = \$this->prf();
 
-    \$f = \$this->_mappingField(\$field, \$prefix);
+    \$f = \$this->_mappingField(\$field);
     switch (\$field){
 ";
   }
@@ -45,7 +45,7 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
 
 
   protected function string($fieldName){
-    $this->string .= "       case \"{\$p}" . $fieldName . "\": return \$this->conditionText(\$f, \$value, \$option);
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionText(\$f, \$value, \$option);
 " ;
 
   }
@@ -62,7 +62,8 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
   }
 
   protected function boolean($fieldName){
-    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionBoolean(\$f, \$value); " ;
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionBoolean(\$f, \$value);
+" ;
   }
 
 

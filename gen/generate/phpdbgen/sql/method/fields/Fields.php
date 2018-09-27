@@ -18,8 +18,9 @@ class ClassSql_fields extends GenerateEntity {
 
   protected function start(){
     $this->string .= "
-  public function fields(\$prefix = ''){
-    \$p = (empty(\$prefix)) ?  ''  : \$prefix . '_';
+  public function fields(){
+    //No todos los campos se extraen de la entidad, por eso es necesario mapearlos
+    \$p = \$this->prf();
     return '
 ";
   }
@@ -35,10 +36,10 @@ class ClassSql_fields extends GenerateEntity {
     $pk = $this->getEntity()->getPk();
     $nfFk = $this->getEntity()->getFieldsByType(["nf","fk"]);
 
-    $this->string .= "' . \$this->_mappingField(\$p.'{$this->getEntity()->getPk()->getName()}', \$prefix) . ' AS ' . \$p.'{$this->getEntity()->getPk()->getName()},
+    $this->string .= "' . \$this->_mappingField(\$p.'{$this->getEntity()->getPk()->getName()}') . ' AS ' . \$p.'{$this->getEntity()->getPk()->getName()},
 ";
     foreach ( $nfFk as $field ) {
-      $this->string .= "' . \$this->_mappingField(\$p.'{$field->getName()}', \$prefix) . ' AS ' . \$p.'{$field->getName()},
+      $this->string .= "' . \$this->_mappingField(\$p.'{$field->getName()}') . ' AS ' . \$p.'{$field->getName()},
 ";
 
     }

@@ -11,17 +11,11 @@ require_once("class/model/Render.php");
 //Permite crear instancias que sirven para definir SQL
 abstract class EntitySqlo {
 
-  protected $entity; //Entity. Configuracion de la entidad
-  protected $db;     //Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren. Puede requerirse adicionalmente determinar el motor de base de datos para definir la sintaxis adecuada
-  protected $sql;    //EntitySql. Atributo auxiliar para facilitar la definicion de consultas sql
+  public $entity; //Entity. Configuracion de la entidad
+  public $db;     //Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren. Puede requerirse adicionalmente determinar el motor de base de datos para definir la sintaxis adecuada
+  public $sql;    //EntitySql. Atributo auxiliar para facilitar la definicion de consultas sql
 
-  public function _label(array $row, $prefix = ""){
-    $p = (empty($prefix)) ?  ''  : $prefix . '_';
-    return $row["{$p}id"];
-  }
-  public function label(array $row, $prefix = ""){ return $this->_label($row, $prefix); }
-
-  public function _json(array $row, $prefix = "") { throw new BadMethodCallException("No implementado"); }
+  public function _json(array $row) { throw new BadMethodCallException("No implementado"); }
   public function json(array $row) { return $this->_json($row); }
   public function jsonAll(array $rows){
     $rows_ = [];
@@ -39,6 +33,7 @@ abstract class EntitySqlo {
   //Definir clase de presentacion
   //@param String | Object | Array | Render En función del tipo de parámetro define el render
   //@return Render Clase de presentacion
+
   protected function render($render = null){
     if(gettype($render) == "object") return $render;
 
@@ -113,16 +108,13 @@ WHERE " . $this->entity->getPk()->getName() . " = " . $r["id"] . ";
   public function count($render = NULL) {
     $r = $this->render($render);
 
-    $sql = "
+    return "
 SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
+{$this->sql->from()}
+{$this->sql->join()}
+{$this->sql->joinAux()}
+{$this->sql->conditionAll($r->getAdvanced(), $r->getSearch())}
 ";
-    $sql .= $this->sql->from();
-    $sql .= $this->sql->join();
-    $sql .= $this->sql->joinAux();
-    $sql .= $this->sql->conditionAll($r->getAdvanced(), $r->getSearch());
-    $sql .= ";
-";
-    return $sql;
   }
 
 
@@ -165,17 +157,14 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $conditionUniqueFields = $this->sql->conditionUniqueFields($row);
     if(empty($conditionUniqueFields)) return null;
 
-    $sql = "SELECT DISTINCT ";
-    $sql .= $this->sql->fieldsAll();
-    $sql .= $this->sql->from();
-    $sql .= $this->sql->join();
-    $sql .= $this->sql->joinAux();
-    $sql .= "WHERE ";
-    $sql .= $conditionUniqueFields;
-    $sql .= ";
+    return "SELECT DISTINCT
+{$this->sql->fieldsAll()}
+{$this->sql->from()}
+{$this->sql->join()}
+{$this->sql->joinAux()}
+WHERE
+{$conditionUniqueFields}
 ";
-
-    return $sql;
   }
 
 
@@ -187,19 +176,15 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $conditionUniqueFields = $this->sql->conditionUniqueFields($row);
     if(empty($conditionUniqueFields)) return null;
 
-    $sql = "SELECT DISTINCT ";
-    $sql .= $this->sql->fieldsAll();
-    $sql .= $this->sql->from();
-    $sql .= $this->sql->join();
-    $sql .= $this->sql->joinAux();
-    $sql .= "WHERE ";
-    $sql .= $conditionUniqueFields;
-    $sql .=  $this->sql->conditionAll($r->getAdvanced(), $r->getSearch(), "AND");
-
-    $sql .= ";
+    return "SELECT DISTINCT
+{$this->sql->fieldsAll()}
+{$this->sql->from()}
+{$this->sql->join()}
+{$this->sql->joinAux()}
+WHERE
+{$conditionUniqueFields}
+{$this->sql->conditionAll($r->getAdvanced(), $r->getSearch(), 'AND')}
 ";
-
-    return $sql;
   }
 
 

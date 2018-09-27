@@ -19,7 +19,7 @@ class Dba {
   public static $entities = [];
 
   //singleton Entity
-  public static function entity($entity){
+  public static function entity($entity) {
     if(!array_key_exists($entity, self::$entities)){
       $entityName = snake_case_to("XxYy", $entity) . "Entity";
       $entity_ = new $entityName;
@@ -38,14 +38,12 @@ class Dba {
     return self::$sqlos[$entity];
   }
 
-  //singleton sql
-  public static function sql($entity) {
-    if(!array_key_exists($entity, self::$sqls)){
-      $sqlName = snake_case_to("XxYy", $entity) . "Sql";
-      $sql = new $sqlName;
-      self::$sqls[$entity] = $sql;
-    }
-    return self::$sqls[$entity];
+  //crear instancias de sql
+  public static function sql($entity, $prefix = NULL) {
+    $sqlName = snake_case_to("XxYy", $entity) . "Sql";
+    $sql = new $sqlName;
+    if($prefix) $sql->prefix = $prefix;
+    return $sql;
   }
 
   //singleton db
@@ -176,7 +174,7 @@ class Dba {
   //all
   public static function all($entity, $render = null){
     $sql = self::sqlo($entity)->all($render);
-    $rows = self::fetchAll($sql);
+    $rows = self::fetchAll($sql);    
     return self::sqlo($entity)->jsonAll($rows);
   }
 
@@ -208,13 +206,13 @@ class Dba {
   public static function get($entity, $id, $render = null) {
     $rows = self::getAll($entity, [$id], $render);
     if (!count($rows)) throw new Exception("La búsqueda por id no arrojó ningun resultado");
-    return self::sqlo($entity)->json($rows[0]);
+    return $rows[0];
   }
 
   //get or null
   public static function getOrNull($entity, array $id, $render = null){
     $rows = self::getAll($entity, [$id], $render);
-    return (!count($rows)) ? null : self::sqlo($entity)->json($rows[0]);
+    return (!count($rows)) ? null : $rows[0];
   }
 
   //get all
