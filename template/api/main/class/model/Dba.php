@@ -156,7 +156,7 @@ class Dba {
     $rows = self::fetchAll($sql);
 
     if(count($rows) > 1) throw new Exception("La busqueda estricta por campos unicos de " . $this->entity->getName() . " retorno mas de un resultado");
-    if(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
+    if(count($rows) == 1) return self::sql($entity)->json($rows[0]);
     return null;
   }
 
@@ -167,15 +167,15 @@ class Dba {
 
     $rows = self::fetchAll($sql);
     if(count($rows) > 1) throw new Exception("La busqueda por campos unicos de " . $this->entity->getName() . " retorno mas de un resultado");
-    if(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
+    if(count($rows) == 1) return self::sql($entity)->json($rows[0]);
     return null;
   }
 
   //all
   public static function all($entity, $render = null){
     $sql = self::sqlo($entity)->all($render);
-    $rows = self::fetchAll($sql);    
-    return self::sqlo($entity)->jsonAll($rows);
+    $rows = self::fetchAll($sql);
+    return self::sql($entity)->jsonAll($rows);
   }
 
   //ids
@@ -219,14 +219,14 @@ class Dba {
   public static function getAll($entity, array $ids, $render = null){
     $sql = self::sqlo($entity)->getAll($ids, $render);
     $rows = self::fetchAll($sql);
-    return self::sqlo($entity)->jsonAll($rows);
+    return self::sql($entity)->jsonAll($rows);
   }
 
   //row
   public static function one($entity, $render = null) {
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
+    elseif(count($rows) == 1) return self::sql($entity)->json($rows[0]);
     else throw new Exception("La consulta no arrojó resultados");
   }
 
@@ -234,7 +234,7 @@ class Dba {
   public static function oneOrNull($entity, $render = null) {
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
+    elseif(count($rows) == 1) return self::sql($entity)->json($rows[0]);
     else return null;
   }
 

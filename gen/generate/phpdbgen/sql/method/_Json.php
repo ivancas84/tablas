@@ -1,7 +1,7 @@
 <?php
 
 
-class ClassSqlo__json extends GenerateEntity {
+class ClassSql__json extends GenerateEntity {
 
 
    public function generate(){
@@ -16,8 +16,9 @@ class ClassSqlo__json extends GenerateEntity {
   protected function start(){
     $this->string .= "
   //@override
-  public function _json(array \$row, \$prefix = \"\"){
+  public function _json(array \$row = NULL){
     if(empty(\$row)) return null;
+    \$prefix = \$this->prf();
     \$row_ = [];
 ";
   }
@@ -49,7 +50,7 @@ class ClassSqlo__json extends GenerateEntity {
         case "float": $this->string .= "    if(isset(\$row[\$prefix . \"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\$prefix . \"" . $field->getName() . "\"])) ? null : floatval(\$row[\$prefix . \"" . $field->getName() . "\"]);
 ";
         break;
-        
+
         case "boolean": $this->string .= "    if(isset(\$row[\$prefix . \"" . $field->getName() . "\"])) \$row_[\"" . $field->getName(). "\"] = (is_null(\$row[\$prefix . \"" . $field->getName() . "\"])) ? null : settypebool(\$row[\$prefix . \"" . $field->getName() . "\"]);
 ";
         break;

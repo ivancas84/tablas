@@ -1,7 +1,7 @@
 
 <?php
 
-class ClassSqlo_json extends GenerateEntity {
+class ClassSql_json extends GenerateEntity {
 
    public function generate(){
     if (!$this->entity->hasRelations()) return;
@@ -41,8 +41,7 @@ class ClassSqlo_json extends GenerateEntity {
 
 
   protected function body(Entity $entity, $arrayName, $prefixField, $createArray = true){
-    $this->string .= "    \$sqlo = new {$entity->getName('XxYy')}Sqlo;
-    \$json = \$sqlo->_json(\$row, '{$prefixField}');
+    $this->string .= "    \$json = Dba::sql('{$entity->getName('XxYy')}', '{$prefixField}')->_json(\$row);
     if(!empty(\$json)) " . $arrayName . " = \$json;
 
 ";

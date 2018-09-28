@@ -19,6 +19,7 @@ class GenerateClassSqlMain extends GenerateFileEntity{
     $this->conditionSearch();
     $this->filters();
     $this->conditionAux();
+    $this->json();
     //$this->order(); hay un metodo general que resuelve la tarea de ordenamiento para ambos motores
     $this->end();
   }
@@ -42,6 +43,17 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 }
 " ;
   }
+
+
+    protected function json(){
+      require_once("generate/phpdbgen/sql/method/_Json.php");
+      $gen = new ClassSql__json($this->getEntity());
+      $this->string .= $gen->generate();
+
+      require_once("generate/phpdbgen/sql/method/Json.php");
+      $gen = new ClassSql_json($this->getEntity());
+      $this->string .= $gen->generate();
+    }
 
 
   protected function mappingField(){

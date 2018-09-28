@@ -24,7 +24,19 @@ abstract class EntitySql {
   //prefijo orientado a la tabla
   public function prt(){ return (empty($this->prefix)) ?  $this->entity->getAlias() : $this->prefix; }
 
+  public function _json(array $row) { throw new BadMethodCallException("No implementado"); }
+  public function json(array $row) { return $this->_json($row); }
+  public function jsonAll(array $rows){
+    $rows_ = [];
 
+    foreach($rows as $row){
+      $row_ = $this->json($row);
+      array_push($rows_, $row_);
+    }
+
+    return $rows_;
+  }
+  
   public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); }
 
   public function mappingField($field){
@@ -243,9 +255,6 @@ abstract class EntitySql {
   public function fieldsFull(){ return $this->fields(); } //sobrescribir si existen relaciones
 
 
-  //Definir sql de campos de cadena de relaciones
-  public function fieldsLabelFull(){ return ""; }  //sobrescribir si existen relaciones y son consideradas como campos principales
-
   //Definir sql con campos auxiliares
   public function fieldsAux() { return $this->_fieldsAux(); }
   public function _fieldsAux() { return ""; }
@@ -254,17 +263,30 @@ abstract class EntitySql {
   public function join(){ return ""; } //Sobrescribir si existen relaciones fk u_
 
   //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
-  public function _join($field, $from){
+  public function _join($field, $fromTable){
     $t = $this->prt();
-    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS $t ON ($from.$field = $t.{$this->entity->getPk()->getName()})
+    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS $t ON ($fromTable.$field = $t.{$this->entity->getPk()->getName()})
+";
+  }
+
+  public function _innerJoin($field, $fromTable){
+    $t = $this->prt();
+    return "INNER JOIN {$this->entity->getSn_()} AS $t ON ($fromTable.$field = $t.{$this->entity->getPk()->getName()})
 ";
   }
 
   //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
-  public function _joinR($field, $from){
+  public function _joinR($field, $fromTable){
     $t = $this->prt();
-    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS $t ON ($from.{$this->entity->getPk()->getName()} = $t.$field)
-  ";
+    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS $t ON ($fromTable.{$this->entity->getPk()->getName()} = $t.$field)
+";
+  }
+
+  //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
+  public function _innerJoinR($field, $fromTable){
+    $t = $this->prt();
+    return "INNER JOIN {$this->entity->getSn_()} AS $t ON ($fromTable.{$this->entity->getPk()->getName()} = $t.$field)
+";
   }
 
   //Definir sql con relacion auxiliar

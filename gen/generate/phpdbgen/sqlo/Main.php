@@ -94,16 +94,6 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
   }
 
 
-  protected function json(){
-    require_once("generate/phpdbgen/sqlo/method/_Json.php");
-    $gen = new ClassSqlo__json($this->getEntity());
-    $this->string .= $gen->generate();
-
-    require_once("generate/phpdbgen/sqlo/method/Json.php");
-    $gen = new ClassSqlo_json($this->getEntity());
-    $this->string .= $gen->generate();
-  }
-
 
 
 
@@ -125,7 +115,6 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
     $this->formatSql();
     $this->uploadSql();
     $this->uploadSqlIndex();
-    $this->json();
     //$this->values(); deprecated
    }
 

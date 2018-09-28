@@ -13,7 +13,7 @@ class PhpDbGen {
     $gen = new ClassSqloMain($entity);
     $gen->generate();
 
-    require_once("generate/phpdbgen/sqlo/Sql.php");
+    require_once("generate/phpdbgen/sqlo/Sqlo.php");
     $gen = new ClassSqlo($entity);
     $gen->generateIfNotExists();
   }
