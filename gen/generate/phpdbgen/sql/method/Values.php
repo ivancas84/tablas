@@ -1,7 +1,7 @@
 
 <?php
 
-class ClassSql_json extends GenerateEntity {
+class ClassSql_values extends GenerateEntity {
 
    public function generate(){
     if (!$this->entity->hasRelations()) return;
@@ -15,14 +15,13 @@ class ClassSql_json extends GenerateEntity {
   protected function start(){
     $this->string .= "
   //@override
-  public function json(array \$row){
+  public function values(array \$json = NULL){
 ";
   }
 
   protected function bodyMain(){
-    $this->string .= "    if(empty(\$row)) return null;
-    \$row_ = \$this->_json(\$row);
-
+    $this->string .= "
+    \$row_['{$this->entity->getAlias()}'] = new {$this->entity->getName('XxYy')}(\$json);
 ";
   }
 
@@ -32,7 +31,7 @@ class ClassSql_json extends GenerateEntity {
     if (!empty($arrayName)){
       $this->body($entity, $arrayName, $prefixField);
     } else {
-      $arrayName = "\$row_";
+      $arrayName = "\$json";
     }
 
     $this->fk($entity, $tablesVisited, $arrayName, $prefixField);
@@ -41,9 +40,7 @@ class ClassSql_json extends GenerateEntity {
 
 
   protected function body(Entity $entity, $arrayName, $prefixField, $createArray = true){
-    $this->string .= "    \$json = Dba::sql('{$entity->getName()}', '{$prefixField}')->_json(\$row);
-    if(!empty(\$json)) " . $arrayName . " = \$json;
-
+    $this->string .= "    \$row['{$prefixField}'] = new {$entity->getName('XxYy')}({$arrayName});
 ";
   }
 

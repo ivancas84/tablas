@@ -20,6 +20,7 @@ class GenerateClassSqlMain extends GenerateFileEntity{
     $this->filters();
     $this->conditionAux();
     $this->json();
+    //$this->values(); este metodo transforma el resultado json en values, pero por el momento se descarta 
     //$this->order(); hay un metodo general que resuelve la tarea de ordenamiento para ambos motores
     $this->end();
   }
@@ -44,6 +45,11 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 " ;
   }
 
+  protected function values(){
+    require_once("generate/phpdbgen/sql/method/Values.php");
+    $gen = new ClassSql_values($this->getEntity());
+    $this->string .= $gen->generate();
+  }
 
     protected function json(){
       require_once("generate/phpdbgen/sql/method/_Json.php");
