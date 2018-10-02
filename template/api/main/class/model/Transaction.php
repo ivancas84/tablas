@@ -65,7 +65,7 @@ class Transaction {
   }
 
   //detalle de la cache
-  public function checkDetails() {
+  public static function checkDetails() {
     $status = self::checkStatus();
     if(!$status || $status == "CLEAR") return $status;
 
