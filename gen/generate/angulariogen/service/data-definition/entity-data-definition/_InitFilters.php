@@ -62,7 +62,7 @@ class EntityDataDefinition_InitFilters extends GenerateEntity {
 
     if(!obs.length) return of(filters_);
 
-    return Observable.forkJoin(obs).map(
+    return forkJoin(obs).map(
       responses => {
         return filters_;
       }

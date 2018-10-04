@@ -20,11 +20,10 @@ class EntityDataDefinition_Init extends GenerateEntity {
 
 
   protected function start(){
-    $this->string .= "  init(row: { [index: string]: any }, sync: { [index: string]: any } = null): Observable<{ [index: string]: any }> {
+    $this->string .= "  //Inicializar datos, puede requerir datos de otras entidades que obligatoriamente deben estar en la cache
+  init(row: { [index: string]: any }, sync: { [index: string]: any } = null): { [index: string]: any } {
     if(!row) return null;
     let row_: { [index: string]: any } = Object.assign({}, row);
-
-    let observables = [];
 
 ";
   }
@@ -50,7 +49,7 @@ class EntityDataDefinition_Init extends GenerateEntity {
     $fields = $this->getEntity()->getFieldsFk();
     foreach($fields as $field){
       switch ( $field->getSubtype() ) {
-        default: $this->labelGetOrNull($field);
+        default: $this->labelGet($field);
       }
     }
   }
@@ -59,7 +58,7 @@ class EntityDataDefinition_Init extends GenerateEntity {
     $fields = $this->getEntity()->getFieldsU_();
     foreach($fields as $field){
       switch ( $field->getSubtype() ) {
-        default: $this->labelGetOrNullU_($field);
+        default: $this->labelGetU_($field);
       }
     }
   }
@@ -68,11 +67,7 @@ class EntityDataDefinition_Init extends GenerateEntity {
 
 
   protected function end(){
-    $this->string .= "    if(!observables.length) return of(row_);
-
-    return Observable.forkJoin(observables).map(
-      response => { return row_; }
-    );
+    $this->string .= "    return row_;
   }
 
 ";
@@ -94,23 +89,13 @@ class EntityDataDefinition_Init extends GenerateEntity {
 ";
   }
 
-  protected function labelGetOrNull(Field $field){
-    $this->string .= "    if(this.dd.isSync('" . $field->getName() . "', sync)) {
-      var ob = this.dd.labelGetOrNull(\"" . $field->getEntityRef()->getName() . "\", row[\"" . $field->getName() . "\"]).map(
-        rowR => { row_[\"" . $field->getName() ."_\"] = rowR; }
-      );
-      observables.push(ob);
-    }
+  protected function labelGet(Field $field){
+    $this->string .= "    if(this.dd.isSync('" . $field->getName() . "', sync)) row_[\"" . $field->getName() ."_\"] = this.dd.labelGet(\"" . $field->getEntityRef()->getName() . "\", row[\"" . $field->getName() . "\"]);
 ";
   }
 
-  protected function labelGetOrNullU_(Field $field){
-    $this->string .= "    if(this.dd.isSync('" . $field->getName() . "', sync)) {
-      var ob = this.dd.labelGetOrNull(\"" . $field->getEntity()->getName() . "\", row[\"" . $field->getAlias("_") . "\"]).map(
-        rowR => { row_[\"" . $field->getAlias("_") ."_\"] = rowR; }
-      );
-      observables.push(ob);
-    }
+  protected function labelGetU_(Field $field){
+    $this->string .= "    if(this.dd.isSync('" . $field->getName() . "', sync)) this.dd.labelGet(\"" . $field->getEntity()->getName() . "\", row[\"" . $field->getAlias("_") . "\"]);
 ";
   }
 }

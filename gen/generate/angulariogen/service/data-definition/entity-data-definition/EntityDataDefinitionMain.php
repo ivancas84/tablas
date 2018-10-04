@@ -34,7 +34,7 @@ class EntityDataDefinitionMain extends GenerateFileEntity {
 
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import 'rxjs/add/observable/forkJoin';
+import { forkJoin } from 'rxjs';
 
 import { DataDefinition } from '../../../main/service/data-definition/data-definition';
 

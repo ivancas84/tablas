@@ -197,7 +197,7 @@ export class DataDefinitionMainService {
     );
   }
 
-  labelGetOrNull (entity: string, id: string | number): Observable<any> {
+  labelGet (entity: string, id: string | number): Observable<any> {
     return this.getOrNull(entity, id).mergeMap(
       row => {
         if(!row) return of(null);

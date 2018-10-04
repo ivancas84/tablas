@@ -19,10 +19,9 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
 
 
   protected function start(){
-    $this->string .= " initForm(row: { [index: string]: any }, sync: { [index: string]: any } = null): Observable<{ [index: string]: any }> {
+    $this->string .= " initForm(row: { [index: string]: any }, sync: { [index: string]: any } = null): { [index: string]: any } {
     if(!row) row = {};
     let row_: { [index: string]: any } = {};
-    let observables = [];
 
 ";
   }
@@ -73,10 +72,7 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
 
   protected function end(){
     $this->string .= "
-    if(!observables.length) return of(row_);
-    return Observable.forkJoin(observables).map(
-      response => { return row_; }
-    );
+    return row_;
   }
 
 ";
@@ -130,19 +126,8 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
   protected function typeahead(Field $field){
     $this->string .= "
     if(this.dd.isSync('" . $field->getName() . "', sync)) {
-      var ob: Observable<any> = this.dd.getOrNull('" . $field->getEntityRef()->getName() . "', row['" . $field->getName() . "']).mergeMap(
-        rowG => {
-          if(!rowG) {
-            row_['{$field->getName()}'] = null;
-            return of(null);
-          }
-
-          return this.dd.initLabel('{$field->getName()}', rowG).map(
-            rowI => { row_['{$field->getName()}'] = rowI; }
-          );
-        }
-      )
-      observables.push(ob);
+      let rowG: any = this.dd.getOrNull('" . $field->getEntityRef()->getName() . "', row['" . $field->getName() . "']);
+      row_['{$field->getName()}'] = this.dd.initLabel('{$field->getName()}', rowG)
     }
 
 ";
@@ -152,10 +137,7 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
   protected function fieldU_(Field $field){
     $this->string .= "
     if(this.dd.isSync('" . $field->getAlias("_") . "', sync)) {
-      var ob: Observable<any> = this.dd.labelGetOrNull('" . $field->getEntity()->getName() . "', row['" . $field->getAlias("_") . "']).map(
-        rowR => { row_['" . $field->getAlias("_") . "'] = rowR; }
-      );
-      observables.push(ob);
+       row_['" . $field->getAlias("_") . "'] = this.dd.labelGet('" . $field->getEntity()->getName() . "', row['" . $field->getAlias("_") . "']);
     }
 
 ";

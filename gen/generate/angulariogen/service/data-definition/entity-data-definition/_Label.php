@@ -10,7 +10,6 @@ class EntityDataDefinition_Label extends GenerateEntity {
     if(!$this->defineFields()) return "";
 
     $this->start();
-    $this->observables();
     $this->pk();
     $this->nf();
     $this->fk();
@@ -35,17 +34,11 @@ class EntityDataDefinition_Label extends GenerateEntity {
    return true;
  }
 
-
-
-
   protected function start(){
-    $this->string .= "  label (row: { [index: string]: any }): Observable<string> {
+    $this->string .= "  //DEFINIR ETIQUETA DE IDENTIFICACION
+  //Este metodo puede requerir acceder a datos de otras entidades que obligatoriamente deben estar en el storage
+  label (row: { [index: string]: any }): string {
     let ret = \"\";
-";
-  }
-
-  protected function observables(){
-    if(count($this->fields["fk"])) $this->string .= "    let obs = [];
 ";
   }
 
@@ -65,7 +58,6 @@ class EntityDataDefinition_Label extends GenerateEntity {
       }
     }
   }
-
 
   protected function fk(){
     if(!count($this->fields["fk"])) return;
@@ -95,39 +87,16 @@ class EntityDataDefinition_Label extends GenerateEntity {
 ";
   }
 
-
   protected function get(Field $field){
     $this->string .= "    if(row." . $field->getName() . ") {
-      if('" . $field->getName() . "_' in row && row." . $field->getName() . "_){ ret = ret.trim() + ' ' + row." . $field->getName() . "_; }
-      else {
-        var ob = this.dd.labelGet(\"" . $field->getEntityRef()->getName() . "\", row." . $field->getName() . ");
-        obs.push(ob);
-      }
-    }
-
+      ret = ret.trim() + \" \" + this.dd.labelGet(\"" . $field->getEntityRef()->getName() . "\", row." . $field->getName() . ");
 ";
   }
 
   protected function end(){
-    if(!count($this->fields["fk"])) $this->string .= "    return of(ret.trim());
+    $this->string .= "    return ret.trim();
   }
-
 ";
-    else {
-      $this->string .= "    if(!obs.length) return of(ret.trim());
-
-    return Observable.forkJoin(obs).map(
-      response => {
-        for(let i = 0; i < response.length; i++) {
-          if(response[i]) ret = ret.trim() + \" \" + response[i];
-        }
-        return ret.trim();
-      }
-    );
-  }
-
-";
-    }
   }
 
 

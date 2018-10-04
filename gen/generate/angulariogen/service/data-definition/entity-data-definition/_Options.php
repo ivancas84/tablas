@@ -53,7 +53,7 @@ class EntityDataDefinition_Options extends GenerateEntity {
 
 
   protected function end(){
-    $this->string .= "    return Observable.forkJoin(obs).map(
+    $this->string .= "    return forkJoin(obs).map(
       options => {
         return {
 ";
