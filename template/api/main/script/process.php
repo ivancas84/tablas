@@ -57,6 +57,7 @@ try{
 
       array_push($response, ["entity" => $entity, "ids" => $idsReturn]);
     }
+
   }
 
   Transaction::begin();

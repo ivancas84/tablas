@@ -303,13 +303,13 @@ class Dba {
 
   //query and fetch result
   public static function fetchAllTimeAr($sql){
-    $db = Dba::dbInstance();
+    $db = self::dbInstance();
     try {
       $db->query("SET lc_time_names = 'es_AR';");
       $result = $db->query($sql);
       return $db->fetchAll($result);
     } finally {
-      Dba::dbClose();
+      self::dbClose();
     }
   }
 
