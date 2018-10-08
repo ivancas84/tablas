@@ -39,7 +39,7 @@ class TypescriptEntity_properties extends GenerateEntity {
 
 
   protected function property(Field $field, $type){
-    $this->string .= "  public " . $field->getName("xxYy") . " : {$type};
+    $this->string .= "  public " . $field->getName() . " : {$type};
 ";
   }
 

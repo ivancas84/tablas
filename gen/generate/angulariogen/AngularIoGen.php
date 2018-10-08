@@ -119,9 +119,9 @@ class AngularIoGen {
   }
 
 
-  protected function dataDefinitionLoader(){
-    require_once("generate/angulariogen/DataDefinitionLoaderService/DataDefinitionLoaderService.php");
-    $gen = new DataDefinitionLoaderService($this->structure);
+  protected function loader(){
+    require_once("generate/angulariogen/service/loader/Loader.php");
+    $gen = new LoaderService($this->structure);
     $gen->generate();
   }
 
@@ -142,10 +142,13 @@ class AngularIoGen {
     require_once("generate/angulariogen/class/entity/EntityMain.php");
     $gen = new TypescriptEntityMain($entity);
     $gen->generate();
+
+    require_once("generate/angulariogen/class/entity/Entity.php");
+    $gen = new TypescriptEntity($entity);
+    $gen->generate();
   }
 
   public function generate(){
-    $this->dataDefinitionLoader();
     $this->component();
     $this->service();
 

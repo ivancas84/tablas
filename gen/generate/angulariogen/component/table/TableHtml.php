@@ -89,7 +89,7 @@ class ComponentTableHtml extends GenerateFileEntity {
          $this->string .= "            <td>" ;
         switch($field->getSubtype()){
           //case "checkbox": $this->checkbox($field); break;
-          //case "date": $this->date($field); break;
+          case "date": $this->date($field); break;
           //case "timestamp": $this->timestamp($field); break;
           //case "time": $this->time($field); break;
           default: $this->defecto($field); break;
@@ -105,7 +105,7 @@ class ComponentTableHtml extends GenerateFileEntity {
       foreach($this->getEntity()->getFieldsFk() as $field){
         $this->string .= "            <td *ngIf=\"isSync('" . $field->getName() . "')\">" ;
         switch($field->getSubtype()){
-          default: $this->string .= "<a [routerLink]=\"['/" . $field->getEntityRef()->getName("xx-yy") . "-show']\" [queryParams]=\"{id:row." . $field->getName() . "}\" >{{row." . $field->getName() . "_}}</a>" ;
+          default: $this->string .= "<a [routerLink]=\"['/" . $field->getEntityRef()->getName("xx-yy") . "-show']\" [queryParams]=\"{id:row." . $field->getName() . "}\" >{{row." . $field->getName() . " | label:'{$field->getEntityRef()->getName()}'}}</a>" ;
         }
         $this->string .= "</td>
   " ;
@@ -173,7 +173,7 @@ class ComponentTableHtml extends GenerateFileEntity {
   }
 
   protected function date(Field $field){
-    $this->string .= "{{row." . $field->getName() . " | date:'dd/MM/yyyy'}}";
+    $this->string .= "{{row." . $field->getName() . " | toDate | date:'dd/MM/yyyy'}}";
   }
 
   protected function checkbox(Field $field){

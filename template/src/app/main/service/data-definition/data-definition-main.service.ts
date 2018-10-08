@@ -37,7 +37,7 @@ export class DataDefinitionMainService {
   isSync(key, sync): boolean { return (!sync || !(key in sync) || sync[key]) ? true : false; }
 
   options(entity, sync): Observable<any> {
-    let ddi: DataDefinition = this.loader.getInstance(entity, this);
+    let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
     return ddi.options(sync);
   }
 
@@ -51,7 +51,7 @@ export class DataDefinitionMainService {
         this.storage.setItem(key, rows);
 
         for(let i = 0; i < rows.length; i++){
-          let ddi: DataDefinition = this.loader.getInstance(entity, this);
+          let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
           ddi.storage(rows[i]);
         }
 
@@ -107,7 +107,7 @@ export class DataDefinitionMainService {
           rows_ => {
 
             for(let i = 0; i < rows_.length; i++){
-              let ddi: DataDefinition = this.loader.getInstance(entity, this);
+              let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
               ddi.storage(rows_[i]);
               let i_string: string = String(rows_[i].id);
               let i_int: number = parseInt(i_string);
@@ -166,7 +166,7 @@ export class DataDefinitionMainService {
   //@param sync Sincronizacion de campos
   //@return row Campos formateados, listos para ser presentados
   init (entity: string, row:{ [index: string]: any }, sync:{ [index: string]: any } = null): Observable<{ [index: string]: any }> {
-    let ddi: DataDefinition = this.loader.getInstance(entity, this);
+    let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
     return ddi.init(row, sync);
   }
 
@@ -177,7 +177,7 @@ export class DataDefinitionMainService {
   //@param sync Sincronizacion de campos
   //@return row Campos formateados, listos para ser presentados
   initForm (entity: string, row:{ [index: string]: any }, sync:{ [index: string]: any } = null): Observable<{ [index: string]: any }> {
-    let ddi: DataDefinition = this.loader.getInstance(entity, this);
+    let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
     return ddi.initForm(row, sync);
   }
 
@@ -187,7 +187,7 @@ export class DataDefinitionMainService {
       row => {
         return this.init(entity, row).mergeMap(
           row_ => {
-            let ddi: DataDefinition = this.loader.getInstance(entity, this);
+            let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
             return ddi.label(row_).mergeMap(
               label => { return of(label); }
             );
@@ -209,7 +209,7 @@ export class DataDefinitionMainService {
   initLabel (entity: string, row:any): Observable<any>{
     return this.init(entity, row).mergeMap(
       row => {
-        let ddi: DataDefinition = this.loader.getInstance(entity, this);
+        let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
         return ddi.label(row).mergeMap(
           label => {
             row.label = label;
@@ -235,25 +235,25 @@ export class DataDefinitionMainService {
 
   //inicializar filtros de busqueda
   initFilters (entity: string, filters: Array<any>): Observable<any> {
-    let ddi: DataDefinition = this.loader.getInstance(entity, this);
+    let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
     return ddi.initFilters(filters);
   }
 
   //envio de filtros
   serverFilters (entity: string, filters: Array<any>): Array<any> {
-    let ddi: DataDefinition = this.loader.getInstance(entity, this);
+    let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
     return ddi.serverFilters(filters);
   }
 
   //definir estructura de formularios
   formGroup (entity: string, sync:any): FormGroup {
-    let ddi: DataDefinition = this.loader.getInstance(entity, this);
+    let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
     return ddi.formGroup(sync);
   }
 
   //definir datos para ser enviados al servidor
   server (entity: string, row:{ [index: string]: any }): { [index: string]: any } {
-    let ddi: DataDefinition = this.loader.getInstance(entity, this);
+    let ddi: DataDefinition = this.loader.dataDefinition(entity, this);
     return ddi.server(row);
   }
 

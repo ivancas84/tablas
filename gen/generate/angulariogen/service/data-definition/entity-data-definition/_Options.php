@@ -40,9 +40,7 @@ class EntityDataDefinition_Options extends GenerateEntity {
   protected function body(){
     foreach($this->options as $field){
       $this->string .= "    if(this.dd.isSync('" . $field->getName() . "', sync)){
-      var ob = this.dd.all('" . $field->getEntityRef()->getName() . "').mergeMap(
-        rows => { return this.dd.initLabelAll('" . $field->getEntityRef()->getName() . "', rows); }
-      );
+      var ob = this.dd.all('" . $field->getEntityRef()->getName() . "');
       obs.push(ob);
     }
 

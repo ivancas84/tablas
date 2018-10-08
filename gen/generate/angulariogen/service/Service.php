@@ -8,12 +8,13 @@ class GenerateService {
     $this->structure = $structure;
   }
 
+  public function generate(){
+    $this->loader($this->structure);
 
+    foreach($this->structure as $entity){
+      $this->entityDataDefinition($entity);
 
-    public function generate(){
-      foreach($this->structure as $entity){
-        $this->entityDataDefinition($entity);
-      }
+    }
       //***** componentes *****
 
       /*$this->componentDetail();
@@ -40,6 +41,11 @@ class GenerateService {
       $gen->generate();
     }
 
+    protected function loader($entity){
+      require_once("generate/angulariogen/service/loader/Loader.php");
+      $gen = new LoaderService($entity);
+      $gen->generate();
+    }
 
 
 

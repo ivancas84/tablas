@@ -33,12 +33,8 @@ class EntityDataDefinition_InitFilters extends GenerateEntity {
   protected function pk(){
     $field = $this->entity->getPk();
     $this->string .= "        case '" . $field->getName() . "':
-          let ob = this.dd.get('" . $this->getEntity()->getName() . "', filters[i][2]).mergeMap(
-            row => {
-              return this.dd.initLabel('" . $this->getEntity()->getName() . "', row).map(
-                row_ => { filter['value'] = row_; }
-              )
-            }
+          let ob = this.dd.get('" . $this->getEntity()->getName() . "', filters[i][2]).map(
+            row => {  filter['value'] = row; }              
           );
           obs.push(ob);
         break;

@@ -14,7 +14,6 @@ class EntityDataDefinitionMain extends GenerateFileEntity {
     $this->start();
     $this->storage();
     $this->options();
-    $this->init();
     $this->initForm();
 
     $this->formGroup();
@@ -51,17 +50,6 @@ export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends Da
     $this->string .= $gen->generate();
   }
 
-  protected function init(){
-    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Init.php");
-    $gen = new EntityDataDefinition_Init($this->entity);
-    $this->string .= $gen->generate();
-  }
-
-  protected function initMain(){
-    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_InitMain.php");
-    $gen = new EntityDataDefinition_InitMain($this->entity);
-    $this->string .= $gen->generate();
-  }
 
   protected function initFilters(){
     require_once("generate/angulariogen/service/data-definition/entity-data-definition/_InitFilters.php");

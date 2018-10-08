@@ -127,7 +127,8 @@ class EntityDataDefinition_InitForm extends GenerateEntity {
     $this->string .= "
     if(this.dd.isSync('" . $field->getName() . "', sync)) {
       let rowG: any = this.dd.getOrNull('" . $field->getEntityRef()->getName() . "', row['" . $field->getName() . "']);
-      row_['{$field->getName()}'] = this.dd.initLabel('{$field->getName()}', rowG)
+      //let entity: Entity = this.loader.entity('{$field->getEntityRef()->getName()}');
+      //row_['{$field->getName()}'] = this.dd.initLabel('{$field->getName()}', rowG)
     }
 
 ";

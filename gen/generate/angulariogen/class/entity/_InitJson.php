@@ -3,8 +3,7 @@
 require_once("generate/GenerateEntity.php");
 
 
-class TypescriptEntity_constructor extends GenerateEntity {
-
+class TypescriptEntity_initJson extends GenerateEntity {
 
   public function generate() {
     //if(!$this->entity->hasRelations()) return "";
@@ -18,9 +17,10 @@ class TypescriptEntity_constructor extends GenerateEntity {
 
 
   protected function start(){
-    $this->string .= "  constructor(row?: { [index: string]: any }) {
+    $this->string .= "  //Inicializar a traves de json
+  public setJson(row: { [index: string]: any } = null): { [index: string]: any } {
     if(!row) return;
-
+    Object.assign(this, row);
 ";
   }
 
@@ -36,12 +36,11 @@ class TypescriptEntity_constructor extends GenerateEntity {
         case "timestamp":
         case "time":
           $this->timestamp($field); break;
-
-        default:
-            $this->defecto($field); break;
       }
     }
   }
+
+
 
 
   protected function end(){
@@ -51,25 +50,15 @@ class TypescriptEntity_constructor extends GenerateEntity {
   }
 
 
-
-
-
-
   protected function date(Field $field){
-    $this->string .= "    if (row[\"" . $field->getName() . "\"]) this.{$field->getName('xxYy')} = this._date(row[\"" . $field->getName() . "\"]);
-";
-  }
-
-  protected function defecto(Field $field){
-    $this->string .= "    if (row[\"" . $field->getName() . "\"]) this.{$field->getName('xxYy')} = row[\"" . $field->getName() . "\"];
+    $this->string .= "    if (row[\"" . $field->getName() . "\"]) this." . $field->getName() . " = this._date(row[\"" . $field->getName() . "\"]);
 ";
   }
 
 
   protected function timestamp(Field $field){
-    $this->string .= "    if (row[\"" . $field->getName() . "\"]) this.{$field->getName('xxYy')} = this._timestamp(row[\"" . $field->getName() . "\"]);
+    $this->string .= "    if (row[\"" . $field->getName() . "\"]) this." . $field->getName() . " = this._timestamp(row[\"" . $field->getName() . "\"]);
 ";
   }
-
 
 }

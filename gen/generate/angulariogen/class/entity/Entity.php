@@ -3,28 +3,28 @@
 require_once("generate/GenerateFileEntity.php");
 
 
-class TypescriptEntityMain extends GenerateFileEntity {
+class TypescriptEntity extends GenerateFileEntity {
 
   public function __construct(Entity $entity, $directorio = null){
-    $file = $entity->getName("xx-yy") . "-main.ts";
+    $file = $entity->getName("xx-yy") . ".ts";
     if(!$directorio) $directorio = PATH_ROOT . "src/app/class/entity/{$entity->getName("xx-yy")}/";
     parent::__construct($directorio, $file, $entity);
   }
 
 
   public function generateCode() {
-    $this->start();
-    $this->properties();
-    $this->initJson();
-    $this->end();
+    $this->string .= "import { {$this->entity->getName('XxYy')}Main } from './{$this->entity->getName('xx-yy')}-main';
+
+export class {$this->entity->getName('XxYy')} extends {$this->entity->getName('XxYy')}Main {
+
+}
+
+";
   }
 
 
   protected function start(){
-    $this->string .= "import { Entity } from '../../../main/class/entity';
 
-export class " . $this->entity->getName("XxYy") . "Main extends Entity {
-";
   }
 
   protected function properties(){
@@ -42,7 +42,6 @@ export class " . $this->entity->getName("XxYy") . "Main extends Entity {
 
   protected function end(){
     $this->string .= "}
-
 ";
   }
 
