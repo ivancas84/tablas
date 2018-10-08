@@ -138,12 +138,21 @@ class AngularIoGen {
     $gen->generate();
   }
 
-
+  public function entity(Entity $entity){
+    require_once("generate/angulariogen/class/entity/EntityMain.php");
+    $gen = new TypescriptEntityMain($entity);
+    $gen->generate();
+  }
 
   public function generate(){
     $this->dataDefinitionLoader();
     $this->component();
     $this->service();
+
+    foreach($this->structure as $entity) {
+      $this->entity($entity);
+    }
+
     //$this->appModuleTs();
     //$this->appRoutingModuleTs();
     //$this->appComponentOptions();
