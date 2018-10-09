@@ -223,7 +223,7 @@ class ComponentSearchHtml extends GenerateFileEntity {
 ";
    $this->string .= "          </select>
           <select class=\"form-control form-control-sm\" formControlName=\"value\" >
-            <option *ngFor=\"let opt of options." . $field->getEntityRef()->getName() . "\" [value]=\"opt.id\" >{{opt.label}}</option>
+            <option *ngFor=\"let opt of options." . $field->getEntityRef()->getName() . "\" [value]=\"opt.id\" >{{opt.id | label:\"{$field->getEntityRef()->getName()}\"}}</option>
           </select>
         </span>
 

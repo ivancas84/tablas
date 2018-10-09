@@ -13,14 +13,11 @@ class EntityDataDefinitionMain extends GenerateFileEntity {
   protected function generateCode(){
     $this->start();
     $this->storage();
-    $this->options();
     $this->initForm();
+    $this->options();
 
     $this->formGroup();
-    //$this->initMain();
-    $this->initFilters();
 
-    $this->serverFilters();
     $this->server();
 
     $this->label();
@@ -51,27 +48,9 @@ export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends Da
   }
 
 
-  protected function initFilters(){
-    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_InitFilters.php");
-    $gen = new EntityDataDefinition_InitFilters($this->entity);
-    $this->string .= $gen->generate();
-  }
-
   protected function initForm(){
     require_once("generate/angulariogen/service/data-definition/entity-data-definition/_InitForm.php");
     $gen = new EntityDataDefinition_InitForm($this->entity);
-    $this->string .= $gen->generate();
-  }
-
-  protected function serverFilters(){
-    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_ServerFilters.php");
-    $gen = new EntityDataDefinition_ServerFilters($this->entity);
-    $this->string .= $gen->generate();
-  }
-
-  protected function options(){
-    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Options.php");
-    $gen = new EntityDataDefinition_Options($this->entity);
     $this->string .= $gen->generate();
   }
 
@@ -91,6 +70,12 @@ export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends Da
   protected function server(){
     require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Server.php");
     $gen = new EntityDataDefinition_Server($this->entity);
+    $this->string .= $gen->generate();
+  }
+
+  protected function server(){
+    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Options.php");
+    $gen = new EntityDataDefinition_Options($this->entity);
     $this->string .= $gen->generate();
   }
 
