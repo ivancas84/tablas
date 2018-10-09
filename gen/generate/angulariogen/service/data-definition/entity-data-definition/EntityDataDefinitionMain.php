@@ -73,7 +73,7 @@ export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends Da
     $this->string .= $gen->generate();
   }
 
-  protected function server(){
+  protected function options(){
     require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Options.php");
     $gen = new EntityDataDefinition_Options($this->entity);
     $this->string .= $gen->generate();
