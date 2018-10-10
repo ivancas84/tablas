@@ -19,7 +19,8 @@ class ComponentSearchTs_onSubmit extends GenerateEntity {
   protected function start(){
     $this->string .= "  onSubmit(): void {
     this.display.filters = [];
-    for(let i = 0; i < this.filters.length; i++){
+    for(let i = 0; i < this.filters.controls.length; i++){
+      switch(this.getField(i)){
 ";
   }
 
@@ -47,9 +48,10 @@ class ComponentSearchTs_onSubmit extends GenerateEntity {
   }
 
   protected function end(){
-    $this->string .= "    }
+    $this->string .= "      }
+    }
 
-    this.display.search = this.display.search = this.searchForm.get('search').value;
+    this.display.search = this.searchForm.get('search').value;
     let sid = encodeURI(JSON.stringify(this.display));
     this.router.navigateByUrl('/{$this->entity->getName('xx-yy')}-show?sid=' + sid);
   }
@@ -60,36 +62,34 @@ class ComponentSearchTs_onSubmit extends GenerateEntity {
 
   protected function pk(){
     $field = $this->entity->getPk();
-    $this->string .= "      if((this.filters[i].field == '" . $field->getName() . "') && (typeof this.filters[i].value == 'object')){
-        var filter = [this.filters[i].field, this.filters[i].option, this.filters[i].value.id];
-        this.display.filters.push(filter);
-      }
+    $this->string .= "        case '" . $field->getName() . "':
+          if (typeof this.getValue(i) == 'object') this.assignFilter(this.getField(i), this.getOption(i), this.getValue(i).id);
+        break;
 ";
   }
 
 
   protected function date(Field $field){
-    $this->string .= "      if(this.filters[i].field == '" . $field->getName() . "' && this.filters[i].value) {
-        var value = this.dd.parser.dateFormat(this.filters[i].value);
-        var filter = [this.filters[i].field, this.filters[i].option, value];
-        this.display.filters.push(filter);
-      }
+    $this->string .= "        case '" . $field->getName() . "':
+          if(this.getValue(i)) {
+            var value = this.dd.parser.dateFormat(this.getValue(i));
+            this.assignFilter(this.getField(i), this.getOption(i), value);
+          }
+        break;
 ";
   }
 
   protected function defecto(Field $field){
-    $this->string .= "      if(this.filters[i].field == '" . $field->getName() . "' && this.filters[i].value) {
-        var filter = [this.filters[i].field, this.filters[i].option, this.filters[i].value];
-        this.display.filters.push(filter);
-      }
+    $this->string .= "        case '" . $field->getName() . "':
+          if(this.getValue(i)) this.assignFilter(this.getField(i), this.getOption(i), this.getValue(i));
+        break;
 ";
   }
 
   protected function typeahead(Field $field){
-    $this->string .= "      if((this.filters[i].field == '" . $field->getName() . "') && (typeof this.filters[i].value == 'object')){
-        var filter = [this.filters[i].field, this.filters[i].option, this.filters[i].value.id];
-        this.display.filters.push(filter);
-      }
+    $this->string .= "       case '" . $field->getName() . "':
+          if(this.getValue(i) == 'object') if(this.getValue(i)) this.assignFilter(this.getField(i), this.getOption(i), this.getValue(i).id);
+        break;
 ";
   }
 
