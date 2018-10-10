@@ -36,7 +36,7 @@ abstract class EntitySql {
 
     return $rows_;
   }
-  
+
   public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); }
 
   public function mappingField($field){
@@ -203,10 +203,20 @@ abstract class EntitySql {
     if($value === false) return "(" . $field . " IS NULL) ";
     if($value === true) return "(" . $field . " IS NOT NULL) ";
     return $this->_conditionDate($field, $value, $option);
-
-
-
   }
+
+  protected function conditionTimestamp($field, $value, $option = "="){
+    if($value === false) return "(" . $field . " IS NULL) ";
+    if($value === true) return "(" . $field . " IS NOT NULL) ";
+    return $this->_conditionTimestamp($field, $value, $option);
+  }
+
+  //***** Definir condicion de busqueda de texto aproximada (en base al motor de base de datos define la sintaxis correspondiente *****
+ protected function _conditionTimestamp($field, $value, $option){
+   if($this->db->getDbms() == "mysql") return "(" . $field . " " . $option. " '" . $value . "')";
+   else return "(" . $field . " " . $option. " TO_TIMESTAMP('" . $value . "', 'YYYY-MM-DD HH24:MI:SS') )";
+ }
+
 
   protected function conditionNumber($field, $value, $option = "="){
     if($value === false) return "(" . $field . " IS NULL) ";

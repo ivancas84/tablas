@@ -35,6 +35,9 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
         case "boolean": $this->boolean($field->getName()); break;
 
         case "date": $this->date($field->getName()); break;
+
+        case "timestamp": $this->timestamp($field->getName()); break;
+
       }
     }
 
@@ -58,6 +61,11 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
 
   protected function date($fieldName){
     $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionDate(\$f, \$value, \$option);
+" ;
+  }
+
+  protected function timestamp($fieldName){
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionTimestamp(\$f, \$value, \$option);
 " ;
   }
 
