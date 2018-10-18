@@ -56,6 +56,23 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
 ";
   }
 
+  protected function initForm(){
+    require_once("generate/angulariogen/component/fieldset/_InitForm.php");
+    $gen = new ComponentFieldsetTs_initForm($this->entity);
+    $this->string .= $gen->generate();
+  }
+
+  protected function formGroup(){
+    require_once("generate/angulariogen/component/fieldset/_FormGroup.php");
+    $gen = new ComponentFieldsetTs_formGroup($this->entity);
+    $this->string .= $gen->generate();
+  }
+
+  protected function server(){
+    require_once("generate/angulariogen/component/fieldset/_Server.php");
+    $gen = new ComponentFieldsetTs_server($this->entity);
+    $this->string .= $gen->generate();
+  }
 
   protected function end(){
     $this->string .= "}
@@ -67,6 +84,9 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
     $this->start();
     $this->getters();
     $this->setChange();
+    $this->formGroup();
+    $this->initForm();
+    $this->server();
     $this->end();
   }
 

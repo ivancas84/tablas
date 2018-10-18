@@ -13,19 +13,13 @@ class EntityDataDefinitionMain extends GenerateFileEntity {
   protected function generateCode(){
     $this->start();
     $this->storage();
-    $this->initForm();
     $this->options();
-
-    $this->formGroup();
-
-    $this->server();
-
     $this->label();
     $this->end();
 
   }
 
-  protected function start(){
+  protected function start() {
     $this->string .= "import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
@@ -47,31 +41,12 @@ export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends Da
     $this->string .= $gen->generate();
   }
 
-
-  protected function initForm(){
-    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_InitForm.php");
-    $gen = new EntityDataDefinition_InitForm($this->entity);
-    $this->string .= $gen->generate();
-  }
-
-  protected function formGroup(){
-    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_FormGroup.php");
-    $gen = new EntityDataDefinition_FormGroup($this->entity);
-    $this->string .= $gen->generate();
-  }
-
   protected function label(){
     require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Label.php");
     $gen = new EntityDataDefinition_Label($this->entity);
     $this->string .= $gen->generate();
   }
 
-
-  protected function server(){
-    require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Server.php");
-    $gen = new EntityDataDefinition_Server($this->entity);
-    $this->string .= $gen->generate();
-  }
 
   protected function options(){
     require_once("generate/angulariogen/service/data-definition/entity-data-definition/_Options.php");

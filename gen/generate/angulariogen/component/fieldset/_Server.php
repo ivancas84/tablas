@@ -3,7 +3,7 @@
 require_once("generate/GenerateEntity.php");
 
 
-class EntityDataDefinition_Server extends GenerateEntity {
+class ComponentFieldsetTs_server extends GenerateEntity {
 
 
   public function generate() {
