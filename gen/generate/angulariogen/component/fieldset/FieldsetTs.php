@@ -14,7 +14,7 @@ class ComponentFieldsetTs extends GenerateFileEntity {
 
   protected function start(){
     $this->string .= "import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 
@@ -85,8 +85,8 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
     $this->getters();
     $this->setChange();
     $this->formGroup();
-    $this->initForm();
-    $this->server();
+    //$this->initForm();
+    //$this->server();
     $this->end();
   }
 

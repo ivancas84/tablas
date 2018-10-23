@@ -13,11 +13,11 @@ class TypescriptEntity_properties extends GenerateEntity {
 
     foreach($fields as $field){
       switch ( $field->getDataType() ) {
-        case "date":
+        /*case "date":
         case "year":
         case "timestamp":
         case "time":
-          $this->property($field, "Date"); break;
+          $this->property($field, "Date"); break;*/
 
         case "float":
         case "int":

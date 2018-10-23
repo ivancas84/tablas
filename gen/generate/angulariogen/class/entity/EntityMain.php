@@ -15,7 +15,7 @@ class TypescriptEntityMain extends GenerateFileEntity {
   public function generateCode() {
     $this->start();
     $this->properties();
-    $this->initJson();
+    //$this->initJson();
     $this->end();
   }
 
