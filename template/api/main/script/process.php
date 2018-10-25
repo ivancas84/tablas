@@ -1,19 +1,30 @@
 <?php
 
-//script de procesamiento
-//recibe informacion de un conjunto de entidades y procesa sus datos
-//retorna el id principal de las entidades procesadas
-//tener en cuenta que el id persistido, no siempre puede ser el id retornado (por ejemplo para el caso que se utilicen logs en la base de datos)
+/*
+script de procesamiento
+recibe informacion de un conjunto de entidades y procesa sus datos
+retorna el id principal de las entidades procesadas
+tener en cuenta que el id persistido, no siempre puede ser el id retornado (por ejemplo para el caso que se utilicen logs en la base de datos)
+*/
 require_once("class/Filter.php");
 require_once("class/model/Dba.php");
 require_once("function/stdclass_to_array.php");
 
 try{
   $f = Filter::requestRequired("data");
+
+    /*
+    * Se recibe un array de objetos {entity:"entidad", row:objeto con valores} o {entity:"entidad", rows:array de objetos con valores}
+    * Adicionalmente puede estar el elemento "params" que define valores prioritarios
+    * Se procesa uno por uno cada elemento del array, puede ser que el resultado de un elemento sea utilizado en otro, por lo tanto es importante el ordenamiento del array
+    */
+
   $f_ =  json_decode($f);
   $data = stdclass_to_array($f_);
+
+
   $sql = "";
-  $idsReturn = [];
+  $response = [];
   $detail = [];
 
   foreach($data as $d){
@@ -26,12 +37,13 @@ try{
     if(!empty($row)){
       $persist = Dba::persist($entity, $row);
       $sql .= $persist["sql"];
-      array_push($idsReturn, $persist["id"]);
+      array_push($response, ["entity" => $entity, "id" => $persist["id"]]);
       $detail = array_merge($detail, $persist["detail"]);
     }
 
     //rows: Habitualmente existe una fk asociada definida en params
     if(count($rows)){
+      $idsReturn = [];
       $render = array();
       foreach($params as $fieldName => $fieldValue) array_push($render, [$fieldName, '=', $fieldValue]);
       $ids = Dba::ids($entity, $render);
@@ -63,6 +75,7 @@ try{
   Transaction::begin();
   Transaction::update(["descripcion"=> $sql, "detalle" => implode(",",$detail)]);
   Transaction::commit();
+
   echo json_encode($response);
 
 } catch (Exception $ex){

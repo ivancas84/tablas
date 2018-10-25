@@ -17,7 +17,7 @@ class Transaction {
       return $id;
     }
 
-    self::$id = self::uniqId();
+    self::$id = Dba::uniqId();
 
     $_SESSION["transaction"][self::$id] = [
       "sql" => null,
@@ -34,6 +34,9 @@ class Transaction {
   public static function update(array $data){
     if(empty(self::$id)) throw new UnexpectedValueException("Id de transaccion no definido");
 
+    error_log("BBBBBBBBBBBBBBBBBBBBBBBB");
+    error_log($data["descripcion"]);
+    error_log("BBBBBBBBBBBBBBBBBBBBBBBB");
     if(!empty($data["descripcion"])){
       if(!empty($_SESSION["transaction"][self::$id]["descripcion"])) $_SESSION["transaction"][self::$id]["descripcion"] .= " ";
       $_SESSION["transaction"][self::$id]["descripcion"] .= $data["descripcion"];
@@ -106,20 +109,25 @@ LIMIT 20;
     $db = Dba::dbInstance();
     try {
       $id = $db->escapeString(self::$id);
-      $descripcion = $db->escapeString($_SESSION["transaction"][self::$id]["descripcion"]);
+      $descripcion = $_SESSION["transaction"][self::$id]["descripcion"];
+      $descripcionEscaped = $db->escapeString($descripcion);  //se escapa para almacenarlo en la base de datos
       $detalle = $db->escapeString($_SESSION["transaction"][self::$id]["detalle"]);
+      error_log("***************");
+      error_log($descripcion);
+      error_log("***************");
       $tipo = $db->escapeString($_SESSION["transaction"][self::$id]["tipo"]);
       $fecha = $_SESSION["transaction"][self::$id]["actualizado"];
 
       $queryTransaction = "
         INSERT INTO transaccion (id, actualizado, descripcion, detalle, tipo)
-        VALUES (" . $id . ", '" . $fecha . "', '" . $descripcion . "', '" .$detalle . "', '" . $tipo . "');
+        VALUES (" . $id . ", '" . $fecha . "', '" . $descripcionEscaped . "', '" .$detalle . "', '" . $tipo . "');
       ";
 
       $db->query($queryTransaction);
 
       $commitDate = date("Y-m-d H:i:s");
       $queryPersist = $descripcion . " UPDATE transaccion SET tipo = 'commit', actualizado = '" . $commitDate . "' WHERE id = " . $id . ";";
+
       $db->multiQueryTransaction($queryPersist);
 
       unset($_SESSION["transaction"][self::$id]);
