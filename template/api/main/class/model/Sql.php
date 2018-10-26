@@ -279,6 +279,17 @@ abstract class EntitySql {
 ";
   }
 
+
+
+  //inner join basico (este metodo esta pensado para armar consultas desde la entidad actual)
+  public function innerJoin($field, $table){
+    $p = $this->prf();
+    $t = $this->prt();
+    return "INNER JOIN {$table} AS {$p}{$table} ON ({$p}{$table}.$field = $t.{$this->entity->getPk()->getName()})
+";
+  }
+
+  //inner join basico desde la tabla actual (este metodo esta pensado para armar consultas desde otra entidad)
   public function _innerJoin($field, $fromTable){
     $t = $this->prt();
     return "INNER JOIN {$this->entity->getSn_()} AS $t ON ($fromTable.$field = $t.{$this->entity->getPk()->getName()})
