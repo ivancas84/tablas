@@ -66,7 +66,7 @@ class Dba {
   }
 
   //identificador unico
-  public function uniqId(){
+  public static function uniqId(){
     usleep(1); //con esto se evita que los procesadores modernos generen el mismo id
     return hexdec(uniqid());
   }
@@ -153,6 +153,7 @@ class Dba {
   //busqueda estricta por campos unicos
   public static function _unique($entity, $render = null){
     $sql = self::sqlo($entity)->_unique($render);
+    if(!$sql) return null;
     $rows = self::fetchAll($sql);
 
     if(count($rows) > 1) throw new Exception("La busqueda estricta por campos unicos de " . $this->entity->getName() . " retorno mas de un resultado");

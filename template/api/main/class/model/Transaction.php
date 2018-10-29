@@ -34,9 +34,6 @@ class Transaction {
   public static function update(array $data){
     if(empty(self::$id)) throw new UnexpectedValueException("Id de transaccion no definido");
 
-    error_log("BBBBBBBBBBBBBBBBBBBBBBBB");
-    error_log($data["descripcion"]);
-    error_log("BBBBBBBBBBBBBBBBBBBBBBBB");
     if(!empty($data["descripcion"])){
       if(!empty($_SESSION["transaction"][self::$id]["descripcion"])) $_SESSION["transaction"][self::$id]["descripcion"] .= " ";
       $_SESSION["transaction"][self::$id]["descripcion"] .= $data["descripcion"];
@@ -80,7 +77,7 @@ AND actualizado > '{$status}'
 ORDER BY actualizado ASC
 LIMIT 20;
 ";
-    $db = self::dbInstance();
+    $db = Dba::dbInstance();
     $result = $db->query($query);
     $numRows = intval($db->numRows($result));
 
@@ -112,9 +109,7 @@ LIMIT 20;
       $descripcion = $_SESSION["transaction"][self::$id]["descripcion"];
       $descripcionEscaped = $db->escapeString($descripcion);  //se escapa para almacenarlo en la base de datos
       $detalle = $db->escapeString($_SESSION["transaction"][self::$id]["detalle"]);
-      error_log("***************");
-      error_log($descripcion);
-      error_log("***************");
+
       $tipo = $db->escapeString($_SESSION["transaction"][self::$id]["tipo"]);
       $fecha = $_SESSION["transaction"][self::$id]["actualizado"];
 

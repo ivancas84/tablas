@@ -58,7 +58,7 @@ abstract class EntitySqlo {
     $r = $this->initializeInsertSql($row);
     $r_ = $this->formatSql($r);
     $sql = $this->_insertSql($r_);
-
+  
     return array("id" => $r["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
   }
 

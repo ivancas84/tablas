@@ -35,7 +35,7 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
   }
 
   protected function getters(){
-    foreach($this->entity->getFieldsNf() as $field){
+    foreach($this->entity->getFieldsByType(["nf","fk"]) as $field){
       $this->string .= "  get {$field->getName('xxYy')}() { return this.fieldsetForm.get('{$field->getName()}')}
 ";
     }
