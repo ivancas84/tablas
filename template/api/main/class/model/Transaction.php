@@ -17,7 +17,7 @@ class Transaction {
       return $id;
     }
 
-    self::$id = self::uniqId();
+    self::$id = Dba::uniqId();
 
     $_SESSION["transaction"][self::$id] = [
       "sql" => null,
@@ -77,7 +77,7 @@ AND actualizado > '{$status}'
 ORDER BY actualizado ASC
 LIMIT 20;
 ";
-    $db = self::dbInstance();
+    $db = Dba::dbInstance();
     $result = $db->query($query);
     $numRows = intval($db->numRows($result));
 
@@ -106,20 +106,23 @@ LIMIT 20;
     $db = Dba::dbInstance();
     try {
       $id = $db->escapeString(self::$id);
-      $descripcion = $db->escapeString($_SESSION["transaction"][self::$id]["descripcion"]);
+      $descripcion = $_SESSION["transaction"][self::$id]["descripcion"];
+      $descripcionEscaped = $db->escapeString($descripcion);  //se escapa para almacenarlo en la base de datos
       $detalle = $db->escapeString($_SESSION["transaction"][self::$id]["detalle"]);
+
       $tipo = $db->escapeString($_SESSION["transaction"][self::$id]["tipo"]);
       $fecha = $_SESSION["transaction"][self::$id]["actualizado"];
 
       $queryTransaction = "
         INSERT INTO transaccion (id, actualizado, descripcion, detalle, tipo)
-        VALUES (" . $id . ", '" . $fecha . "', '" . $descripcion . "', '" .$detalle . "', '" . $tipo . "');
+        VALUES (" . $id . ", '" . $fecha . "', '" . $descripcionEscaped . "', '" .$detalle . "', '" . $tipo . "');
       ";
 
       $db->query($queryTransaction);
 
       $commitDate = date("Y-m-d H:i:s");
       $queryPersist = $descripcion . " UPDATE transaccion SET tipo = 'commit', actualizado = '" . $commitDate . "' WHERE id = " . $id . ";";
+
       $db->multiQueryTransaction($queryPersist);
 
       unset($_SESSION["transaction"][self::$id]);

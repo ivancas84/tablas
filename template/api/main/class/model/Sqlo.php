@@ -58,7 +58,7 @@ abstract class EntitySqlo {
     $r = $this->initializeInsertSql($row);
     $r_ = $this->formatSql($r);
     $sql = $this->_insertSql($r_);
-
+  
     return array("id" => $r["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
   }
 
@@ -70,6 +70,7 @@ abstract class EntitySqlo {
   //@return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
   public function update(array $row) {
     $r = $this->initializeUpdateSql($row);
+
     $r_ = $this->formatSql($r);
     $sql = $this->_updateSql($r_);
 

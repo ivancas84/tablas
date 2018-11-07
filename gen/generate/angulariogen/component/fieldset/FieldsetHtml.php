@@ -126,7 +126,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     $this->string .= "  <div class=\"form-group row\">
     <label class=\"col-2 col-form-label\">" . $field->getName("Xx Yy") . ":</label>
     <div class=\"col-10\">
-      <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
+      <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':({$field->getName()}.invalid && ({$field->getName()}.dirty || {$field->getName()}.touched))}\">
         <option [ngValue]=\"null\">--" . $field->getName("Xx Yy") . "--</option>
 " ;
 
@@ -147,9 +147,9 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     $this->string .= "  <div *ngIf=\"isSync('" . $field->getName() . "')\" class=\"form-group row\">
     <label class=\"col-2 col-form-label\">" . $field->getName("Xx Yy") . "</label>
     <div class=\"col-10\">
-      <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
+      <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':({$field->getName()}.invalid && ({$field->getName()}.dirty || {$field->getName()}.touched))}\">
         <option [ngValue]=\"null\">--" . $field->getName("Xx Yy") . "--</option>
-        <option *ngFor=\"let option of options." . $field->getEntityRef()->getName() . "\" [value]=\"option.id\" >{{option.label}}</option>
+        <option *ngFor=\"let option of options." . $field->getEntityRef()->getName() . "\" [value]=\"option.id\" >{{option.id | label:\"{$field->getEntityRef()->getName()}\"}}</option>
       </select>
 ";
     $this->templateError($field);
