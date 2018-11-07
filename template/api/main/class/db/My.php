@@ -41,7 +41,7 @@ class DbSqlMy extends mysqli implements DbInterface {
   }
 
   //***** @override *****
-  public function query($query){
+  public function query($query, $resultmode = NULL){
 
     $result = parent::query($query);
     if(!$result) throw new Exception($this->error);
