@@ -28,10 +28,10 @@ class SpanishDateTime extends DateTime{
      
      $spanishDateTime = new SpanishDateTime();
      
-    $spanishDateTime->setTimestamp($dateTime->getTimestamp());
-    if(isset($timezone)) $spanishDateTime->setTimezone($dateTime->getTimezone());
+     $spanishDateTime->setTimestamp($dateTime->getTimestamp());
+     if(isset($timezone)) $spanishDateTime->setTimezone($dateTime->getTimezone());
     
-    return $spanishDateTime;
+     return $spanishDateTime;
    }
    
    
@@ -40,6 +40,7 @@ class SpanishDateTime extends DateTime{
     * @Override
     */
   function format($format){
+
      $english = array(
       'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',
       'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
