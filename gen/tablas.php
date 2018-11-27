@@ -1,9 +1,7 @@
 <?php
 
 //controlador para generar la estructura php de mapeo de base de datos
-
-require_once("./config/config.php");
-require(PATH_GEN); //configuracion del modulo de administracion
+require($_SERVER["DOCUMENT_ROOT"] . "/fines2/programacion/api/config/config.php"); //configuracion del modulo de administracion
 
 
 require_once("generate/tablas/Tablas.php");
