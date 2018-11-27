@@ -156,7 +156,7 @@ class Dba {
     if(!$sql) return null;
     $rows = self::fetchAll($sql);
 
-    if(count($rows) > 1) throw new Exception("La busqueda estricta por campos unicos de " . $this->entity->getName() . " retorno mas de un resultado");
+    if(count($rows) > 1) throw new Exception("La busqueda estricta por campos unicos de {$entity} retorno mas de un resultado");
     if(count($rows) == 1) return self::sql($entity)->json($rows[0]);
     return null;
   }
@@ -167,7 +167,7 @@ class Dba {
     if(empty($sql)) return null;
 
     $rows = self::fetchAll($sql);
-    if(count($rows) > 1) throw new Exception("La busqueda por campos unicos de " . $this->entity->getName() . " retorno mas de un resultado");
+    if(count($rows) > 1) throw new Exception("La busqueda por campos unicos de {$entity} retorno mas de un resultado");
     if(count($rows) == 1) return self::sql($entity)->json($rows[0]);
     return null;
   }
