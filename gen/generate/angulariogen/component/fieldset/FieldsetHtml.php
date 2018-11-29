@@ -6,7 +6,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
 
   public function __construct(Entity $entity, $directorio = null) {
     $file = $entity->getName("xx-yy") . "-fieldset.component.html";
-    if(!$directorio) $directorio = PATH_ROOT . "tmp/component/fieldset/" . $entity->getName("xx-yy") . "-fieldset/";
+    if(!$directorio) $directorio = PATH_GEN . "tmp/component/fieldset/" . $entity->getName("xx-yy") . "-fieldset/";
     parent::__construct($directorio, $file, $entity);
   }
 

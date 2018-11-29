@@ -7,7 +7,7 @@ class ComponentShowHtml extends GenerateFileEntity {
 
   public function __construct(Entity $entity, $directorio = null){
     $file = $entity->getName("xx-yy") . "-show.component.html";
-    if(!$directorio) $directorio = PATH_ROOT . "tmp/component/show/" . $entity->getName("xx-yy") . "-show/";
+    if(!$directorio) $directorio = PATH_GEN . "tmp/component/show/" . $entity->getName("xx-yy") . "-show/";
     parent::__construct($directorio, $file, $entity);
   }
 

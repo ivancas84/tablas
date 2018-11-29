@@ -4,7 +4,7 @@
 class AppOptionsComponentHtml extends GenerateFile {
 
   public function __construct(array $structure) {
-    $dir = PATH_ROOT . "src/app/options/";
+    $dir = PATH_GEN . "src/app/options/";
     $file = "options.component.html";
     parent::__construct($dir, $file);
   }

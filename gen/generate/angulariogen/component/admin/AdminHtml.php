@@ -7,7 +7,7 @@ class ComponentAdminHtml extends GenerateFileEntity {
 
   public function __construct(Entity $entity, $directorio = null){
     $file = $entity->getName("xx-yy") . "-admin.component.html";
-    if(!$directorio) $directorio = PATH_ROOT . "tmp/component/admin/" . $entity->getName("xx-yy") . "-admin/";
+    if(!$directorio) $directorio = PATH_GEN . "tmp/component/admin/" . $entity->getName("xx-yy") . "-admin/";
     parent::__construct($directorio, $file, $entity);
   }
 

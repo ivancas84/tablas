@@ -8,13 +8,26 @@ class ComponentFieldsetArrayTs extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
     $file = $entity->getName("xx-yy") . "-fieldset-array.component.ts";
-    $dir = PATH_ROOT . "tmp/component/fieldset-array/" . $entity->getName("xx-yy") . "-fieldset-array/";
+    $dir = PATH_GEN . "tmp/component/fieldset-array/" . $entity->getName("xx-yy") . "-fieldset-array/";
     parent::__construct($dir, $file, $entity);
   }
 
+  protected function formGroup(){
+    require_once("generate/angulariogen/component/fieldset/_FormGroup.php");
+    $gen = new ComponentFieldsetTs_formGroup($this->entity);
+    $this->string .= $gen->generate();
+  }
+
   protected function generateCode(){
+    $this->start();
+    $this->formGroup();
+    $this->end();
+  }
+
+
+  protected function start(){
     $this->string .= "import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 
@@ -30,10 +43,13 @@ export class " . $this->entity->getName("XxYy") . "FieldsetArrayComponent extend
     this.entity = '" . $this->entity->getName() . "';
     this.fieldset = '" . $this->entity->getName() . "';
   }
-}
 ";
   }
 
+  protected function end(){
+    $this->string .= "}
+";
+  }
 
 
 }

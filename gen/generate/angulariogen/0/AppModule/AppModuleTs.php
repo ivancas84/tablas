@@ -7,7 +7,7 @@ class AppModuleTs extends GenerateFile {
   protected $structure;
 
   public function __construct(array $structure) {
-    $directorio = PATH_ROOT . "/src/app/";
+    $directorio = PATH_GEN . "/src/app/";
     $nombreArchivo = "app.module.ts";
     parent::__construct($directorio, $nombreArchivo);
     $this->structure = $structure;

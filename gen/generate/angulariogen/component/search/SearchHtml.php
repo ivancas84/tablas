@@ -6,7 +6,7 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
   public function __construct(Entity $entity, $directorio = null){
     $file = $entity->getName("xx-yy") . "-search.component.html";
-    if(!$directorio) $directorio = PATH_ROOT . "tmp/component/search/" . $entity->getName("xx-yy") . "-search/";
+    if(!$directorio) $directorio = PATH_GEN . "tmp/component/search/" . $entity->getName("xx-yy") . "-search/";
     parent::__construct($directorio, $file, $entity);
   }
 

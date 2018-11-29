@@ -6,7 +6,7 @@ class ComponentSearchTs extends GenerateFileEntity {
 
 
   public function __construct(Entity $entity) {
-    $dir = PATH_ROOT . "tmp/component/search/" . $entity->getName("xx-yy") . "-search/";
+    $dir = PATH_GEN . "tmp/component/search/" . $entity->getName("xx-yy") . "-search/";
     $file = $entity->getName("xx-yy") . "-search.component.ts";
     parent::__construct($dir, $file, $entity);
   }

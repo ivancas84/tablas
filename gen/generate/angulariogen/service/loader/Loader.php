@@ -8,7 +8,7 @@ class LoaderService extends GenerateFile {
 
   public function __construct(array $structure){
     $this->structure = $structure;
-    parent::__construct(PATH_ROOT."src/app/service/", "loader.service.ts");
+    parent::__construct(PATH_GEN."src/app/service/", "loader.service.ts");
 
   }
 

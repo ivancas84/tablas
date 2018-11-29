@@ -7,7 +7,7 @@ class AppRoutingModuleTs extends GenerateFile {
   protected $structure;
 
   public function __construct(array $structure) {
-    $directorio = PATH_ROOT . "/src/app/";
+    $directorio = PATH_GEN . "/src/app/";
     $nombreArchivo = "app-routing.module.ts";
     parent::__construct($directorio, $nombreArchivo);
     $this->structure = $structure;

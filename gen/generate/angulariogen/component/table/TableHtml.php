@@ -7,7 +7,7 @@ class ComponentTableHtml extends GenerateFileEntity {
 
   public function __construct(Entity $entity, $directorio = null){
     $file = $entity->getName("xx-yy") . "-table.component.html";
-    if(!$directorio) $directorio = PATH_ROOT . "tmp/component/table/" . $entity->getName("xx-yy") . "-table/";
+    if(!$directorio) $directorio = PATH_GEN . "tmp/component/table/" . $entity->getName("xx-yy") . "-table/";
     parent::__construct($directorio, $file, $entity);
   }
 

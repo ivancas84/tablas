@@ -5,7 +5,7 @@ require_once("generate/GenerateFileEntity.php");
 class ComponentShowTs extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
-    $dir = PATH_ROOT . "tmp/component/show/" . $entity->getName("xx-yy") . "-show/";
+    $dir = PATH_GEN . "tmp/component/show/" . $entity->getName("xx-yy") . "-show/";
     $file = $entity->getName("xx-yy") . "-show.component.ts";
     parent::__construct($dir, $file, $entity);
   }

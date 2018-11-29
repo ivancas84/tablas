@@ -4,7 +4,7 @@
 class AppGridTs extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
-    $dir = PATH_ROOT . "src/app/" . $entity->getName("xx-yy") . "-grid/";
+    $dir = PATH_GEN . "src/app/" . $entity->getName("xx-yy") . "-grid/";
     $file = $entity->getName("xx-yy") . "-grid.ts";
     parent::__construct($dir, $file, $entity);
   }

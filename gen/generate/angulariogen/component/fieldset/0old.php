@@ -6,7 +6,7 @@ class FieldsetFieldsTemplate extends GenerateFileEntity {
   
 
   public function __construct(Entity $entity, $dir = null){
-    if(!$dir) $dir = PATH_ROOT . "component/fieldsetFields/" . $entity->getName("xxYy") . "/"; 
+    if(!$dir) $dir = PATH_GEN . "component/fieldsetFields/" . $entity->getName("xxYy") . "/"; 
     $file = "Template.html";
     parent::__construct($dir, $file, $entity);
   }

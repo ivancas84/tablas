@@ -5,7 +5,7 @@ require_once("generate/GenerateFileEntity.php");
 class ComponentTableTs extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
-    $dir = PATH_ROOT . "tmp/component/table/" . $entity->getName("xx-yy") . "-table/";
+    $dir = PATH_GEN . "tmp/component/table/" . $entity->getName("xx-yy") . "-table/";
     $file = $entity->getName("xx-yy") . "-table.component.ts";
     parent::__construct($dir, $file, $entity);
   }

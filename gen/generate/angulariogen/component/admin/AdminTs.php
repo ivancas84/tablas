@@ -5,7 +5,7 @@ require_once("generate/GenerateFileEntity.php");
 class ComponentAdminTs extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
-    $dir = PATH_ROOT . "tmp/component/admin/" . $entity->getName("xx-yy") . "-admin/";
+    $dir = PATH_GEN . "tmp/component/admin/" . $entity->getName("xx-yy") . "-admin/";
     $file = $entity->getName("xx-yy") . "-admin.component.ts";
     parent::__construct($dir, $file, $entity);
   }
