@@ -33,7 +33,10 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
         case "date": $this->date($field);  break;
         //case "float": case "integer": case "cuil": case "dni": $this->number($field); break;
         // case "year": $this->date($field); break;
-        case "timestamp": $this->timestamp($field); break;
+        case "timestamp":
+          //la administracion de timestamp se encuentra deshabilitada debido a que requiere de formato adicional
+          //$this->timestamp($field);
+        break;
         // case "time": $this->time($field); break;
         case "select_text": $this->selectValues($field); break;
         case "select_int": $this->selectValues($field); break;

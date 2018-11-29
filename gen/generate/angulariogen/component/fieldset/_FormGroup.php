@@ -29,7 +29,10 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
     foreach($fields as $field){
       switch ( $field->getSubtype() ) {
         case "checkbox": $this->checkbox($field); break;
-        case "timestamp": $this->timestamp($field); break;
+        case "timestamp":
+          //la administracion de timestamp se encuentra deshabilitada debido a que requiere de formato adicional
+          //$this->timestamp($field);
+        break;
         case "email": $this->email($field); break;
         case "dni": $this->dni($field); break;
 
