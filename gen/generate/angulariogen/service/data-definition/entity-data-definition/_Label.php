@@ -66,7 +66,7 @@ class EntityDataDefinition_Label extends GenerateEntity {
 ";
     $fields = $this->fields["fk"];
 
-    foreach($fields as $field){
+    foreach($fields as $field) {
       switch ( $field->getSubtype() ) {
         case "select": case "typeahead":
           $this->get($field);
@@ -88,8 +88,7 @@ class EntityDataDefinition_Label extends GenerateEntity {
   }
 
   protected function get(Field $field){
-    $this->string .= "    if(row." . $field->getName() . ") {
-      ret = ret.trim() + \" \" + this.dd.labelGet(\"" . $field->getEntityRef()->getName() . "\", row." . $field->getName() . ");
+    $this->string .= "    if(row." . $field->getName() . ") ret = ret.trim() + \" \" + this.dd.labelGet(\"" . $field->getEntityRef()->getName() . "\", row." . $field->getName() . ");
 ";
   }
 

@@ -41,6 +41,26 @@ class EntityDataDefinition_Storage extends GenerateEntity {
   protected function fields($tableName, array $names){
     $row = "row";
     $key = $names[count($names)-1];
+
+    $this->string .= "    if(('{$names[0]}' in {$row})
+";
+
+    for($i = 1; $i < count($names) ; $i++) {
+      $row .= "['{$names[$i-1]}']";
+      $this->string .= "    && ('{$names[$i]}' in {$row})
+";
+
+    }
+
+    $row .= "['{$names[count($names)-1]}']";
+
+    $this->string .= "    ){
+      this.dd.storage.setItem('{$tableName}' + {$row}.id, {$row});
+      delete {$row};
+    }
+";
+
+    /*
     for($i =0; $i < count($names) -1 ; $i++) $row .= "['{$names[$i]}']";
     $row_ = $row . "['{$key}']";
 
@@ -49,7 +69,7 @@ class EntityDataDefinition_Storage extends GenerateEntity {
       this.dd.storage.setItem('{$tableName}' + {$row_}.id, {$row_});
       delete {$row_};
     }
-";
+";*/
   }
 
   protected function fk(Entity $entity, array $tablesVisited, array $names){
