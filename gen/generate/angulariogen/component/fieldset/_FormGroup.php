@@ -17,7 +17,7 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
 
 
   protected function start() {
-    $this->string .= "  formGroup(sync: { [index: string]: any } = null): FormGroup {
+    $this->string .= "  formGroup(): FormGroup {
     let fg: FormGroup = this.dd.fb.group({
       id:'',
 ";
@@ -140,7 +140,7 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
   protected function defectoFk(Field $field) {
       $validator = ($field->isNotNull()) ?  ", Validators.required" : "";
 
-      $this->string .= "    if(this.dd.isSync('{$field->getName()}', sync)) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
+      $this->string .= "    if(this.isSync('{$field->getName()}')) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
 ";
   }
 
