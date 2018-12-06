@@ -226,32 +226,34 @@ abstract class EntitySql {
     return "(" . $field . " " . $option . " " . $value . ") ";
   }
 
-  //***** Definir condicion de busqueda de booleano *****
-  protected function conditionBoolean($field, $value = NULL){
+  protected function conditionBoolean($field, $value = NULL){ //definir condicion de busqueda de booleano
     $v = (settypebool($value)) ? "true" : "false";
     return "(" . $field . " = " . $v . ") ";
   }
 
-
-  //Definir todas las condiciones
-  public function conditionAll(array $advanced = null, $search = null, $connect = "WHERE") {
+  public function conditionAll(array $advanced = null, $search = null, $connect = "WHERE") { //definir todas las condiciones
     $sqlCond = concat($this->conditionSearch($search), $connect);
     $sqlCond .= concat($this->conditionAdvanced($advanced), " AND", $connect, $sqlCond);
     $sqlCond .= concat($this->conditionAux(), " AND", $connect, $sqlCond);
     return $sqlCond;
   }
 
-  public function conditionUniqueFields(array $params){  //filtrar campos unicos y definir condicion
-    //cada campo unico compuesto poseera una entrada en el array $params con una llave (identificacion) y un valor que sera un array de valores
-    //si se desea trabajar con campos unicos compuestos, es necesario sobrescribir este metodo
-    //no definir campos unicos compuestos en la entidad en el metodo getFieldsUnique de Entity. El resto de las funciones que lo utilizan, pueden no estar preparados para soportarla
-    //if($key == "identificacion_campo_unico_compuesto")
-    //  if(!empty($value)) {
-    //    $advancedSearhCompound = []
-    //    foreach ($value as $k => $v) array_push($advancedSearhCompound, [$k, "=", $v]);
-    //    array_push($advancedSearch, $advancedSearhCompound);
-    //  }
-    //}
+  public function conditionUniqueFields(array $params){ //filtrar campos unicos y definir condicion
+    /**
+     * $params
+     *   array("nombre_field" => "valor_field", ...)
+     * campos unicos compuestos:
+     *   cada campo unico compuesto poseera una entrada en el array $params con una llave (identificacion) y un valor que sera un array de valores
+     *   si se desea trabajar con campos unicos compuestos, es necesario sobrescribir este metodo
+     *   no definir campos unicos compuestos en la entidad en el metodo getFieldsUnique de Entity. El resto de las funciones que lo utilizan, pueden no estar preparados para soportarla
+     *   if($key == "identificacion_campo_unico_compuesto")
+     *     if(!empty($value)) {
+     *       $advancedSearhCompound = []
+     *       foreach ($value as $k => $v) array_push($advancedSearhCompound, [$k, "=", $v]);
+     *       array_push($advancedSearch, $advancedSearhCompound);
+     *     }
+     *   }
+     */
     $uniqueFields = $this->entity->getFieldsUnique();
 
     $advancedSearch = array();

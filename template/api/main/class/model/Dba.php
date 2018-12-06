@@ -150,9 +150,12 @@ class Dba {
     return intval($row["num_rows"]);
   }
 
-  //busqueda estricta por campos unicos
-  public static function _unique($entity, $render = null){
-    $sql = self::sqlo($entity)->_unique($render);
+  public static function _unique($entity, array $params, $render = null){ //busqueda estricta por campos unicos
+    /**
+     * $params
+     *   array("nombre_field" => "valor_field", ...)
+     */
+    $sql = self::sqlo($entity)->_unique($params, $render);
     if(!$sql) return null;
     $rows = self::fetchAll($sql);
 
@@ -161,9 +164,12 @@ class Dba {
     return null;
   }
 
-  //busqueda por campos unicos
-  public static function unique($entity, $render = null){
-    $sql = self::sqlo($entity)->unique($render);
+  public static function unique($entity, array $params, $render = null){ //busqueda por campos unicos
+    /**
+     * $params
+     *   array("nombre_field" => "valor_field", ...)
+     */
+    $sql = self::sqlo($entity)->unique($params);
     if(empty($sql)) return null;
 
     $rows = self::fetchAll($sql);

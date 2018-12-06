@@ -188,7 +188,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
 ";
     if($field->isNotNull()) $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.required\">Debe completar valor</div>
 ";
-    if($field->isUnique()) $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.notUnique\">El valor ya se encuentra utilizado</div>
+    if($field->isUnique()) $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.notUnique\">El valor ya se encuentra utilizado: <a href=\"{$field->getEntity()->getName("xx-yy")}-admin?{$field->getName()}={{{$field->getName()}.value}}\">Cargar valor</a></div>
 ";
     switch($field->getSubtype()) {
       case "email": $this->templateErrorEmail($field); break;

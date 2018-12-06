@@ -7,8 +7,8 @@ require_once("function/stdclass_to_array.php");
 
 try{
 
-  $params = Filter::requestAllRequired();
-
+  $params_ = Filter::requestRequired("data"); //
+  $params = stdclass_to_array(json_decode($params_));
   //el uso de parametros es dinamico
   //se puede definir un parametro opcional "data" que posee un string en formato json para facilitar el uso de tipos basicos
 
