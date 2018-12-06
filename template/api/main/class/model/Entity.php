@@ -161,8 +161,8 @@ abstract class Entity {
     return $fields;
   }
 
-  //Devolver campos unicos
-  public function getFieldsUnique(){
+  public function getFieldsUnique(){ //devolver campos unicos
+    //solo se pueden definir campos unicos simples
     $unique = array();
     foreach($this->getFields() as $field){
       if($field->isUnique()) array_push($unique, $field);
