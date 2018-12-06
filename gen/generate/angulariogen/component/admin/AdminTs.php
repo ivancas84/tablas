@@ -14,7 +14,7 @@ class ComponentAdminTs extends GenerateFileEntity {
   protected function start(){
     $this->string .= "import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { AdminComponent } from '../../main/component/admin/admin.component';
@@ -27,7 +27,7 @@ import { MessageService } from '../../main/service/message/message.service';
 })
 export class " . $this->entity->getName("XxYy") . "AdminComponent extends AdminComponent {
 
-  constructor(protected fb: FormBuilder, protected route: ActivatedRoute, protected dd: DataDefinitionService, protected message: MessageService)  {
+  constructor(protected fb: FormBuilder, protected route: ActivatedRoute, protected router: Router, protected dd: DataDefinitionService, protected message: MessageService)  {
     super(fb, route, dd, message);
     this.entity = \"" . $this->entity->getName() . "\";
   }
@@ -36,7 +36,6 @@ export class " . $this->entity->getName("XxYy") . "AdminComponent extends AdminC
 
 ";
   }
-
 
 
   //***** @override *****
