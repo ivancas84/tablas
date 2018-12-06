@@ -241,13 +241,21 @@ abstract class EntitySql {
     return $sqlCond;
   }
 
-
-  //Filtrar campos unicos y definir condicion
-  public function conditionUniqueFields(array $fields){
+  public function conditionUniqueFields(array $params){  //filtrar campos unicos y definir condicion
+    //cada campo unico compuesto poseera una entrada en el array $params con una llave (identificacion) y un valor que sera un array de valores
+    //si se desea trabajar con campos unicos compuestos, es necesario sobrescribir este metodo
+    //no definir campos unicos compuestos en la entidad en el metodo getFieldsUnique de Entity. El resto de las funciones que lo utilizan, pueden no estar preparados para soportarla
+    //if($key == "identificacion_campo_unico_compuesto")
+    //  if(!empty($value)) {
+    //    $advancedSearhCompound = []
+    //    foreach ($value as $k => $v) array_push($advancedSearhCompound, [$k, "=", $v]);
+    //    array_push($advancedSearch, $advancedSearhCompound);
+    //  }
+    //}
     $uniqueFields = $this->entity->getFieldsUnique();
 
     $advancedSearch = array();
-    foreach($fields as $key => $value){
+    foreach($params as $key => $value){
       foreach($uniqueFields as $field){
         if($key == $field->getName()) {
           if(!empty($value)) array_push($advancedSearch, [$key, "=", $value, "or"]);
