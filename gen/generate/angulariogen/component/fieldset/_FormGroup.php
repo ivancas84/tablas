@@ -29,15 +29,14 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
     foreach($fields as $field){
       switch ( $field->getSubtype() ) {
         case "checkbox": $this->checkbox($field); break;
-        case "timestamp":
-          //la administracion de timestamp se encuentra deshabilitada debido a que requiere de formato adicional
-          //$this->timestamp($field);
-        break;
         case "email": $this->email($field); break;
         case "dni": $this->dni($field); break;
-
-
-        default: $this->defecto($field); //name, email
+        default: $this->defecto($field); //name, email, date, timestamp
+        /**
+         * La administracion de timestamp solo se define en el typescript para el caso de que se desee algun tipo de control
+         * No se incluye en el html debido a que no hay un controlador actualmente definido que soporte timestamp
+         * Para el caso de que se requiera se deben definir campos adicionales para la fecha y hora independientes.
+         */
       }
     }
 
