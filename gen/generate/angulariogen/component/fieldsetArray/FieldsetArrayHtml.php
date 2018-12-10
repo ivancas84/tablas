@@ -19,7 +19,8 @@ class ComponentFieldsetArrayHtml extends GenerateFileEntity {
   }
 
   protected function start() {
-    $this->string .= "<fieldset *ngFor=\"let form of fieldsetForm.controls; let i=index\">
+    $this->string .= "<h3>{$this->entity->getName("Xx Yy")}</h3>
+    <fieldset *ngFor=\"let form of fieldsetForm.controls; let i=index\">
     <div [formGroup]=\"form\">
 ";
   }
@@ -57,12 +58,18 @@ class ComponentFieldsetArrayHtml extends GenerateFileEntity {
 
 
   protected function end() {
-    $this->string .= "    <button (click)=\"removeRow(i)\" type=\"button\" >Eliminar</button>
-
+    $this->string .= "    <div class=\"form-group row\">
+        <div class=\"offset-sm-2 col-sm-10\">
+        <button class=\"btn btn-outline-secondary btn-sm\" (click)=\"removeRow(i)\" type=\"button\">Eliminar</button>
+      </div>
+    </div>
   </div>
-
 </fieldset>
-<button (click)=\"addRow()\" type=\"button\" >Agregar</button>
+<div class=\"form-group row\">
+  <div class=\"offset-sm-2 col-sm-10\">
+    <button class=\"btn btn-outline-primary btn-sm\" (click)=\"addRow()\" type=\"button\">Agregar</button>
+  </div>
+</div>
 ";
   }
 
@@ -80,8 +87,8 @@ class ComponentFieldsetArrayHtml extends GenerateFileEntity {
 
   protected function defecto(Field $field) {
     $this->string .= "  <div class=\"form-group row\">
-    <label class=\"col-2 col-form-label\">" . $field->getName("Xx yy") . "</label>
-    <div class=\"col-10\">
+    <label class=\"col-sm-2 col-form-label\">" . $field->getName("Xx yy") . "</label>
+    <div class=\"col-sm-10\">
       <input class=\"form-control\" type=\"text\" formControlName=\"" . $field->getName() . "\"  [ngClass]=\"{'is-invalid':(form.get('" . $field->getName() . "').invalid && (form.get('" . $field->getName() . "').dirty || form.get('" . $field->getName() . "').touched))}\">
     </div>
   </div>
@@ -100,8 +107,8 @@ class ComponentFieldsetArrayHtml extends GenerateFileEntity {
 
   protected function selectValues(Field $field){
     $this->string .= "      <div class=\"form-group row\">
-        <label class=\"col-2 col-form-label\">" . $field->getName("Xx Yy") . ":</label>
-        <div class=\"col-10\">
+        <label class=\"col-sm-2 col-form-label\">" . $field->getName("Xx Yy") . ":</label>
+        <div class=\"col-sm-10\">
           <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':(form.get('" . $field->getName() . "').invalid && (form.get('" . $field->getName() . "').dirty || form.get('" . $field->getName() . "').touched))}\">
             <option value=\"null\">--" . $field->getName("Xx Yy") . "--</option>
 " ;
@@ -120,8 +127,8 @@ class ComponentFieldsetArrayHtml extends GenerateFileEntity {
 
   protected function select(Field $field) {
     $this->string .= "  <div *ngIf=\"isSync('" . $field->getName() . "')\" class=\"form-group row\">
-    <label class=\"col-2 col-form-label\">" . $field->getName("Xx Yy") . "</label>
-    <div class=\"col-10\">
+    <label class=\"col-sm-2 col-form-label\">" . $field->getName("Xx Yy") . "</label>
+    <div class=\"col-sm-10\">
       <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':(form.get('" . $field->getName() . "').invalid && (form.get('" . $field->getName() . "').dirty || form.get('" . $field->getName() . "').touched))}\">
         <option value=\"null\">--" . $field->getName("Xx Yy") . "--</option>
         <option *ngFor=\"let option of options." . $field->getEntityRef()->getName() . "\" [value]=\"option.id\" >{{option.label}}</option>
@@ -134,8 +141,8 @@ class ComponentFieldsetArrayHtml extends GenerateFileEntity {
   protected function typeahead(Field $field) {
 
     $this->string .= "  <div *ngIf=\"isSync('" . $field->getName() . "')\" class=\"form-group row\">
-    <label class=\"col-2 col-form-label\">" . $field->getName("Xx Yy") . "</label>
-    <div class=\"col-10\">
+    <label class=\"col-sm-2 col-form-label\">" . $field->getName("Xx Yy") . "</label>
+    <div class=\"col-sm-10\">
       <app-fieldset-typeahead [entity]=\"'" . $field->getEntityRef()->getName() . "'\" [fieldsetForm]=\"form\" [field]=\"'" . $field->getName() . "'\"></app-fieldset-typeahead>
     </div>
   </div>

@@ -17,8 +17,8 @@ class ComponentAdminHtml extends GenerateFileEntity {
     $this->string .= "
 <form [formGroup]=\"adminForm\" (ngSubmit)=\"onSubmit()\" novalidate>
   <app-" . $this->getEntity()->getName("xx-yy") . "-fieldset [adminForm]=\"adminForm\" [sync]=\"sync\" [row]=\"data\" (changeFieldset)=\"changeForm(\$event)\"></app-" . $this->getEntity()->getName("xx-yy") . "-fieldset>
-  <button [disabled]=\"adminForm.pristine || !adminForm.valid\" type=\"submit\" class=\"btn btn-success\">Aceptar</button>&nbsp;
-  <button type=\"button\" (click)=\"reset()\" [disabled]=\"adminForm.pristine\" class=\"btn btn-danger\">Restablecer</button>
+  <button [disabled]=\"adminForm.pristine || !adminForm.valid\" type=\"submit\" class=\"btn btn-primary\">Aceptar</button>&nbsp;
+  <button type=\"button\" (click)=\"reset()\" [disabled]=\"adminForm.pristine\" class=\"btn btn-secondary\">Restablecer</button>
 
   <!--p>Debug Form value: {{ adminForm.value | json }}</p>
   <p>Debug Form status: {{ adminForm.status | json }}</p-->
