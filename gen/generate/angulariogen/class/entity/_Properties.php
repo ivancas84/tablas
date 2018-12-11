@@ -1,6 +1,8 @@
 <?php
 
 require_once("generate/GenerateEntity.php");
+require_once("function/settypebool.php");
+
 
 
 class TypescriptEntity_properties extends GenerateEntity {
@@ -21,12 +23,20 @@ class TypescriptEntity_properties extends GenerateEntity {
 
         case "float":
         case "int":
-          $this->property($field, "number"); break;
+          $this->number($field); break;
 
         case "boolean":
-          $this->property($field, "boolean"); break;
+          $this->boolean($field); break;
+
+        case "date":
+        case "timestamp":
+          /**
+           * Los valores por defecto de date y timestamp deben definirse en el constructor
+           */
+          $this->date($field); break;
+
         default:
-          $this->property($field, "string"); break;
+          $this->string($field); break;
       }
     }
 
@@ -36,11 +46,39 @@ class TypescriptEntity_properties extends GenerateEntity {
   }
 
 
+  protected function number(Field $field){
+    $this->string .= "  public " . $field->getName() . " : number";
 
+    if($field->getDefault()) $this->string .= " = {$field->getDefault()}";
 
-  protected function property(Field $field, $type){
-    $this->string .= "  public " . $field->getName() . " : {$type};
+    $this->string .= ";
 ";
+  }
+
+  protected function boolean(Field $field){
+    $this->string .= "  public " . $field->getName() . " : boolean";
+
+    $default = (settypebool($field->getDefault())) ? "true" : "false";
+
+    if($field->getDefault()) $this->string .= " = {$default}";
+
+    $this->string .= ";
+";
+  }
+
+  protected function string(Field $field){
+    $this->string .= "  public " . $field->getName() . " : string";
+
+    if($field->getDefault()) $this->string .= " = '{$field->getDefault()}'";
+
+    $this->string .= ";
+";
+  }
+
+  protected function date(Field $field){
+    $this->string .= "  public " . $field->getName() . " : string;
+";
+
   }
 
 

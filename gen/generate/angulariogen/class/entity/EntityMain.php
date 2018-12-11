@@ -15,6 +15,7 @@ class TypescriptEntityMain extends GenerateFileEntity {
   public function generateCode() {
     $this->start();
     $this->properties();
+    $this->constructor();
     //$this->initJson();
     $this->end();
   }
@@ -30,6 +31,12 @@ export class " . $this->entity->getName("XxYy") . "Main extends Entity {
   protected function properties(){
     require_once("generate/angulariogen/class/entity/_Properties.php");
     $gen = new TypescriptEntity_properties($this->entity);
+    $this->string .= $gen->generate();
+  }
+
+  protected function constructor(){
+    require_once("generate/angulariogen/class/entity/_Constructor.php");
+    $gen = new TypescriptEntity_constructor($this->entity);
     $this->string .= $gen->generate();
   }
 

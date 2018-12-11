@@ -32,11 +32,12 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
         case "email": $this->email($field); break;
         case "dni": $this->dni($field); break;
         default: $this->defecto($field); //name, email, date, timestamp
-        /**
-         * La administracion de timestamp solo se define en el typescript para el caso de que se desee algun tipo de control
-         * No se incluye en el html debido a que no hay un controlador actualmente definido que soporte timestamp
-         * Para el caso de que se requiera se deben definir campos adicionales para la fecha y hora independientes.
-         */
+          /**
+           * La administracion de timestamp solo se define en el typescript para el caso de que se desee algun tipo de control
+           * No se incluye en el html debido a que no hay un controlador actualmente definido que soporte timestamp
+           * Para el caso de que se requiera se deben definir campos adicionales para la fecha y hora independientes.
+           * Si el timestamp es un dato requerido, la validacion del formulario en el cliente proporcionara un error, es importante definir valor por defecto
+           */
       }
     }
 
