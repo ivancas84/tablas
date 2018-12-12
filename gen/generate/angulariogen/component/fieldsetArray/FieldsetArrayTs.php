@@ -30,6 +30,7 @@ class ComponentFieldsetArrayTs extends GenerateFileEntity {
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { FieldsetArrayComponent } from '../../main/component/fieldset-array/fieldset-array.component';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
+import { ValidatorsService } from '../../main/service/validators/validators.service';
 import { {$this->entity->getName('XxYy')} } from '../../class/entity/{$this->entity->getName('xx-yy')}/{$this->entity->getName('xx-yy')}';
 
 @Component({
@@ -37,8 +38,8 @@ import { {$this->entity->getName('XxYy')} } from '../../class/entity/{$this->ent
   templateUrl: './" . $this->entity->getName("xx-yy") . "-fieldset-array.component.html',
 })
 export class " . $this->entity->getName("XxYy") . "FieldsetArrayComponent extends FieldsetArrayComponent {
-  constructor(protected fb: FormBuilder, protected dd: DataDefinitionService)  {
-    super(fb, dd);
+  constructor(protected fb: FormBuilder, protected dd: DataDefinitionService, protected validators: ValidatorsService) {
+    super(fb, dd, validators);
     this.entity = '" . $this->entity->getName() . "';
     this.fieldset = '" . $this->entity->getName() . "';
   }
