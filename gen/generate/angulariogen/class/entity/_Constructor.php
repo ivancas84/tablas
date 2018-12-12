@@ -46,6 +46,7 @@ class TypescriptEntity_constructor extends GenerateEntity {
 
   protected function start(){
     $this->string .= "  constructor(){
+    super()
 ";
   }
 

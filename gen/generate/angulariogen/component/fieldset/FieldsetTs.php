@@ -15,9 +15,8 @@ class ComponentFieldsetTs extends GenerateFileEntity {
   protected function start(){
     $this->string .= "import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-
+import { ValidatorsService } from '../../main/service/validators/validators.service';
 import { FieldsetComponent } from '../../main/component/fieldset/fieldset.component';
 
 @Component({
@@ -25,8 +24,8 @@ import { FieldsetComponent } from '../../main/component/fieldset/fieldset.compon
   templateUrl: './" . $this->entity->getName("xx-yy") . "-fieldset.component.html',
 })
 export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends FieldsetComponent {
-  constructor(protected fb: FormBuilder, protected dd: DataDefinitionService)  {
-    super(fb, dd);
+  constructor(protected fb: FormBuilder, protected dd: DataDefinitionService, protected validators: ValidatorsService) {
+    super(fb, dd, validators);
     this.entity = '" . $this->entity->getName() . "';
     this.fieldset = '" . $this->entity->getName() . "';
   }

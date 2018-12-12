@@ -116,12 +116,11 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
   protected function checkbox(Field $field) {
     $this->string .= "  <div class=\"form-group form-check\">
     <label class=\"form-check-label\">
-      <input class=\"form-check-input\" type=\"{$field->getName()}\" formControlName=\"addDomicilio\"> {$field->getName()}
+      <input class=\"form-check-input\" type=\"checkbox\" formControlName=\"{$field->getName()}\"> {$field->getName()}
     </label>
-    ";
+";
     $this->templateError($field);
-    $this->string .= "    </div>
-  </div>
+    $this->string .= "  </div>
 ";
   }
 
@@ -165,7 +164,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     $this->string .= "  <div *ngIf=\"isSync('" . $field->getName() . "')\" class=\"form-group row\">
     <label class=\"col-sm-2 col-form-label\">" . $field->getName("Xx Yy") . "</label>
     <div class=\"col-sm-10\">
-      <app-fieldset-typeahead [entity]=\"'" . $field->getEntityRef()->getName() . "'\" [fieldsetForm]=\"fieldsetForm\" [field]=\"'" . $field->getName() . "'\"></app-fieldset-typeahead>
+      <app-fieldset-typeahead [fieldset]=\"fieldsetForm\" [entityName]=\"'" . $field->getEntityRef()->getName() . "'\" [fieldName]=\"'" . $field->getName() . "'\"></app-fieldset-typeahead>
 ";
       $this->templateError($field);
       $this->string .= "    </div>

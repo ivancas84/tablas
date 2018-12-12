@@ -143,7 +143,7 @@ class ComponentFieldsetArrayHtml extends GenerateFileEntity {
     $this->string .= "  <div *ngIf=\"isSync('" . $field->getName() . "')\" class=\"form-group row\">
     <label class=\"col-sm-2 col-form-label\">" . $field->getName("Xx Yy") . "</label>
     <div class=\"col-sm-10\">
-      <app-fieldset-typeahead [entity]=\"'" . $field->getEntityRef()->getName() . "'\" [fieldsetForm]=\"form\" [field]=\"'" . $field->getName() . "'\"></app-fieldset-typeahead>
+      <app-fieldset-typeahead [entityName]=\"'" . $field->getEntityRef()->getName() . "'\" [fieldset]=\"form\" [fieldName]=\"'" . $field->getName() . "'\"></app-fieldset-typeahead>
     </div>
   </div>
 ";

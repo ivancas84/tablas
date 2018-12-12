@@ -31,13 +31,13 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
         case "checkbox": $this->checkbox($field); break;
         case "email": $this->email($field); break;
         case "dni": $this->dni($field); break;
-        default: $this->defecto($field); //name, email, date, timestamp
-          /**
-           * La administracion de timestamp solo se define en el typescript para el caso de que se desee algun tipo de control
-           * No se incluye en el html debido a que no hay un controlador actualmente definido que soporte timestamp
-           * Para el caso de que se requiera se deben definir campos adicionales para la fecha y hora independientes.
-           * Si el timestamp es un dato requerido, la validacion del formulario en el cliente proporcionara un error, es importante definir valor por defecto
-           */
+        case "timestamp":  break;
+        /**
+         * La administracion de timestamp no se define debido a que no hay un controlador que actualmente lo soporte
+         * Para el caso de que se requiera se deben definir campos adicionales para la fecha y hora independientes
+         */
+        default: $this->defecto($field); //name, email, date
+
       }
     }
 
@@ -86,7 +86,7 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
 ";
     if($field->isNotNull()) $this->string .= "        validators: Validators.required,
 ";
-    if($field->isUnique()) $this->string .= "        asyncValidators: this.checkUniqueField('{$field->getName()}'),
+    if($field->isUnique()) $this->string .= "        asyncValidators: this.validators.unique('{$field->getName()}', '{$field->getEntity()->getName()}'),
 ";
     $this->string .= "      }],
 ";
@@ -97,7 +97,7 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
     if($field->isNotNull()) array_push($validators, "Validators.required");
 
     $asyncValidators = array();
-    if($field->isUnique()) array_push($asyncValidators, "this.checkUniqueField('{$field->getName()}')");
+    if($field->isUnique()) array_push($asyncValidators, "this.unique('{$field->getName()}', '{$field->getEntity()->getName()}')");
 
     $this->string .= "      {$field->getName()}: ['', {
         validators: [" . implode(',', $validators) . "],
@@ -111,7 +111,7 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
     if($field->isNotNull()) array_push($validators, "Validators.required");
 
     $asyncValidators = array();
-    if($field->isUnique()) array_push($asyncValidators, "this.checkUniqueField('{$field->getName()}')");
+    if($field->isUnique()) array_push($asyncValidators, "this.validators.unique('{$field->getName()}', '{$field->getEntity()->getName()}')");
 
     $this->string .= "      {$field->getName()}: ['', {
         validators: [" . implode(',', $validators) . "],
