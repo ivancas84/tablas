@@ -20,10 +20,19 @@ class ComponentFieldsetArrayTs extends GenerateFileEntity {
 
   protected function generateCode(){
     $this->start();
+    $this->getters();
     $this->formGroup();
     $this->end();
   }
 
+  protected function getters(){
+    foreach($this->entity->getFieldsByType(["nf","fk"]) as $field){
+      $this->string .= "  get {$field->getName('xxYy')}(i) { return this.fieldsetForm[i].get('{$field->getName()}')}
+";
+    }
+    $this->string .= "
+";
+  }
 
   protected function start(){
     $this->string .= "import { Component } from '@angular/core';
