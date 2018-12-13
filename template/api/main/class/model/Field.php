@@ -97,15 +97,12 @@ abstract class Field {
 
 
 
-  /**
-   * Retornar el nombre del field con formato de directorio
-   * @return string Nombre del field con formato de directorio
-   */
   public function getSelectValues(){ return $this->selectValues; }
   public function getType() { return $this->type; }
   public function isMain(){ return $this->main; }
   public function isNotNull(){ return $this->notNull; }
   public function isUnique(){ return $this->unique; }
+  public function isAdmin(){ return $this->admin; }
 
 
 
