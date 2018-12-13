@@ -10,9 +10,9 @@ require_once("class/Filter.php");
 require_once("class/model/Dba.php");
 require_once("function/stdclass_to_array.php");
 
-function rows($entity, array $rows = [], array $params = []){ //procesamiento de rows
-  $ret = [ "ids" => [], "sql" => "", "detail" => [] ];
 
+
+function rows($entity, array $rows = [], array $params = []){ //persistir un conjunto de rows
   /**
    * $rows:
    *   Valores a persisitir
@@ -27,8 +27,8 @@ function rows($entity, array $rows = [], array $params = []){ //procesamiento de
    *      a) Combinarlos con los parametros $params
    *      b) Comparar $row["id"] con $id, si es igual, eliminar $id del array
    */
-
-  if(count($rows)) return $ret;
+  $ret = [ "ids" => [], "sql" => "", "detail" => [] ];
+  if(empty($rows)) return $ret;
 
   $idsReturn = [];
   $ids = [];
@@ -53,6 +53,16 @@ function rows($entity, array $rows = [], array $params = []){ //procesamiento de
   }
 }
 
+function row($entity, $row) { //persistir row
+  /**
+   * $row:
+   *   Valores a persisitir
+   */
+  $ret = [ "id" => null, "sql" => "", "detail" => [] ];
+  if(empty($row)) return $ret;
+  return Dba::persist($entity, $row);
+}
+
 
 try {
   $f = Filter::requestRequired("data");
@@ -66,54 +76,32 @@ try {
   $f_ =  json_decode($f);
   $data = stdclass_to_array($f_);
 
-
   $sql = "";
   $response = [];
   $detail = [];
 
-  foreach($data as $d){
+  foreach($data as $d) {
+
     $entity = $d["entity"];
     $row = (!empty($d["row"])) ? $d["row"]: null;
     $rows = (!empty($d["rows"])) ? $d["rows"]: [];
     $params = (!empty($d["params"])) ? $d["params"]: [];
 
-    //***** row *****
-    if(!empty($row)){
-      $persist = Dba::persist($entity, $row);
-      $sql .= $persist["sql"];
-      array_push($response, ["entity" => $entity, "id" => $persist["id"]]);
-      $detail = array_merge($detail, $persist["detail"]);
-    }
 
-    //rows: Habitualmente existe una fk asociada definida en params
-    if(count($rows)){
-      $idsReturn = [];
-      $render = array();
-      foreach($params as $fieldName => $fieldValue) array_push($render, [$fieldName, '=', $fieldValue]);
-      $ids = Dba::ids($entity, $render);
-
-      foreach($rows as $row){
-        if(!empty($params)) foreach($params as $key => $value) $row[$key] = $value; //combinar datos a persisitir con los parametros
-
-        //eliminar las pks persistidas del array de pks previamente consultado
-        if(!empty($row["id"])) {
-          $key = array_search($row["id"], $ids);
-          if($key !== false) unset($ids[$key]);
-        }
-
-        $persist = Dba::persist($entity, $row);
-        $sql .= $persist["sql"];
-        array_push($idsReturn, $persist["id"]);
-        $detail = array_merge($detail, $persist["detail"]);
-      }
-
-      $persist = Dba::sqlo($entity)->deleteAll($ids);
+    if(!empty($row)) {
+      $persist = row($entity, $row);
       $sql .= $persist["sql"];
       $detail = array_merge($detail, $persist["detail"]);
-
-      array_push($response, ["entity" => $entity, "ids" => $idsReturn]);
+      if(!empty($persist["id"])) array_push($response, ["entity" => $entity, "id" => $persist["id"]]);
     }
 
+
+    if(!empty($rows)){
+      $persist = rows($entity, $rows, $params);
+      $sql .= $persist["sql"];
+      $detail = array_merge($detail, $persist["detail"]);
+      if(!empty($persist["ids"])) array_push($response, ["entity" => $entity, "ids" => $persist["ids"]]);
+    }
   }
 
   Transaction::begin();
@@ -122,7 +110,7 @@ try {
 
   echo json_encode($response);
 
-} catch (Exception $ex){
+} catch (Exception $ex) {
   error_log($ex->getTraceAsString());
   http_response_code(500);
   echo $ex->getMessage();

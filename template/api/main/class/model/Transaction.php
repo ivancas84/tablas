@@ -100,7 +100,7 @@ LIMIT 20;
   }
 
   //commit transaction
-  public static function commit(){
+  public static function commit() {
     if(empty(self::$id)) throw new UnexpectedValueException("Id de transaccion no definido");
 
     $db = Dba::dbInstance();
