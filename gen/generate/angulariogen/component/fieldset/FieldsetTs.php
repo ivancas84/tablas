@@ -12,6 +12,16 @@ class ComponentFieldsetTs extends GenerateFileEntity {
     parent::__construct($dir, $file, $entity);
   }
 
+  protected function generateCode(){
+    $this->start();
+    $this->getters();
+    $this->setChange();
+    $this->formGroup();
+    $this->end();
+  }
+
+
+
   protected function start(){
     $this->string .= "import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -34,7 +44,8 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
   }
 
   protected function getters(){
-    foreach($this->entity->getFieldsByType(["nf","fk"]) as $field){
+    foreach($this->entity->getFieldsByType(["pk","nf","fk"]) as $field){
+      if(!$field->isAdmin()) continue;
       $this->string .= "  get {$field->getName('xxYy')}() { return this.fieldsetForm.get('{$field->getName()}')}
 ";
     }
@@ -46,6 +57,7 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
     $this->string .= "  setChange(){
 ";
     foreach($this->entity->getFieldsNf() as $field){
+      if(!$field->isAdmin()) continue;
       if($field->isUnique()) $this->string .= "    this.changeUpdate('{$field->getName()}');
 ";
 
@@ -77,18 +89,5 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
     $this->string .= "}
 ";
   }
-
-
-  protected function generateCode(){
-    $this->start();
-    $this->getters();
-    $this->setChange();
-    $this->formGroup();
-    //$this->initForm();
-    //$this->server();
-    $this->end();
-  }
-
-
 
 }
