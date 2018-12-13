@@ -2,6 +2,10 @@
 
 
 class Sqlo_FormatSql extends GenerateEntity{
+  /**
+   * formatSql no controla el valor del atributo admin de los fields
+   * Por mas que no se utilice define todos los valores
+   */
 
 protected function start(){
     $this->string .= "
@@ -144,7 +148,7 @@ protected function start(){
 
       switch ( $field->getDataType()) {
         case "integer": $this->integerNonZero($field); break;
-        case "text": case "string": $this->string($field); break;      
+        case "text": case "string": $this->string($field); break;
       }
 
 

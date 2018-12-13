@@ -32,10 +32,9 @@ protected function start(){
 
 
   protected function nf(Entity $entity){
-    $nf = $entity->getFieldsNf();
-
     //redefinir valores de timestamp y date. Los valores timestamp y date se dividen en diferentes partes correspondientes a dia mes anio hora minutos y segundos. Dichas partes deben unirse en una sola variable
-    foreach ( $nf as $field ) {
+    foreach ( $entity->getFieldsNf() as $field ) {
+      if(!$field->isAdmin()) continue;
       switch ( $field->getDataType()) {
         case "timestamp": $this->fecha($field, "date(\"Y-m-d H:i:s\")"); break;
         case "time":  $this->fecha($field, "date(\"H:i:s\")"); break;
@@ -47,6 +46,24 @@ protected function start(){
       }
     }
     unset ( $field );
+  }
+
+
+  protected function fk(Entity $entity){
+    foreach ( $entity->getFieldsFk() as $field) {
+      if(!$field->isAdmin()) continue;
+
+      $default = ($field->getDefault()) ? $field->getDefault() : "\"null\"";
+
+      $this->string .= "    if(empty(\$data['" . $field->getName() . "'])) ";
+      if($field->isNotNull() && !$field->getDefault()){
+        $this->string .= "throw new Exception('dato obligatorio sin valor: " . $field->getName() . "');
+  ";
+      } else {
+        $this->string .= "\$data['" . $field->getName() . "'] = " . $default . ";
+  ";
+      }
+    }
   }
 
 
@@ -121,26 +138,8 @@ protected function start(){
   }
 
 
-  protected function fk(Entity $entity){
-    $fk = $entity->getFieldsFk();
 
-    foreach ( $fk as $field) {
-      $this->fk_($field);
-    }
-  }
 
-  protected function fk_(Field $field){
-    $default = ($field->getDefault()) ? $field->getDefault() : "\"null\"";
-
-    $this->string .= "    if(empty(\$data['" . $field->getName() . "'])) ";
-    if($field->isNotNull() && !$field->getDefault()){
-      $this->string .= "throw new Exception('dato obligatorio sin valor: " . $field->getName() . "');
-";
-    } else {
-      $this->string .= "\$data['" . $field->getName() . "'] = " . $default . ";
-";
-    }
-  }
 
 
   protected function end(){

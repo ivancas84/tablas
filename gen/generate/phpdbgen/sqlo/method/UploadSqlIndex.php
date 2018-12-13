@@ -4,31 +4,31 @@ require_once("class/model/Entity.php");
 require_once("generate/GenerateEntity.php");
 
 class GenerateClassDataSqlMethodUploadSqlIndex extends GenerateEntity{
-	
+
   protected $fieldsFile = array();
-  
+
 	public function __construct(Entity $entity) {
 		parent::__construct($entity);
-    $fields = $this->getEntity()->getFields();
-    
-    foreach($fields as $field){
+
+    foreach($this->getEntity()->getFields() as $field){
+			if(!$field->isAdmin()) continue;
       switch($field->getSubtype()){
         case "file"; case "file_image": array_push($this->fieldsFile, $field); break;
       }
     }
 	}
-	
+
   protected function start(){
 		$this->string .= "
   //***** @override *****
   public function uploadSqlIndex(array \$data, \$index){
     \$sql = \"\";
     \$pks = array();
-    
+
 ";
 	}
-	
-  
+
+
   protected function end(){
 		$this->string .= "    return array(\"pks\" => \$pks, \"sql\" => \$sql);
 
@@ -45,13 +45,13 @@ class GenerateClassDataSqlMethodUploadSqlIndex extends GenerateEntity{
 ";
     }
   }
-  
-  
+
+
 	public function generate(){
     if(!count($this->fieldsFile)) return;
 		$this->start();
     $this->body();
-		$this->end();	
+		$this->end();
 	}
 
 	public static function createAndGetString(Entity $entity){

@@ -9,9 +9,9 @@ class GenerateClassDataSqlMethodUploadSql extends GenerateEntity{
 
   public function __construct(Entity $entity) {
     parent::__construct($entity);
-    $fields = $this->getEntity()->getFields();
 
-    foreach($fields as $field){
+    foreach($this->getEntity()->getFields() as $field){
+      if(!$field->isAdmin()) continue;
       if ($field->getSubtype() == "file" || $field->getSubtype() == "file_image"){
         array_push($this->fieldsFile, $field);
       }
@@ -38,6 +38,7 @@ class GenerateClassDataSqlMethodUploadSql extends GenerateEntity{
 
   protected function body(){
     foreach($this->fieldsFile as $field){
+      if(!$field->isAdmin()) continue;
       $this->string .= "    \$upload = \$this->uploadFieldSql(\"" . $field->getName() .  "_file\", \"upload/" . $this->getEntity()->getName("xxyy") . "/" . $field->getNameFormatDir() . "/\");
     \$ids[\"" . $field->getName() .  "\"] = (!empty(\$upload[\"id\"])) ? \$upload[\"id\"] : \$data[\"" . $field->getName() .  "\"];
     \$sql .= \$upload[\"sql\"];

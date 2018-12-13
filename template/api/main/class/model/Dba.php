@@ -267,17 +267,27 @@ class Dba {
     return "Esta asociado a " . implode(', ', array_unique($entities)) . ".";
   }
 
-  //verificar y generar sql
-  public static function persist($entity, array $row){
+  public static function persist($entity, array $row){ //generar sql de persistencia para la entidad
+    /**
+     * Procedimiento:
+     *   1) consultar valores a partir de los datos (CUIDADO UTILIZAR _unique en vez de unique para no restringir datos con condiciones auxiliares)
+     *   2) Si 1 dio resultado, actualizar
+     *   3) Si 1 no dio resultado, definir pk e insertar
+     *
+     * Retorno:
+     *   array("id" => "id del campo persistido", "sql"=>"sql de persistencia", "detail"=>"detalle de los campos persistidos")
+     *     "id": Dependiendo de la implementacion, el id del campo persistido puede no coincidir con el enviado
+     *     "detail": array de elementos, cada elemento es un string concatenado de la forma entidadId, ejemplo "persona1234567890"
+     */
     $sqlo = self::sqlo($entity);
-    $row_ = self::_unique($entity, $row); //1) consultar valores a partir de los datos (CUIDADO UTILIZAR _unique en vez de unique para no restringir datos con condiciones auxiliares)
+    $row_ = self::_unique($entity, $row); //1
 
-    if (count($row_)){ //2) Si 1 dio resultado, actualizar
+    if (count($row_)){ //2
       $row["id"] = $row_["id"];
       return $sqlo->update($row);
     }
 
-    else { return $sqlo->insert($row); } //3) Si 1 no dio resultado, definir pk e insertar
+    else { return $sqlo->insert($row); } //3
   }
 
 

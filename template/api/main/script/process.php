@@ -10,13 +10,57 @@ require_once("class/Filter.php");
 require_once("class/model/Dba.php");
 require_once("function/stdclass_to_array.php");
 
-try{
+function rows($entity, array $rows = [], array $params = []){ //procesamiento de rows
+  $ret = [ "ids" => [], "sql" => "", "detail" => [] ];
+
+  /**
+   * $rows:
+   *   Valores a persisitir
+   *
+   * $params:
+   *   Posee datos de identificacion para determinar los valores actuales y modificarlos o eliminarlos segun corresponda
+   *   Array asociativo, ejemplo {"field":"valor"}, habitualmente "field" corresponde al nombre de una clave foranea
+   *
+   * Procedimiento:
+   *   1) obtener $ids actuales en base a $params
+   *   2) recorrer los datos a persistir $rows:
+   *      a) Combinarlos con los parametros $params
+   *      b) Comparar $row["id"] con $id, si es igual, eliminar $id del array
+   */
+
+  if(count($rows)) return $ret;
+
+  $idsReturn = [];
+  $ids = [];
+  if(!empty($params)) {
+    $render = array();
+    foreach($params as $fieldName => $fieldValue) array_push($render, [$fieldName, '=', $fieldValue]);
+    $ids = Dba::ids($entity, $render);
+  }
+
+  foreach($rows as $row){
+    if(!empty($params)) foreach($params as $key => $value) $row[$key] = $value; //combinar datos a persisitir con los parametros
+
+    if(!empty($row["id"])) { //eliminar id persistido del array de $ids previamente consultado
+      $key = array_search($row["id"], $ids);
+      if($key !== false) unset($ids[$key]);
+    }
+
+    $persist = Dba::persist($entity, $row);
+    $ret["sql"] .= $persist["sql"];
+    array_push($ret["ids"], $persist["id"]);
+    $ret["detail"] = array_merge($ret["detail"], $persist["detail"]);
+  }
+}
+
+
+try {
   $f = Filter::requestRequired("data");
 
     /*
     * Se recibe un array de objetos {entity:"entidad", row:objeto con valores} o {entity:"entidad", rows:array de objetos con valores}
     * Adicionalmente puede estar el elemento "params" que define valores prioritarios
-    * Se procesa uno por uno cada elemento del array, puede ser que el resultado de un elemento sea utilizado en otro, por lo tanto es importante el ordenamiento del array
+    * Se procesa uno por uno cada elemento del array, puede ser que el resultado de un elemento sea utilizado en otro, por lo tanto es importante el ordenamiento
     */
 
   $f_ =  json_decode($f);

@@ -25,10 +25,9 @@ protected function start(){
 
 
   protected function nf(Entity $entity){
-    $nf = $entity->getFieldsNf();
-
     //redefinir valores de timestamp y date. Los valores timestamp y date se dividen en diferentes partes correspondientes a dia mes anio hora minutos y segundos. Dichas partes deben unirse en una sola variable
-    foreach ( $nf as $field ) {
+    foreach ( $entity->getFieldsNf() as $field ) {
+      if(!$field->isAdmin()) continue;
       switch ( $field->getDataType()) {
         case "timestamp": $this->fecha($field, "date(\"Y-m-d H:i:s\")"); break;
         case "time":  $this->fecha($field, "date(\"H:i:s\")"); break;
@@ -41,6 +40,14 @@ protected function start(){
     }
     unset ( $field );
   }
+
+  protected function fk(Entity $entity){
+    foreach ( $entity->getFieldsFk() as $field) {
+      if(!$field->isAdmin()) continue;
+      $this->number($field);
+    }
+  }
+
 
 
 
@@ -111,13 +118,7 @@ protected function start(){
   }
 
 
-  protected function fk(Entity $entity){
-    $fk = $entity->getFieldsFk();
 
-    foreach ( $fk as $field) {
-      $this->number($field);
-    }
-  }
 
 
   protected function end(){
