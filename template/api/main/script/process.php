@@ -1,10 +1,14 @@
 <?php
 
-/*
-script de procesamiento
-recibe informacion de un conjunto de entidades y procesa sus datos
-retorna el id principal de las entidades procesadas
-tener en cuenta que el id persistido, no siempre puede ser el id retornado (por ejemplo para el caso que se utilicen logs en la base de datos)
+/**
+ * script de procesamiento
+ * recibe informacion de un conjunto de entidades y procesa sus datos
+ * Se recibe un array de objetos {entity:"entidad", row:objeto con valores} o {entity:"entidad", rows:array de objetos con valores}
+ * retorna el id principal de las entidades procesadas
+ * tener en cuenta que el id persistido, no siempre puede ser el id retornado (por ejemplo para el caso que se utilicen logs en la base de datos)
+ * Para el procesamiento de un conjunto de datos, debe estar definido el elemento $params
+ * El script procesa pero no sincroniza, la sincronización debe realizarse en otra interfaz
+ * Para este caso cobra importancia $params ya que sus valores efectuaran la sincronizacion
 */
 require_once("class/Filter.php");
 require_once("class/model/Dba.php");
@@ -66,12 +70,6 @@ function row($entity, $row) { //persistir row
 
 try {
   $f = Filter::requestRequired("data");
-
-    /*
-    * Se recibe un array de objetos {entity:"entidad", row:objeto con valores} o {entity:"entidad", rows:array de objetos con valores}
-    * Adicionalmente puede estar el elemento "params" que define valores prioritarios
-    * Se procesa uno por uno cada elemento del array, puede ser que el resultado de un elemento sea utilizado en otro, por lo tanto es importante el ordenamiento
-    */
 
   $f_ =  json_decode($f);
   $data = stdclass_to_array($f_);
