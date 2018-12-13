@@ -28,6 +28,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     $fields = $this->getEntity()->getFieldsNf();
 
     foreach($fields as $field) {
+      if(!$field->isAdmin()) continue;
       switch ( $field->getSubtype() ) {
         case "checkbox": $this->checkbox($field); break;
         case "date": $this->date($field);  break;
@@ -47,11 +48,15 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
 
 
   public function fk(){
-     $fields = $this->getEntity()->getFieldsFk();
+    $fields = $this->getEntity()->getFieldsFk();
 
-    foreach($fields as $field){ if($field->getSubtype() == "select") $this->select($field); }
-    foreach($fields as $field){ if($field->getSubtype() == "typeahead") $this->typeahead($field); }
-
+    foreach($fields as $field){
+      if(!$field->isAdmin()) continue;
+      switch($field->getSubtype()) {
+        case "select": $this->select($field); break;
+        case "typeahead": $this->typeahead($field); break;
+      }
+    }    
   }
 
 
