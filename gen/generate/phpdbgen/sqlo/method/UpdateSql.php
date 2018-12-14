@@ -9,7 +9,7 @@ class Sqlo_updateSql extends GenerateEntity{
   protected function start(){
     $this->string .= "
   //@override
-  protected function _updateSql(array \$row){
+  protected function _update(array \$row){
     \$sql = \"
 UPDATE \" . \$this->entity->getSn_() . \" SET
 \";
@@ -41,11 +41,6 @@ UPDATE \" . \$this->entity->getSn_() . \" SET
   protected function end(){
     $this->string .= "    //eliminar ultima coma
     \$sql = substr(\$sql, 0, -2);
-
-
-    \$sql .= \"
-WHERE " . $this->getEntity()->getPk()->getName() . " = \" . \$row['" . $this->getEntity()->getPk()->getName() . "'] . \";
-\";
 
     return \$sql;
   }

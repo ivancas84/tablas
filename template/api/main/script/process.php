@@ -1,14 +1,12 @@
 <?php
 
 /**
- * script de procesamiento
- * recibe informacion de un conjunto de entidades y procesa sus datos
- * Se recibe un array de objetos {entity:"entidad", row:objeto con valores} o {entity:"entidad", rows:array de objetos con valores}
- * retorna el id principal de las entidades procesadas
- * tener en cuenta que el id persistido, no siempre puede ser el id retornado (por ejemplo para el caso que se utilicen logs en la base de datos)
- * Para el procesamiento de un conjunto de datos, debe estar definido el elemento $params
- * El script procesa pero no sincroniza, la sincronización debe realizarse en otra interfaz
- * Para este caso cobra importancia $params ya que sus valores efectuaran la sincronizacion
+ * Script de procesamiento
+ * El objetivo de este script es procesar un conjunto de entidades evitando multiples accesos a la base de datos
+ * Recibe un array de objetos {entity:"entidad", row:objeto con valores} o {entity:"entidad", rows:Array de objetos con valores}
+ * Retorna el id principal de las entidades procesadas
+ * Tener en cuenta que el id persistido, no siempre puede ser el id retornado (por ejemplo para el caso que se utilicen logs en la base de datos)
+ * Es importante el orden de procesamiento, una entidad a procesar puede requerir una entidad previamente procesada
 */
 require_once("class/Filter.php");
 require_once("class/model/Dba.php");
@@ -16,39 +14,46 @@ require_once("function/stdclass_to_array.php");
 
 
 
-function rows($entity, array $rows = [], array $params = []){ //persistir un conjunto de rows
+function rows($entity, array $rows = [], array $options = []){ //procesar un conjunto de rows
   /**
    * $rows:
    *   Valores a persisitir
    *
-   * $params:
+   * $options:
    *   Posee datos de identificacion para determinar los valores actuales y modificarlos o eliminarlos segun corresponda
    *   Array asociativo, ejemplo {"field":"valor"}, habitualmente "field" corresponde al nombre de una clave foranea
    *
    * Procedimiento:
-   *   1) obtener $ids actuales en base a $params
+   *   1) obtener $ids actuales en base a $options
    *   2) recorrer los datos a persistir $rows:
-   *      a) Combinarlos con los parametros $params
+   *      a) Combinarlos con los parametros $options
    *      b) Comparar $row["id"] con $id, si es igual, eliminar $id del array
    */
   $ret = [ "ids" => [], "sql" => "", "detail" => [] ];
   if(empty($rows)) return $ret;
 
-  $idsReturn = [];
-  $ids = [];
-  if(!empty($params)) {
+  $idsActuales = [];
+  if(!empty($options)) {
     $render = array();
-    foreach($params as $fieldName => $fieldValue) array_push($render, [$fieldName, '=', $fieldValue]);
-    $ids = Dba::ids($entity, $render);
+    foreach($options as $fieldName => $fieldValue) array_push($render, [$fieldName, '=', $fieldValue]);
+    $idsActuales = Dba::ids($entity, $render);
   }
 
   foreach($rows as $row){
-    if(!empty($params)) foreach($params as $key => $value) $row[$key] = $value; //combinar datos a persisitir con los parametros
+    if(!empty($options)) foreach($options as $key => $value) $row[$key] = $value; //combinar datos a persisitir con los parametros
 
     if(!empty($row["id"])) { //eliminar id persistido del array de $ids previamente consultado
-      $key = array_search($row["id"], $ids);
-      if($key !== false) unset($ids[$key]);
+      $key = array_search($row["id"], $idsActuales);
+      if($key !== false) unset($idsActuales[$key]);
     }
+
+    $persist = Dba::delete($entity, $idsActuales, $options);
+    /**
+     * La eliminacion puede ser fisica, logica o simplemente puede nulificar ciertos campos
+     * El parametro $options, puede ser utilizado para indicar la nulificacion
+     */
+    $ret["sql"] .= $persist["sql"];
+    $ret["detail"] = array_merge($ret["detail"], $persist["detail"]);
 
     $persist = Dba::persist($entity, $row);
     $ret["sql"] .= $persist["sql"];
@@ -79,11 +84,10 @@ try {
   $detail = [];
 
   foreach($data as $d) {
-
     $entity = $d["entity"];
     $row = (!empty($d["row"])) ? $d["row"]: null;
     $rows = (!empty($d["rows"])) ? $d["rows"]: [];
-    $params = (!empty($d["params"])) ? $d["params"]: [];
+    $options = (!empty($d["options"])) ? $d["options"]: [];
 
 
     if(!empty($row)) {
@@ -95,7 +99,7 @@ try {
 
 
     if(!empty($rows)){
-      $persist = rows($entity, $rows, $params);
+      $persist = rows($entity, $rows, $options);
       $sql .= $persist["sql"];
       $detail = array_merge($detail, $persist["detail"]);
       if(!empty($persist["ids"])) array_push($response, ["entity" => $entity, "ids" => $persist["ids"]]);

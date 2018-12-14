@@ -399,9 +399,8 @@ abstract class EntitySql {
   //@throws Exception si value no se encuentra correctamente definido
   public function positiveIntegerWithoutZerofill($value){
     if(is_null($value) || ($value === 'null')) return 'null';
-
     if ((!is_numeric($value)) && (!intval($value) > 0)) throw new Exception('Valor entero positivo sin ceros incorrecto: ' . $value);
-    else return $value;
+    return $value;
   }
 
   //Definir valor timestamp para la base de datos

@@ -11,15 +11,20 @@ require_once("class/model/Transaction.php");
 
 //Facilita el acceso a la base de datos y clases del modelo
 class Dba {
-
+  /**
+   * Prefijos y sufijos en el nombre de metodos:
+   *   get: Utiliza id como parametro principal de busqueda
+   *   all: Se refiere a un conjunto de valores
+   *   one: Debe retornar un unico valor
+   *   OrNull: Puede retornar valores nulos
+   */
   public static $dbInstance = NULL; //conexion con una determinada db
   public static $dbCount = 0;
   public static $sqlos = [];
   public static $sqls = [];
   public static $entities = [];
 
-  //singleton Entity
-  public static function entity($entity) {
+  public static function entity($entity) { //singleton Entity
     if(!array_key_exists($entity, self::$entities)){
       $entityName = snake_case_to("XxYy", $entity) . "Entity";
       $entity_ = new $entityName;
@@ -28,8 +33,7 @@ class Dba {
     return self::$entities[$entity];
   }
 
-  //singleton sqlo
-  public static function sqlo($entity) {
+  public static function sqlo($entity) { //singleton sqlo
     if(!array_key_exists($entity, self::$sqlos)){
       $sqloName = snake_case_to("XxYy", $entity) . "Sqlo";
       $sqlo = new $sqloName;
@@ -38,17 +42,17 @@ class Dba {
     return self::$sqlos[$entity];
   }
 
-  //crear instancias de sql
-  public static function sql($entity, $prefix = NULL) {
+  public static function sql($entity, $prefix = NULL) { //crear instancias de sql
     $sqlName = snake_case_to("XxYy", $entity) . "Sql";
     $sql = new $sqlName;
     if($prefix) $sql->prefix = $prefix;
     return $sql;
   }
 
-  //singleton db
-  //cuando se abren varios recursos de db instance se incrementa un contador, al cerrarse recursos se decrementa. Si el contador llega a 0 se cierra la instancia de la base
-  public static function dbInstance() {
+  public static function dbInstance() { //singleton db
+    /**
+     * Cuando se abren varios recursos de db instance se incrementa un contador, al cerrarse recursos se decrementa. Si el contador llega a 0 se cierra la instancia de la base
+     */
     if (!self::$dbCount) {
       (DATA_DBMS == "pg") ?
         self::$dbInstance = new DbSqlPg(DATA_HOST, DATA_USER, DATA_PASS, DATA_DBNAME, DATA_SCHEMA) :
@@ -58,21 +62,18 @@ class Dba {
     return self::$dbInstance;
   }
 
-  //cerrar conexiones a la base de datos
-  public static function dbClose() {
+  public static function dbClose() { //cerrar conexiones a la base de datos
     self::$dbCount--;
     if(!self::$dbCount) self::$dbInstance->close(); //cuando todos los recursos liberan la base de datos se cierra
     return self::$dbInstance;
   }
 
-  //identificador unico
-  public static function uniqId(){
+  public static function uniqId(){ //identificador unico
     usleep(1); //con esto se evita que los procesadores modernos generen el mismo id
     return hexdec(uniqid());
   }
 
-  //siguiente identificador
-  public static function nextId($entity) {
+  public static function nextId($entity) { //siguiente identificador
     return self::uniqId(); //mysql
 
     //postgresql
@@ -81,8 +82,7 @@ class Dba {
     return $row[0];
   }
 
-  //es persistible?
-  public static function isPersistible($entity, array $row){
+  public static function isPersistible($entity, array $row){ //es persistible?
     $row_ = self::_unique($entity, $row); //1) Consultar valores a partir de los datos
     $sqlo = self::sqlo($entity);
 
@@ -94,8 +94,10 @@ class Dba {
     return $sqlo->sql->isInsertable($row); //3) Si 1 no dio resultado, verificar si es insertable
   }
 
-  //para facilitar la generacion de render, se puede definir un array $display
-  public static function display(array $params){
+  public static function display(array $params){ //generar display a partir de params
+    /**
+     * para facilitar la generacion de render, se puede definir un array $display
+     */
     $data = null;
 
     //data es utilizado debido a la facilidad de comunicacion entre el cliente y el servidor. Se coloca todo el json directamente en una variable data que es convertida en el servidor.
@@ -129,8 +131,7 @@ class Dba {
     return $display;
   }
 
-  //generar render a partir de un display
-  public static function render($entity, array $display = null) {
+  public static function render($entity, array $display = null) { //generar render a partir de un display
     $render = new Render();
 
     $render->setPagination($display["size"], $display["page"]);
@@ -143,8 +144,7 @@ class Dba {
     return $render;
   }
 
-  //cantidad
-  public static function count($entity, $render = null){
+  public static function count($entity, $render = null){ //cantidad
     $sql = self::sqlo($entity)->count($render);
     $row = self::fetchAssoc($sql);
     return intval($row["num_rows"]);
@@ -178,78 +178,65 @@ class Dba {
     return null;
   }
 
-  //all
-  public static function all($entity, $render = null){
-    $sql = self::sqlo($entity)->all($render);
-    $rows = self::fetchAll($sql);
-    return self::sql($entity)->jsonAll($rows);
-  }
-
-  //ids
-  public static function ids($entity, $render = null){
+  public static function ids($entity, $render = null){ //devolver ids
     $sql = self::sqlo($entity)->all($render);
     $ids = self::fetchAllColumns($sql, 0);
     array_walk($ids, "toString"); //los ids son tratados como string para evitar un error que se genera en Angular (se resta un numero en los enteros largos)
     return $ids;
   }
 
-  //id
-  public static function id($render = null) {
+  public static function id($render = null) { //devolver id
     $ids = self::ids($render);
     if(count($ids) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
     elseif(count($ids) == 1) return (string)$ids[0];//los ids son tratados como string para evitar un error que se genera en Angular (se resta un numero en los enteros largos)
     else throw new Exception("La consulta no arrojó resultados");
   }
 
-  //id or null
-  public static function idOrNull($render = null) {
+  public static function idOrNull($render = null) { //devolver id o null
     $ids = self::ids($render);
     if(count($ids) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
     elseif(count($ids) == 1) return (string)$ids[0]; //los ids son tratados como string para evitar un error que se genera en Angular (se resta un numero en los enteros largos)
     else return null;
   }
 
-  //get
-  public static function get($entity, $id, $render = null) {
+  public static function all($entity, $render = null){ //devolver todos los valores
+    $sql = self::sqlo($entity)->all($render);
+    $rows = self::fetchAll($sql);
+    return self::sql($entity)->jsonAll($rows);
+  }
+
+  public static function get($entity, $id, $render = null) { //busqueda por id
     $rows = self::getAll($entity, [$id], $render);
     if (!count($rows)) throw new Exception("La búsqueda por id no arrojó ningun resultado");
     return $rows[0];
   }
 
-  //get or null
-  public static function getOrNull($entity, array $id, $render = null){
+  public static function getOrNull($entity, array $id, $render = null){ //busqueda por id o null
     $rows = self::getAll($entity, [$id], $render);
     return (!count($rows)) ? null : $rows[0];
   }
 
-  //get all
-  public static function getAll($entity, array $ids, $render = null){
+  public static function getAll($entity, array $ids, $render = null){ //busqueda por ids
     $sql = self::sqlo($entity)->getAll($ids, $render);
     $rows = self::fetchAll($sql);
     return self::sql($entity)->jsonAll($rows);
   }
 
-  //row
-  public static function one($entity, $render = null) {
+  public static function one($entity, $render = null) { //un solo valor
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
     elseif(count($rows) == 1) return self::sql($entity)->json($rows[0]);
     else throw new Exception("La consulta no arrojó resultados");
   }
 
-  //row or null
-  public static function oneOrNull($entity, $render = null) {
+  public static function oneOrNull($entity, $render = null) { //un solo valor o null
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
     elseif(count($rows) == 1) return self::sql($entity)->json($rows[0]);
     else return null;
   }
 
-
-
-
-  //es eliminable?
-  public static function isDeletable($entity, array $ids){
+  public static function isDeletable($entity, array $ids){ //es eliminable?
     if(!count($ids)) return "El identificador está vacío";
 
     $entities = [];
@@ -266,6 +253,21 @@ class Dba {
     if(!count($entities)) return true;
     return "Esta asociado a " . implode(', ', array_unique($entities)) . ".";
   }
+
+  public static function removeAll($entity, array $ids, array $fields = []) {
+    $sqlo = self::sqlo($entity);
+    if(empty($options)) return $sqlo->deleteAll($ids);
+    $row = [];
+    foreach($options as $key) $row[$key] = null;
+    $update = $sqlo->updateAll($rows, $ids);
+    foreach($options as $key => $value){
+
+
+    }
+
+  }
+
+
 
   public static function persist($entity, array $row){ //generar sql de persistencia para la entidad
     /**

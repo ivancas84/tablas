@@ -15,15 +15,18 @@ abstract class EntitySqlo {
   public $db;     //Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren. Puede requerirse adicionalmente determinar el motor de base de datos para definir la sintaxis adecuada
   public $sql;    //EntitySql. Atributo auxiliar para facilitar la definicion de consultas sql
 
+  public function nextPk(){ return $this->db->uniqId(); } //siguiente identificador unico
+  protected function initializeInsertSql(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); } //inicializar valores para insercion
+  protected function _insertSql(array $row) { throw new Exception("Metodo abstracto sin implementar: EntitySqlo.insertSql"); } //sql de insercion
+  protected function initializeUpdateSql(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); } //inicializar valores para actualizacion
+  protected function _update(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); } //sql de actualizacion
+  protected function formatSql(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); } //formato de sql
 
-
-
-  public function nextPk(){ return $this->db->uniqId(); }
-  //Definir clase de presentacion
-  //@param String | Object | Array | Render En función del tipo de parámetro define el render
-  //@return Render Clase de presentacion
-
-  protected function render($render = null){
+  protected function render($render = null){ //Definir clase de presentacion
+    /**
+     * @param String | Object | Array | Render En función del tipo de parámetro define el render
+     * @return Render Clase de presentacion
+     */
     if(gettype($render) == "object") return $render;
 
     $r = new Render();
@@ -32,55 +35,64 @@ abstract class EntitySqlo {
     return $r;
   }
 
-  //Definir sql de insercion
-  //@return String sql de insercion
-  protected function _insertSql(array $row) { throw new Exception("Metodo abstracto sin implementar: EntitySqlo.insertSql"); }
-
-  //Definir sql de actualizacion
-  //@return String sql de actualizacion
-  protected function _updateSql(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); }
-
-  //Inicializar sql de insercion
-  protected function initializeInsertSql(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); }
-
-  //Inicializar sql de actualizacion
-  protected function initializeUpdateSql(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); }
-
-  //Formatear SQL
-  protected function formatSql(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); }
-
-
-  //Formatear valores y definir sql de insercion
-  //La insercion tiene en cuenta todos los campos correspondientes a la tabla, si no estan definidos, les asigna "null" o valor por defecto
-  //Puede incluirse un id en el array de parametro, si no esta definido se definira uno automaticamente
-  //@return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
-  public function insert(array $row) {
+  public function insert(array $row) { //Formatear valores y definir sql de insercion
+    /**
+     * La insercion tiene en cuenta todos los campos correspondientes a la tabla, si no estan definidos, les asigna "null" o valor por defecto
+     * Puede incluirse un id en el array de parametro, si no esta definido se definira uno automaticamente
+     * @return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
+     */
     $r = $this->initializeInsertSql($row);
     $r_ = $this->formatSql($r);
     $sql = $this->_insertSql($r_);
-  
+
     return array("id" => $r["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
   }
 
-
-
-  //Formatear valores y definir sql de actualizacion
-  //La actualizacion solo tiene en cuenta los campos definidos, los que no estan definidos, no seran considerados manteniendo su valor previo.
-  //No se puede actualizar el id
-  //@return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
-  public function update(array $row) {
+  public function update(array $row, $id = null) { //sql de actualizacion
+    /**
+     * Formatear valores y definir sql de actualizacion
+     * La actualizacion solo tiene en cuenta los campos definidos, los que no estan definidos, no seran considerados manteniendo su valor previo.
+     * Se define el id a actualizar en el row
+     * retorna array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
+     * TODO: recibir un id opcional como parametro prioritario, y permitir actualizacion de ids
+     */
+    if(empty($r["id"] && empty($id)) throw new Exception("No existe identificador definido");
     $r = $this->initializeUpdateSql($row);
-
     $r_ = $this->formatSql($r);
-    $sql = $this->_updateSql($r_);
+    $id = if(empty($id)) $id = $r_["id"];
+    $sql = "
+{$this->_updateSql($r_)}
+WHERE id = {$id};
+";
 
-    return array("id" => $r["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
+    return array("id" => $r_["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
   }
 
+  public function updateAll($row, $ids) { //sql de actualizacion para un conjunto de ids
+    /**
+     * Formatear valores y definir sql de actualizacion para un conjunto de ids
+     * La actualizacion solo tiene en cuenta los campos definidos, los que no estan definidos, no seran considerados manteniendo su valor previo.
+     * TODO: La version actual no permite actualizar el id, pero no estoy seguro por que no, cambiarlo para que permita
+     * @return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
+     */
+    if(empty($ids) throw new Exception("No existen identificadores definidos");
+    $r = $this->initializeUpdateSql($row);
+    $r_ = $this->formatSql($r);
+    $sql = "
+{$this->_updateSql($r_)}
+WHERE ids IN ({implode(',', $ids)});
+";
+    $detail = $ids;
+    array_walk($detail, function(&$item) { $item = $this->entity.$item; });
+    return ["ids"=>$ids, "sql"=>$sql, "detail"=>$detail];
+  }
 
+  public function delete($id){ //eliminar
+    $delete = $this->deleteAll([$id]);
+    return ["id"=>$delete["ids"][0], "sql"=>$delete["sql"], "detail"=>$delete["detail"]];
+  }
 
-  //@override
-  public function deleteAll(array $ids){
+  public function deleteAll(array $ids){ //eliminar
     $sql = "";
     for($i = 0; $i < count($ids); $i++){
       $r = $this->formatSql(["id"=>$ids[$i] ]);
@@ -91,11 +103,12 @@ WHERE " . $this->entity->getPk()->getName() . " = " . $r["id"] . ";
 ";
     }
 
-      return ["ids"=>$ids, "sql"=>$sql];
+      $detail = $ids;
+      array_walk($detail, function(&$item) { $item = $this->entity.$item; });
+      return ["ids"=>$ids, "sql"=>$sql, "detail"=>$detail];
   }
 
-  //@override
-  public function count($render = NULL) {
+  public function count($render = NULL) { //sql cantidad de valores
     $r = $this->render($render);
 
     return "
@@ -106,7 +119,6 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
 {$this->sql->conditionAll($r->getAdvanced(), $r->getSearch())}
 ";
   }
-
 
   public function all($render = NULL) {
     $r = $this->render($render);
