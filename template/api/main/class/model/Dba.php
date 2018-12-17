@@ -254,17 +254,9 @@ class Dba {
     return "Esta asociado a " . implode(', ', array_unique($entities)) . ".";
   }
 
-  public static function deleteRequired($entity, array $ids, array $rowId = []) { //eliminacion requerida
+  public static function deleteRequiredAll($entity, array $ids, array $params = []) { //eliminacion requerida
     $sqlo = self::sqlo($entity);
-    if(empty($options)) return $sqlo->deleteRequiredAll($ids);
-    $row = [];
-    foreach($options as $key) $row[$key] = null;
-    $update = $sqlo->updateAll($rows, $ids);
-    foreach($options as $key => $value){
-
-
-    }
-
+    return $sqlo->deleteRequiredAll($ids, $params);
   }
 
 

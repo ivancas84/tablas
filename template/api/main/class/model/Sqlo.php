@@ -49,12 +49,12 @@ abstract class EntitySqlo {
   }
 
   public function update(array $row) { //sql de actualizacion
-    
+
     $r = $this->initializeUpdate($row);
     $r_ = $this->format($r);
     $sql = "
 {$this->_update($r_)}
-WHERE id = {$id};
+WHERE id = {$row['id']};
 ";
 
     return array("id" => $r_["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
@@ -86,22 +86,23 @@ WHERE ids IN ({implode(',', $ids)});
 
 
   public function deleteAll(array $ids) { //eliminar
+
     $ids_ = [];
     for($i = 0; $i < count($ids); $i++) {
       $r = $this->format(["id"=>$ids[$i]]);
-      array_push($ids_, $r[$i]);
-    }     
+      array_push($ids_, $r["id"]);
+    }
+    $ids_ = implode(', ', $ids_);
     $sql = "
 DELETE FROM {$this->entity->sn_()}
-WHERE {$this->entity->getPk()->getName()} IN ({implode(', ', $ids_)});
+WHERE {$this->entity->getPk()->getName()} IN ({$ids_});
 ";
- 
-    $detail = $ids;
-    array_walk($detail, function(&$item) { $item = $this->entity.$item; });
-    return ["ids"=>$ids, "sql"=>$sql, "detail"=>$detail];
+
+    array_walk($ids, function(&$item) { $item = $this->entity->getName().$item; });
+    return ["ids"=>$ids, "sql"=>$sql, "detail"=>$ids];
   }
 
-  public function deleteRequiredAll($ids, $fieldName){ //eliminacion relacionada a clave foranea
+  public function deleteRequiredAll($ids, $params){ //eliminacion relacionada a clave foranea
     /**
      * En su caso mas general, este metodo es similar a delete
      * Esta pensado para facilitar la reimplementacion en el caso de que se lo requiera

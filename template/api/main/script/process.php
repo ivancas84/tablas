@@ -24,7 +24,7 @@ function rows($entity, array $rows = [], array $params = null){ //procesar un co
    *   Habitualmente es un array asociativo con los siguientes elementos:
    *     name: Nombre de la clave foranea
    *     value: valor de la clave foranea
-   * 
+   *
    * Procedimiento:
    *   1) obtener $ids actuales en base a $rowId
    *   2) recorrer los datos a persistir $rows:
@@ -32,22 +32,27 @@ function rows($entity, array $rows = [], array $params = null){ //procesar un co
    *      b) Comparar $row["id"] con $id, si es igual, eliminar $id del array
    */
   $ret = [ "ids" => [], "sql" => "", "detail" => [] ];
-  if(empty($rows)) return $ret;
 
   $idsActuales = [];
-  if(!empty($params)) {
-    $idsActuales = Dba::ids($entity, [$params["name"], '=', $params["value"]]);
-  }
+  if(!empty($params)) $idsActuales = Dba::ids($entity, [$params["name"], '=', $params["value"]]);
 
   foreach($rows as $row){
-    if(!empty($fkName)) $row[$fkName] = $fkValue;
+    if(!empty($params["name"])) $row[$params["name"]] = $params["value"];
 
     if(!empty($row["id"])) { //eliminar id persistido del array de $ids previamente consultado
       $key = array_search($row["id"], $idsActuales);
       if($key !== false) unset($idsActuales[$key]);
     }
 
-    $persist = Dba::deleteRequired($entity, $idsActuales, $params);
+    $persist = Dba::persist($entity, $row);
+    $ret["sql"] .= $persist["sql"];
+    array_push($ret["ids"], $persist["id"]);
+    $ret["detail"] = array_merge($ret["detail"], $persist["detail"]);
+  }
+
+  if(!empty($idsActuales)) {
+    $persist = Dba::deleteRequiredAll($entity, $idsActuales, $params);
+
     /**
      * La eliminacion puede ser fisica, logica o simplemente puede nulificar ciertos campos
      * El tipo de eliminacion es definido por cada entidad
@@ -55,12 +60,10 @@ function rows($entity, array $rows = [], array $params = null){ //procesar un co
      */
     $ret["sql"] .= $persist["sql"];
     $ret["detail"] = array_merge($ret["detail"], $persist["detail"]);
-
-    $persist = Dba::persist($entity, $row);
-    $ret["sql"] .= $persist["sql"];
-    array_push($ret["ids"], $persist["id"]);
-    $ret["detail"] = array_merge($ret["detail"], $persist["detail"]);
   }
+
+  return $ret;
+
 }
 
 function row($entity, $row) { //persistir row
@@ -85,10 +88,10 @@ try {
 
   foreach($data as $d) {
     $entity = $d["entity"]; //entidad
-    $row = (!empty($d["row"])) ? $d["row"]: null; //row a procesar
-    $rows = (!empty($d["rows"])) ? $d["rows"]: null; //rows a procesar
-    $params = (!empty($d["params"])) ? $d["params"] : null; //campos relacionados para identificacion
-    $delete = (!empty($d["delete"])) ? $d["delete"] : null; //ids a eliminar (en construccion)
+    $row = (isset($d["row"])) ? $d["row"]: null; //row a procesar
+    $rows = (isset($d["rows"])) ? $d["rows"]: null; //rows a procesar
+    $params = (isset($d["params"])) ? $d["params"] : null; //campos relacionados para identificacion
+    $delete = (isset($d["delete"])) ? $d["delete"] : null; //ids a eliminar (en construccion)
 
     /**
      * $params["name"]: Nombre de la clave foranea
@@ -96,7 +99,7 @@ try {
      */
 
 
-    if(!empty($row)) {
+    if(isset($row)) {
       $persist = row($entity, $row);
       $sql .= $persist["sql"];
       $detail = array_merge($detail, $persist["detail"]);
@@ -104,7 +107,7 @@ try {
     }
 
 
-    if(!empty($rows)){
+    if(isset($rows)){
       $persist = rows($entity, $rows, $params);
       $sql .= $persist["sql"];
       $detail = array_merge($detail, $persist["detail"]);
@@ -115,7 +118,6 @@ try {
   //Transaction::begin();
   //Transaction::update(["descripcion"=> $sql, "detalle" => implode(",",$detail)]);
   //Transaction::commit();
-
   echo json_encode($response);
 
 } catch (Exception $ex) {

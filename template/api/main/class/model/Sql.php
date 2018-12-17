@@ -89,6 +89,7 @@ abstract class EntitySql {
 
 
   private function conditionAdvancedRecursive(array $advanced){
+
     if(!is_array($advanced[0])) { //si en la posicion 0 es un string significa que es un campo a buscar, caso contrario es un nuevo conjunto (array) de campos que debe ser recorrido
       $option = (empty($advanced[1])) ? "=" : $advanced[1]; //por defecto se define "="
       $value = (empty($advanced[2])) ? null : $advanced[2]; //hay opciones de configuracion que pueden no definir valores
@@ -249,7 +250,7 @@ abstract class EntitySql {
      *   if($key == "identificacion_campo_unico_compuesto")
      *     if(!empty($value)) {
      *       $advancedSearhCompound = []
-     *       foreach ($value as $k => $v) array_push($advancedSearhCompound, [$k, "=", $v]);
+     *       foreachconditionUniqueFields ($value as $k => $v) array_push($advancedSearhCompound, [$k, "=", $v]);
      *       array_push($advancedSearch, $advancedSearhCompound);
      *     }
      *   }
