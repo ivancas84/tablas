@@ -58,19 +58,19 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
 
 
   protected function initializeInsert(){
-    require_once("generate/phpdbgen/sqlo/method/initializeInsert.php");
+    require_once("generate/phpdbgen/sqlo/method/InitializeInsert.php");
     $gen = new initializeInsert($this->getEntity());
     $this->string .= $gen->generate();
   }
 
   protected function initializeUpdate(){
-    require_once("generate/phpdbgen/sqlo/method/initializeUpdate.php");
+    require_once("generate/phpdbgen/sqlo/method/InitializeUpdate.php");
     $gen = new initializeUpdate($this->getEntity());
     $this->string .= $gen->generate();
   }
 
   protected function format(){
-    require_once("generate/phpdbgen/sqlo/method/format.php");
+    require_once("generate/phpdbgen/sqlo/method/Format.php");
     $gen = new Sqlo_FormatSql($this->getEntity());
     $this->string .= $gen->generate();
   }
