@@ -77,7 +77,7 @@ class Dba {
     return self::uniqId(); //mysql
 
     //postgresql
-    $sql = "select nextval('" . self::entity($entity)->getSn_() . "_id_seq')";
+    $sql = "select nextval('" . self::entity($entity)->sn_() . "_id_seq')";
     $row = self::fetchRow($sql);
     return $row[0];
   }
@@ -131,7 +131,7 @@ class Dba {
     return $display;
   }
 
-  public static function render($entity, array $display = null) { //generar render a partir de un display
+  public static function render($entity, array $display = null) { //instancia de render a partir de un display
     $render = new Render();
 
     $render->setPagination($display["size"], $display["page"]);
@@ -254,9 +254,9 @@ class Dba {
     return "Esta asociado a " . implode(', ', array_unique($entities)) . ".";
   }
 
-  public static function removeAll($entity, array $ids, array $fields = []) {
+  public static function deleteRequired($entity, array $ids, array $rowId = []) { //eliminacion requerida
     $sqlo = self::sqlo($entity);
-    if(empty($options)) return $sqlo->deleteAll($ids);
+    if(empty($options)) return $sqlo->deleteRequiredAll($ids);
     $row = [];
     foreach($options as $key) $row[$key] = null;
     $update = $sqlo->updateAll($rows, $ids);

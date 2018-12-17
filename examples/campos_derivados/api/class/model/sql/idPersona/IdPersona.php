@@ -28,7 +28,7 @@ class IdPersonaSql extends IdPersonaSqlMain {
   FROM coordinador
   WHERE baja IS NULL
 ) AS {$t}_ ON ({$t}_.sede = {$from}.id)
-LEFT OUTER JOIN {$this->entity->getSn_()} AS {$t} ON ({$t}.id = {$t}_.persona)
+LEFT OUTER JOIN {$this->entity->sn_()} AS {$t} ON ({$t}.id = {$t}_.persona)
 ";
       case "profesor_activo":
         return "
@@ -43,7 +43,7 @@ LEFT OUTER JOIN (
   AND toma.estado_contralor != 'Modificar'
   LIMIT 1
 ) AS {$t}_ ON ({$t}_.curso = {$from}.id)
-LEFT OUTER JOIN {$this->entity->getSn_()} AS {$t} ON ({$t}.id = {$t}_.persona)
+LEFT OUTER JOIN {$this->entity->sn_()} AS {$t} ON ({$t}.id = {$t}_.persona)
 ";
 
       default:

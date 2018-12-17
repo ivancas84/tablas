@@ -6,30 +6,38 @@
  * Entity debe poseer toda la configuracion necesaria, no importa el contexto en que se este trabajando. Si un determinado contexto posee cierta configuracion se define en la clase Entity, por ejemplo, el atributo "schema" es exclusivo de un contexto de acceso a traves de Sistemas de Administracion de Base de Datos.
  */
 abstract class Entity {
-  protected static $structure = NULL; //array. Estructura de tablas. Debido a que la estructura utiliza clases concretas, debe asignarse luego de finalizada la generacion de archivos y solo cuando se requiera su uso.
+  
+  protected static $structure = NULL; //array. Estructura de tablas. 
+  /**
+   * Debido a que la estructura utiliza clases concretas, debe asignarse luego de finalizada la generacion de archivos y solo cuando se requiera su uso.
+   */ 
+
+  public $name;
+  public $alias;
+  public $schema = DATA_SCHEMA;
+  public $table = null; //nombre de la tabla de la base de datos
+  /**
+   * En ocasiones el nombre de la tabla de la base de datos puede ser diferente del original
+   * Si es null, se considera el mismo nombre que la entidad
+   */
 
   //http://php.net/manual/en/language.oop5.late-static-bindings.php
-  public static function name(){ return null; }
-  public static function alias(){ return null; }
-  public static function schema(){ return DATA_SCHEMA; }
+  //public static function name(){ return null; }
+  //public static function alias(){ return null; }
+  //public static function schema(){ return DATA_SCHEMA; }
 
 
   //Metodo auxiliares para facilitar la definicion de consultas sql (se definen como metodos estaticos para facilitar la sintaxis)
-  public static function n_(){ return static::name(); } //nombre de la tabla. El nombre de la tabla puede no coincidir con el de la entidad
+  //public static function n_(){ return $this->name; } //nombre de la tabla. El nombre de la tabla puede no coincidir con el de la entidad
 
-  public static function s_(){ return (!empty(static::schema())) ?  static::schema() . '.' : ""; } //schema.
-  public static function sn_(){ return static::s_() . static::n_(); } //schema.nombre
-  public static function sna_(){ return static::s_() . static::n_() . " AS " . static::alias(); } //schema.nombre AS alias
-  public static function a_(){ return static::alias() . "."; }
-
-  public function getS_() { return static::s_(); } //schema
-  public function getSn_() { return static::sn_(); } //schema name
-  public function getSna_() { return static::sna_(); } //schema name alias
-  public function getN_() { return static::n_(); } //name
-
-
-
-
+  /**
+   * Metodos para facilitar la sintaxis del sql
+   */
+  public function n_(){ return (!empty($this->table)) ?  $this->table : $this->name; } //name 
+  public function s_(){ return (!empty($this->schema)) ?  $this->schema . '.' : ""; } //schema.
+  public function sn_(){ return $this->s_() . $this->n_(); } //schema.nombre
+  public function sna_(){ return $this->s_() . $this->n_() . " AS " . $this->alias; } //schema.nombre AS alias
+  public function a_(){ return $this->alias . "."; }
 
   function getPk() { throw new BadMethodCallException("Not Implemented"); }
 
@@ -39,53 +47,49 @@ abstract class Entity {
 
   public function getName($format = null) {
     switch($format){
-      case "XxYy": return str_replace(" ", "", ucwords(str_replace("_", " ", strtolower(static::name()))));
-      case "xxyy": return strtolower(str_replace("_", "", static::name()));
-      case "Xx Yy": return ucwords(str_replace("_", " ", strtolower(static::name())));
-      case "Xx yy": return ucfirst(str_replace("_", " ", strtolower(static::name())));
-      case "xxYy": return str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower(static::name())))));
-      case "xx-yy": return strtolower(str_replace("_", "-", static::name()));
-      default: return static::name();
+      case "XxYy": return str_replace(" ", "", ucwords(str_replace("_", " ", strtolower($this->name))));
+      case "xxyy": return strtolower(str_replace("_", "", $this->name));
+      case "Xx Yy": return ucwords(str_replace("_", " ", strtolower($this->name)));
+      case "Xx yy": return ucfirst(str_replace("_", " ", strtolower($this->name)));
+      case "xxYy": return str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower($this->name)))));
+      case "xx-yy": return strtolower(str_replace("_", "-", $this->name));
+      default: return $this->name;
     }
   }
 
 
   public function getAlias($format = null) {
     switch($format){
-     case ".": return (!empty(static::alias())) ?  static::alias() . '.' : "";
-     case "Xx"; return ucfirst(strtolower(static::alias()));
-     default: return static::alias();
+     case ".": return (!empty($this->alias)) ?  $this->alias . '.' : "";
+     case "Xx"; return ucfirst(strtolower($this->alias));
+     default: return $this->alias;
     }
 
-    return static::alias();
+    return $this->alias;
   }
 
-  public function getSchema() { return static::schema(); }
+  public function getSchema() { return $this->schema; }
 
-  //***** fields pk nf fk *****
-  public function getFields(){
+  public function getFields(){ //pk, nf, fk
     $merge =  array_merge($this->getFieldsNf(), $this->getFieldsFk());
     array_unshift($merge, $this->getPk());
     return $merge;
   }
 
-  //***** fields nf *****
+  public function getFieldsByName($fieldName){
+    foreach($this->getFields() as $field){
+      if($field->getName() == $fieldName) return $field;
+    } 
+    return null;
+  }
+
   public function getFieldsNf(){ return array(); }
+  public function getFieldsFk(){ return array_merge($this->getFieldsMu(), $this->getFields_U()); } //fk (mu y _u)
+  public function getFieldsMu(){ return array(); } //mu
+  public function getFields_U(){ return array(); } //_u
+  public function getFieldsRef(){ return array_merge($this->getFieldsUm(), $this->getFieldsU_()); } //ref (um y u_) 
 
-  //***** fields fk (mu y _u)  *****
-  public function getFieldsFk(){ return array_merge($this->getFieldsMu(), $this->getFields_U()); }
-
-  //***** fields mu *****
-  public function getFieldsMu(){ return array(); }
-
-  //***** fields _u *****
-  public function getFields_U(){ return array(); }
-
-  //***** fields ref (um y u_) *****
-  public function getFieldsRef(){ return array_merge($this->getFieldsUm(), $this->getFieldsU_()); }
-
-  //***** fields um *****
-  public function getFieldsUm(){
+  public function getFieldsUm(){ //um
     if(self::getStructure() == NULL) throw new Exception("Debe setearse la estructura");
     $fields = array();
     foreach(self::getStructure() as $entity){
@@ -98,8 +102,7 @@ abstract class Entity {
     return $fields;
   }
 
-  //***** fields u_ *****
-  public function getFieldsU_(){
+  public function getFieldsU_(){ //u_
     if(self::getStructure() == NULL) throw new Exception("Debe setearse la estructura");
     $fields = array();
     foreach(self::getStructure() as $entity){
@@ -112,9 +115,10 @@ abstract class Entity {
     return $fields;
   }
 
-
-  //***** fields fk no referenciadas: Fields fk cuyo nombre de tabla referenciada no se encuentre en el parametro)
-  public function getFieldsFkNotReferenced(array $referencedNames){
+  public function getFieldsFkNotReferenced(array $referencedNames){ //fk no referenciadas
+    /**
+     * Fields fk cuyo nombre de tabla referenciada no se encuentre en el parametro 
+     */
     $fieldsAux = $this->getFieldsFk();
     $fields = array();
 
@@ -127,8 +131,10 @@ abstract class Entity {
     return $fields;
   }
 
-  //***** fields u_ no referenciadas: Fields u_ cuyo nombre de tabla no se encuentre en el parametro)
-  public function getFieldsU_NotReferenced(array $referencedNames){
+  public function getFieldsU_NotReferenced(array $referencedNames){ //u_ no referenciadas
+    /**
+     * Fields u_ cuyo nombre de tabla no se encuentre en el parametro)
+     */
     $fieldsAux = $this->getFieldsU_();
     $fields = array();
 
@@ -141,8 +147,7 @@ abstract class Entity {
     return $fields;
   }
 
-  //***** fields por tipo *****
-  public function getFieldsByType(array $types){
+  public function getFieldsByType(array $types){ //fields por tipo
     $fields = array();
 
     foreach($types as $type){
@@ -170,11 +175,12 @@ abstract class Entity {
     return $unique;
   }
 
-
-  //***** ordenamiento por defecto *****
-  //por defecto se definen los campos principales nf de la tabla principal
-  //Si se incluyen campos de relaciones, asegurarse de incluir las relaciones
-  public function getOrder(){
+  public function getOrder(){   //ordenamiento por defecto
+    /**
+     * por defecto se definen los campos principales nf de la tabla principal
+     * Si se incluyen campos de relaciones, asegurarse de incluir las relaciones
+     * TODO: El ordenamiento no deberia formar parte de las entidades de generacion de sql?
+     */
     $fields = $this->getFieldsNf();
     $orderBy = array();
 
@@ -187,7 +193,10 @@ abstract class Entity {
     return $orderBy;
   }
 
-  //Tiene relaciones? Utilizado generalmente para verificar si es viable la generacion de cierto codigo que requiere relaciones
+  /**
+   * Tiene relaciones? 
+   * Utilizado generalmente para verificar si es viable la generacion de cierto codigo que requiere relaciones
+   */  
   public function hasRelations(){ return ($this->hasRelationsFk() || $this->hasRelationsU_()) ? true : false; }
   public function hasRelationsFk(){ return (count($this->getFieldsFk())) ? true : false; }
   public function hasRelationsU_(){ return (count($this->getFieldsU_())) ? true : false; }

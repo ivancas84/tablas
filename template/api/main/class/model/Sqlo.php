@@ -16,11 +16,11 @@ abstract class EntitySqlo {
   public $sql;    //EntitySql. Atributo auxiliar para facilitar la definicion de consultas sql
 
   public function nextPk(){ return $this->db->uniqId(); } //siguiente identificador unico
-  protected function initializeInsertSql(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); } //inicializar valores para insercion
-  protected function _insertSql(array $row) { throw new Exception("Metodo abstracto sin implementar: EntitySqlo.insertSql"); } //sql de insercion
-  protected function initializeUpdateSql(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); } //inicializar valores para actualizacion
-  protected function _update(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); } //sql de actualizacion
-  protected function formatSql(array $row) { throw new Exception("Metodo abstracto no implementado: EntitySqlo.updateSql"); } //formato de sql
+  protected function initializeInsert(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //inicializar valores para insercion
+  protected function initializeUpdate(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //inicializar valores para actualizacion
+  protected function _insert(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //sql de insercion
+  protected function _update(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //sql de actualizacion
+  protected function format(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //formato de sql
 
   protected function render($render = null){ //Definir clase de presentacion
     /**
@@ -41,45 +41,37 @@ abstract class EntitySqlo {
      * Puede incluirse un id en el array de parametro, si no esta definido se definira uno automaticamente
      * @return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
      */
-    $r = $this->initializeInsertSql($row);
-    $r_ = $this->formatSql($r);
-    $sql = $this->_insertSql($r_);
+    $r = $this->initializeInsert($row);
+    $r_ = $this->format($r);
+    $sql = $this->_insert($r_);
 
     return array("id" => $r["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
   }
 
-  public function update(array $row, $id = null) { //sql de actualizacion
-    /**
-     * Formatear valores y definir sql de actualizacion
-     * La actualizacion solo tiene en cuenta los campos definidos, los que no estan definidos, no seran considerados manteniendo su valor previo.
-     * Se define el id a actualizar en el row
-     * retorna array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
-     * TODO: recibir un id opcional como parametro prioritario, y permitir actualizacion de ids
-     */
-    if(empty($r["id"] && empty($id)) throw new Exception("No existe identificador definido");
-    $r = $this->initializeUpdateSql($row);
-    $r_ = $this->formatSql($r);
-    $id = if(empty($id)) $id = $r_["id"];
+  public function update(array $row) { //sql de actualizacion
+    
+    $r = $this->initializeUpdate($row);
+    $r_ = $this->format($r);
     $sql = "
-{$this->_updateSql($r_)}
+{$this->_update($r_)}
 WHERE id = {$id};
 ";
 
     return array("id" => $r_["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
   }
 
-  public function updateAll($row, $ids) { //sql de actualizacion para un conjunto de ids
+  public function updateAll($row, array $ids) { //sql de actualizacion para un conjunto de ids
     /**
      * Formatear valores y definir sql de actualizacion para un conjunto de ids
      * La actualizacion solo tiene en cuenta los campos definidos, los que no estan definidos, no seran considerados manteniendo su valor previo.
      * TODO: La version actual no permite actualizar el id, pero no estoy seguro por que no, cambiarlo para que permita
      * @return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
      */
-    if(empty($ids) throw new Exception("No existen identificadores definidos");
-    $r = $this->initializeUpdateSql($row);
-    $r_ = $this->formatSql($r);
+    if(empty($ids)) throw new Exception("No existen identificadores definidos");
+    $r = $this->initializeUpdate($row);
+    $r_ = $this->format($r);
     $sql = "
-{$this->_updateSql($r_)}
+{$this->_update($r_)}
 WHERE ids IN ({implode(',', $ids)});
 ";
     $detail = $ids;
@@ -92,20 +84,29 @@ WHERE ids IN ({implode(',', $ids)});
     return ["id"=>$delete["ids"][0], "sql"=>$delete["sql"], "detail"=>$delete["detail"]];
   }
 
-  public function deleteAll(array $ids){ //eliminar
-    $sql = "";
-    for($i = 0; $i < count($ids); $i++){
-      $r = $this->formatSql(["id"=>$ids[$i] ]);
 
-      $sql .= "
-DELETE FROM " . $this->entity->getSn_() . "
-WHERE " . $this->entity->getPk()->getName() . " = " . $r["id"] . ";
+  public function deleteAll(array $ids) { //eliminar
+    $ids_ = [];
+    for($i = 0; $i < count($ids); $i++) {
+      $r = $this->format(["id"=>$ids[$i]]);
+      array_push($ids_, $r[$i]);
+    }     
+    $sql = "
+DELETE FROM {$this->entity->sn_()}
+WHERE {$this->entity->getPk()->getName()} IN ({implode(', ', $ids_)});
 ";
-    }
+ 
+    $detail = $ids;
+    array_walk($detail, function(&$item) { $item = $this->entity.$item; });
+    return ["ids"=>$ids, "sql"=>$sql, "detail"=>$detail];
+  }
 
-      $detail = $ids;
-      array_walk($detail, function(&$item) { $item = $this->entity.$item; });
-      return ["ids"=>$ids, "sql"=>$sql, "detail"=>$detail];
+  public function deleteRequiredAll($ids, $fieldName){ //eliminacion relacionada a clave foranea
+    /**
+     * En su caso mas general, este metodo es similar a delete
+     * Esta pensado para facilitar la reimplementacion en el caso de que se lo requiera
+     */
+    return $this->deleteAll($ids);
   }
 
   public function count($render = NULL) { //sql cantidad de valores

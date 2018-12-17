@@ -3,7 +3,7 @@
 require_once("class/model/Entity.php");
 require_once("generate/GenerateEntity.php");
 
-class GenerateClassDataSqlMethodInsertSql extends GenerateEntity {
+class Sqlo_insert extends GenerateEntity {
 
   public function __construct(Entity $entity) {
     parent::__construct($entity);
@@ -54,9 +54,9 @@ VALUES ( \";
   protected function start(){
     $this->string .= "
   //@override
-  protected function _insertSql(array \$row){
+  protected function _insert(array \$row){
     \$sql = \"
-INSERT INTO \" . \$this->entity->getSn_() . \" (\";
+INSERT INTO \" . \$this->entity->sn_() . \" (\";
 ";
   }
 

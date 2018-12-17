@@ -49,36 +49,36 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
 ";
   }
 
-  protected function insertSql(){
-    require_once("generate/phpdbgen/sqlo/method/InsertSql.php");
-    $g = new GenerateClassDataSqlMethodInsertSql($this->getEntity());
+  protected function insert(){
+    require_once("generate/phpdbgen/sqlo/method/Insert.php");
+    $g = new Sqlo_insert($this->getEntity());
     $this->string .=  $g->generate();
   }
 
 
 
-  protected function initializeInsertSql(){
-    require_once("generate/phpdbgen/sqlo/method/InitializeInsertSql.php");
-    $gen = new InitializeInsertSql($this->getEntity());
+  protected function initializeInsert(){
+    require_once("generate/phpdbgen/sqlo/method/initializeInsert.php");
+    $gen = new initializeInsert($this->getEntity());
     $this->string .= $gen->generate();
   }
 
-  protected function initializeUpdateSql(){
-    require_once("generate/phpdbgen/sqlo/method/InitializeUpdateSql.php");
-    $gen = new InitializeUpdateSql($this->getEntity());
+  protected function initializeUpdate(){
+    require_once("generate/phpdbgen/sqlo/method/initializeUpdate.php");
+    $gen = new initializeUpdate($this->getEntity());
     $this->string .= $gen->generate();
   }
 
-  protected function formatSql(){
-    require_once("generate/phpdbgen/sqlo/method/FormatSql.php");
+  protected function format(){
+    require_once("generate/phpdbgen/sqlo/method/format.php");
     $gen = new Sqlo_FormatSql($this->getEntity());
     $this->string .= $gen->generate();
   }
 
 
-  protected function updateSql(){
-    require_once("generate/phpdbgen/sqlo/method/UpdateSql.php");
-    $gen = new Sqlo_updateSql($this->getEntity());
+  protected function update(){
+    require_once("generate/phpdbgen/sqlo/method/Update.php");
+    $gen = new Sqlo_update($this->getEntity());
     $this->string .= $gen->generate();
   }
 
@@ -108,11 +108,11 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
 
   protected function body(){
     $this->construct();
-    $this->insertSql();
-    $this->initializeInsertSql();
-    $this->updateSql();
-    $this->initializeUpdateSql();
-    $this->formatSql();
+    $this->insert();
+    $this->initializeInsert();
+    $this->update();
+    $this->initializeUpdate();
+    $this->format();
     $this->uploadSql();
     $this->uploadSqlIndex();
     //$this->values(); deprecated

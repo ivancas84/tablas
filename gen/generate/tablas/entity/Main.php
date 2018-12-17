@@ -36,10 +36,9 @@ require_once(\"class/model/Entity.php\");
 require_once(\"config/entityClasses.php\");
 
 class " . snake_case_to("XxYy", $this->tableName) . "EntityMain extends Entity {
-
-  public static function name() { return \"" . $this->tableName . "\"; }
-  public static function alias() { return \"" . $this->tableAlias . "\"; }
-
+  public \$name = \"" . $this->tableName . "\";
+  public \$alias = \"" . $this->tableAlias . "\";
+ 
 ";
   }
 

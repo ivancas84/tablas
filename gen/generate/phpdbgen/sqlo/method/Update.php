@@ -3,7 +3,7 @@
 require_once("class/model/Entity.php");
 require_once("generate/GenerateEntity.php");
 
-class Sqlo_updateSql extends GenerateEntity{
+class Sqlo_update extends GenerateEntity{
 
 
   protected function start(){
@@ -11,7 +11,7 @@ class Sqlo_updateSql extends GenerateEntity{
   //@override
   protected function _update(array \$row){
     \$sql = \"
-UPDATE \" . \$this->entity->getSn_() . \" SET
+UPDATE \" . \$this->entity->sn_() . \" SET
 \";
 ";
   }

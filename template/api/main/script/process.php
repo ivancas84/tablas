@@ -14,43 +14,44 @@ require_once("function/stdclass_to_array.php");
 
 
 
-function rows($entity, array $rows = [], array $options = []){ //procesar un conjunto de rows
+function rows($entity, array $rows = [], array $params = null){ //procesar un conjunto de rows
   /**
    * $rows:
    *   Valores a persisitir
    *
    * $options:
    *   Posee datos de identificacion para determinar los valores actuales y modificarlos o eliminarlos segun corresponda
-   *   Array asociativo, ejemplo {"field":"valor"}, habitualmente "field" corresponde al nombre de una clave foranea
-   *
+   *   Habitualmente es un array asociativo con los siguientes elementos:
+   *     name: Nombre de la clave foranea
+   *     value: valor de la clave foranea
+   * 
    * Procedimiento:
-   *   1) obtener $ids actuales en base a $options
+   *   1) obtener $ids actuales en base a $rowId
    *   2) recorrer los datos a persistir $rows:
-   *      a) Combinarlos con los parametros $options
+   *      a) Combinarlos con los parametros $rowId
    *      b) Comparar $row["id"] con $id, si es igual, eliminar $id del array
    */
   $ret = [ "ids" => [], "sql" => "", "detail" => [] ];
   if(empty($rows)) return $ret;
 
   $idsActuales = [];
-  if(!empty($options)) {
-    $render = array();
-    foreach($options as $fieldName => $fieldValue) array_push($render, [$fieldName, '=', $fieldValue]);
-    $idsActuales = Dba::ids($entity, $render);
+  if(!empty($params)) {
+    $idsActuales = Dba::ids($entity, [$params["name"], '=', $params["value"]]);
   }
 
   foreach($rows as $row){
-    if(!empty($options)) foreach($options as $key => $value) $row[$key] = $value; //combinar datos a persisitir con los parametros
+    if(!empty($fkName)) $row[$fkName] = $fkValue;
 
     if(!empty($row["id"])) { //eliminar id persistido del array de $ids previamente consultado
       $key = array_search($row["id"], $idsActuales);
       if($key !== false) unset($idsActuales[$key]);
     }
 
-    $persist = Dba::delete($entity, $idsActuales, $options);
+    $persist = Dba::deleteRequired($entity, $idsActuales, $params);
     /**
      * La eliminacion puede ser fisica, logica o simplemente puede nulificar ciertos campos
-     * El parametro $options, puede ser utilizado para indicar la nulificacion
+     * El tipo de eliminacion es definido por cada entidad
+     * El parametro opcional $params, puede ser utilizado para indicar el comportamiento requerido a la entidad
      */
     $ret["sql"] .= $persist["sql"];
     $ret["detail"] = array_merge($ret["detail"], $persist["detail"]);
@@ -75,7 +76,6 @@ function row($entity, $row) { //persistir row
 
 try {
   $f = Filter::requestRequired("data");
-
   $f_ =  json_decode($f);
   $data = stdclass_to_array($f_);
 
@@ -84,10 +84,16 @@ try {
   $detail = [];
 
   foreach($data as $d) {
-    $entity = $d["entity"];
-    $row = (!empty($d["row"])) ? $d["row"]: null;
-    $rows = (!empty($d["rows"])) ? $d["rows"]: [];
-    $options = (!empty($d["options"])) ? $d["options"]: [];
+    $entity = $d["entity"]; //entidad
+    $row = (!empty($d["row"])) ? $d["row"]: null; //row a procesar
+    $rows = (!empty($d["rows"])) ? $d["rows"]: null; //rows a procesar
+    $params = (!empty($d["params"])) ? $d["params"] : null; //campos relacionados para identificacion
+    $delete = (!empty($d["delete"])) ? $d["delete"] : null; //ids a eliminar (en construccion)
+
+    /**
+     * $params["name"]: Nombre de la clave foranea
+     * $params["value]: Valor de la clave foranea
+     */
 
 
     if(!empty($row)) {
@@ -99,16 +105,16 @@ try {
 
 
     if(!empty($rows)){
-      $persist = rows($entity, $rows, $options);
+      $persist = rows($entity, $rows, $params);
       $sql .= $persist["sql"];
       $detail = array_merge($detail, $persist["detail"]);
       if(!empty($persist["ids"])) array_push($response, ["entity" => $entity, "ids" => $persist["ids"]]);
     }
   }
 
-  Transaction::begin();
-  Transaction::update(["descripcion"=> $sql, "detalle" => implode(",",$detail)]);
-  Transaction::commit();
+  //Transaction::begin();
+  //Transaction::update(["descripcion"=> $sql, "detalle" => implode(",",$detail)]);
+  //Transaction::commit();
 
   echo json_encode($response);
 

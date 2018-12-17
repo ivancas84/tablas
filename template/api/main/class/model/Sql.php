@@ -142,7 +142,7 @@ abstract class EntitySql {
   public function fieldId(){ return $this->entity->getAlias() . "." . $this->entity->getPk()->getName(); } //Se define el identificador en un metodo independiente para facilitar la reimplementacion para aquellos casos en que el id tenga un nombre diferente al requerido, para el framework es obligatorio que todas las entidades tengan una pk con nombre "id"
 
   public function from(){
-    return " FROM " . $this->entity->getSna_() . "
+    return " FROM " . $this->entity->sna_() . "
 ";
   }
 
@@ -285,7 +285,7 @@ abstract class EntitySql {
   //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
   public function _join($field, $fromTable){
     $t = $this->prt();
-    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS $t ON ($fromTable.$field = $t.{$this->entity->getPk()->getName()})
+    return "LEFT OUTER JOIN {$this->entity->sn_()} AS $t ON ($fromTable.$field = $t.{$this->entity->getPk()->getName()})
 ";
   }
 
@@ -302,21 +302,21 @@ abstract class EntitySql {
   //inner join basico desde la tabla actual (este metodo esta pensado para armar consultas desde otra entidad)
   public function _innerJoin($field, $fromTable){
     $t = $this->prt();
-    return "INNER JOIN {$this->entity->getSn_()} AS $t ON ($fromTable.$field = $t.{$this->entity->getPk()->getName()})
+    return "INNER JOIN {$this->entity->sn_()} AS $t ON ($fromTable.$field = $t.{$this->entity->getPk()->getName()})
 ";
   }
 
   //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
   public function _joinR($field, $fromTable){
     $t = $this->prt();
-    return "LEFT OUTER JOIN {$this->entity->getSn_()} AS $t ON ($fromTable.{$this->entity->getPk()->getName()} = $t.$field)
+    return "LEFT OUTER JOIN {$this->entity->sn_()} AS $t ON ($fromTable.{$this->entity->getPk()->getName()} = $t.$field)
 ";
   }
 
   //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
   public function _innerJoinR($field, $fromTable){
     $t = $this->prt();
-    return "INNER JOIN {$this->entity->getSn_()} AS $t ON ($fromTable.{$this->entity->getPk()->getName()} = $t.$field)
+    return "INNER JOIN {$this->entity->sn_()} AS $t ON ($fromTable.{$this->entity->getPk()->getName()} = $t.$field)
 ";
   }
 
@@ -359,8 +359,8 @@ abstract class EntitySql {
 
   public function isUpdatable(array $row){
     try {
-      $row_ = $this->initializeUpdateSql($row);
-      $this->formatSql($row_);
+      $row_ = $this->initializeUpdate($row);
+      $this->format($row_);
       return true;
     } catch(Exception $exception){
       return $exception->getMessage();
@@ -369,8 +369,8 @@ abstract class EntitySql {
 
   public function isInsertable(array $row){
     try {
-      $row_ = $this->initializeInsertSql($row);
-      $this->formatSql($row_);
+      $row_ = $this->initializeInsert($row);
+      $this->format($row_);
       return true;
     } catch(Exception $exception){
       return $exception->getMessage();

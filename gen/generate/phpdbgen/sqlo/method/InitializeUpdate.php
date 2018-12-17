@@ -1,12 +1,12 @@
 <?php
 
 
-class InitializeUpdateSql extends GenerateEntity{
+class initializeUpdate extends GenerateEntity{
 
 protected function start(){
     $this->string .= "
   //@override
-  public function initializeUpdateSql(array \$data){
+  public function initializeUpdate(array \$data){
 ";
 
   }
