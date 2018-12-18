@@ -19,6 +19,7 @@ class GenerateClassSqlMain extends GenerateFileEntity{
     $this->conditionSearch();
     $this->filters();
     $this->conditionAux();
+    $this->conditionHistory();
     $this->json();
     //$this->values(); este metodo transforma el resultado json en values, pero por el momento se descarta
     //$this->order(); hay un metodo general que resuelve la tarea de ordenamiento para ambos motores
@@ -125,7 +126,16 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     require_once("generate/phpdbgen/sql/method/ConditionAux.php");
     $gen = new ClassSql_conditionAux($this->getEntity());
     $this->string .= $gen->generate();
+  }
 
+  protected function conditionHistory(){
+    require_once("generate/phpdbgen/sql/method/ConditionHistory.php");
+    $gen = new ClassSql_conditionHistory($this->getEntity());
+    $this->string .= $gen->generate();
+
+    require_once("generate/phpdbgen/sql/method/_ConditionHistory.php");
+    $gen = new ClassSql__conditionHistory($this->getEntity());
+    $this->string .= $gen->generate();
   }
 
   //Este metodo funciona pero actualmente no se genera, se utiliza un método más sencillo que resuelve el problema del ordemiento

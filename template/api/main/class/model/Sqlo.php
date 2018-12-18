@@ -118,7 +118,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
 {$this->sql->from()}
 {$this->sql->join()}
 {$this->sql->joinAux()}
-{$this->sql->conditionAll($r->getAdvanced(), $r->getSearch())}
+{$this->sql->conditionAll($r)}
 ";
   }
 
@@ -130,7 +130,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
 {$this->sql->from()}
 {$this->sql->join()}
 {$this->sql->joinAux()}
-{$this->sql->conditionAll($r->getAdvanced(), $r->getSearch())}
+{$this->sql->conditionAll($r)}
 {$this->sql->orderBy($r->getOrder())}
 {$this->sql->limit($r->getPage(), $r->getSize())}
 ";
@@ -187,7 +187,7 @@ WHERE
 {$this->sql->joinAux()}
 WHERE
 {$conditionUniqueFields}
-{$this->sql->conditionAll($r->getAdvanced(), $r->getSearch(), 'AND')}
+{$this->sql->conditionAll($r, 'AND')}
 ";
   }
 

@@ -15,15 +15,13 @@ abstract class EntitySql {
   public $prefix = '';
   public $entity; //Entity. Configuracion de la tabla
   public $db;
-    //Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren.
-    //Ademas, ciertos metodos requieren determinar el motor de base de datos para definir la sintaxis SQL adecuada
+  /**
+   * Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren.
+   * Ademas, ciertos metodos requieren determinar el motor de base de datos para definir la sintaxis SQL adecuada
+   */
 
-  //prefijo orientado a los fields
-  public function prf(){ return (empty($this->prefix)) ?  ''  : $this->prefix . '_'; }
-
-  //prefijo orientado a la tabla
-  public function prt(){ return (empty($this->prefix)) ?  $this->entity->getAlias() : $this->prefix; }
-
+  public function prf(){ return (empty($this->prefix)) ?  ''  : $this->prefix . '_'; }   //prefijo fields
+  public function prt(){ return (empty($this->prefix)) ?  $this->entity->getAlias() : $this->prefix; } //prefijo tabla
   public function _json(array $row) { throw new BadMethodCallException("No implementado"); }
   public function json(array $row) { return $this->_json($row); }
   public function jsonAll(array $rows){
@@ -45,43 +43,43 @@ abstract class EntitySql {
     return $field_;
   }
 
-  //Todos los metodos para obtener los fields de uso habitual se encuentran reunidos en uno solo
-  //@param $filter Solo se devolveran los campos definidos en el filtro
-  //@param $fieldsAdd Se adicionan los fields al conjunto devuelto
-  public function fieldsAll() {
+  public function fieldsAll() { //todos los fields
     return (!empty($this->fieldsAux())) ? "{$this->fieldsFull()},
 {$this->fieldsAux()}" : $this->fieldsFull();
   }
 
+  public function conditionSearch($search = "") { return "";  } //Definir condicion de busqueda simple
+  public function conditionAux(){ return $this->_conditionAux(); } //concatenacion de condicion auxiliar
+  public function _conditionAux(){ return "";  } //Sobrescribir si existe condicion auxiliar obligatoria
+  /**
+   * No utilizar conditionAux para condiciones historicas (las condiciones historicas no deben ser definidas en cadena)
+   * Ejemplo: "(alias.field = "value") " dejar un espacio despues de la condicion
+   */
 
+  public function conditionHistory(array $history = []) { //condicion para visualizar datos historicos
+    if(!key_exists("history", $history)) $history["history"] = false;
+    return $this->_conditionHistory($history);
+  }
+  public function _conditionHistory(array $history){ return "";  } //Sobrescribir si existe condicion auxiliar obligatoria
+  /**
+   * por defecto se define la entidad actual solo para mostrar los datos activos y las relacionadas todos los datos
+   */
 
-  //***** metodos abstractos *****
-  public function conditionSearch($search = "") {  } //Definir condicion de busqueda simple
-
-  //Definir sql condicion obligatoria
-  //Utilizada generalmente para restringir visualización, CUIDADO CON LA PERSISTENCIA!!! las restricciones de visualización son también aplicadas al persistir, pudiendo no tener el efecto deseado.
-  //@return "(condition) " //por las dudas dejar espacio despues de condicion
-  //@example "(alias.field = value) "
-  //@example "(pago.deleted = false) "
-  public function conditionAux(){ return $this->_conditionAux(); } //Llamar a cadena de metodos independientes
-
-  public function _conditionAux(){ return "";  } //Sobrescribir si existe condicion obligatoria
-
-
-  //Busqueda avanzada
-  //@param   Array $advanced
-  //  [
-  //    0 => "field"
-  //    1 => "=", "!=", ">=", "<=", "<", ">", ...
-  //    2 => "value" array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array)
-  //    3 => "AND" | "OR" | null (opcional, por defecto AND)
-  //  ]
-  //  Array(
-  //    Array("field" => "field", "value" => array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array) [, "option" => "="|"=~"|"!="|"<"|"<="|">"|">="|true (no nulos)|false (nulos)][, "mode" => "and"|"or"]
-  //    ...
-  //  )
-  //  )
-  public function conditionAdvanced(array $advanced = null) {
+  public function conditionAdvanced(array $advanced = null) { //busqueda avanzada
+    /**
+     * Array $advanced:
+     *  [
+     *    0 => "field"
+     *    1 => "=", "!=", ">=", "<=", "<", ">", ...
+     *    2 => "value" array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array)
+     *    3 => "AND" | "OR" | null (opcional, por defecto AND)
+     *  ]
+     *  Array(
+     *    Array("field" => "field", "value" => array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array) [, "option" => "="|"=~"|"!="|"<"|"<="|">"|">="|true (no nulos)|false (nulos)][, "mode" => "and"|"or"]
+     *    ...
+     *  )
+     *  )
+     */
     if(empty($advanced)) return "";
     $conditionMode = $this->conditionAdvancedRecursive($advanced);
     return $conditionMode["condition"];
@@ -124,8 +122,10 @@ abstract class EntitySql {
     return ["condition"=>"(".$condition.")", "mode"=>$modeReturn];
   }
 
-  //Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
-  protected function conditionAdvancedMain($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //Definir sql con los campos de la tabla principal
+  protected function conditionAdvancedMain($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //condicion avanzada principal
+  /**
+   * Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
+   */
 
   protected function conditionAdvancedDefined($field, $option, $value){
     switch($field){
@@ -232,9 +232,18 @@ abstract class EntitySql {
     return "(" . $field . " = " . $v . ") ";
   }
 
-  public function conditionAll(array $advanced = null, $search = null, $connect = "WHERE") { //definir todas las condiciones
-    $sqlCond = concat($this->conditionSearch($search), $connect);
-    $sqlCond .= concat($this->conditionAdvanced($advanced), " AND", $connect, $sqlCond);
+  public function conditionAll(Render $render = null, $connect = "WHERE") { //definir todas las condiciones
+    /**
+     * $condition =
+     *   "advanced": array de condiciones avanzadas
+     *     array (["field","option","value"])
+     *   "search": string de busqueda simple
+     *   "historic": busqueda de datos historicos
+     *   ""
+     */
+    $sqlCond = concat($this->conditionSearch($render->search), $connect);
+    $sqlCond .= concat($this->conditionAdvanced($render->advanced), " AND", $connect, $sqlCond);
+    $sqlCond .= concat($this->conditionHistory($render->history), " AND", $connect, $sqlCond);
     $sqlCond .= concat($this->conditionAux(), " AND", $connect, $sqlCond);
     return $sqlCond;
   }

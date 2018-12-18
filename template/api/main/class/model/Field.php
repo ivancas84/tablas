@@ -45,6 +45,8 @@ abstract class Field {
 
   protected $admin = true; //administracion de campo, al desactivarlo, no se incluye el campo en los formularios de administracion
 
+  public $history = false;
+
   public function __construct() {
     $this->defineDataType($this->type);
     $this->defineSubtype($this->dataType, $this->fieldType);
@@ -103,6 +105,8 @@ abstract class Field {
   public function isNotNull(){ return $this->notNull; }
   public function isUnique(){ return $this->unique; }
   public function isAdmin(){ return $this->admin; }
+  public function isHistory(){ return $this->history; }
+
 
 
 

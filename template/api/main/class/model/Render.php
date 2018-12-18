@@ -3,20 +3,16 @@
 //Presentacion de datos
 class Render {
 
-  protected $filter; //array de fields a filtrar (existentes)
-  protected $advanced; //array multiple cuya raiz es [field,option,value], ejemplo: [["nombre","=","unNombre"],[["apellido","=","unApellido"],["apellido","=","otroApellido","OR"]]]
-  protected $search;
-  protected $order;
-  protected $page;
-  protected $size;
-
-  protected $history; //true (historicos), false (activos), null (todos)
-
-
+  public $advanced; //array multiple cuya raiz es [field,option,value], ejemplo: [["nombre","=","unNombre"],[["apellido","=","unApellido"],["apellido","=","otroApellido","OR"]]]
+  public $search;
+  public $order;
+  public $page;
+  public $size;
+  public $history; //true (historicos), false (activos), null (todos)
 
   public function __construct() {
     $this->advanced = array();
-    $this->history = null;
+    $this->history = array();
     $this->order = array();
     $this->page = 1;
     $this->size = false; //si es false o 0 se incluyen todas las paginas, no se define tamanio
