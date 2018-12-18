@@ -31,7 +31,7 @@ abstract class GenerateEntityRecursive extends GenerateEntity{
     }
 
     $this->fk($entity, $tablesVisited, $prefix);
-    $this->u_($entity, $tablesVisited, $prefix);
+    if(empty($prefix)) $this->u_($entity, $tablesVisited, $prefix);
   }
 
   public function fk(Entity $entity, array $tablesVisited, $prefix){
