@@ -1,8 +1,8 @@
 <?php
 
-require_once("generate/GenerateEntityRecursive.php");
+require_once("generate/GenerateEntityRecursiveFk.php");
 
-class ClassSql_conditionAux extends GenerateEntityRecursive{
+class ClassSql_conditionAux extends GenerateEntityRecursiveFk{
 
   public function generate(){
     if(!$this->getEntity()->hasRelations()) return "";

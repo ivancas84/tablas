@@ -1,8 +1,8 @@
 <?php
 
-require_once("generate/GenerateEntityRecursive.php");
+require_once("generate/GenerateEntityRecursiveFk.php");
 
-class ClassSql_fieldsFull extends GenerateEntityRecursive {
+class ClassSql_fieldsFull extends GenerateEntityRecursiveFk {
   public $fields = [];
 
   public function generate(){

@@ -1,9 +1,9 @@
 <?php
 
 
-require_once("generate/GenerateEntityRecursive.php");
+require_once("generate/GenerateEntityRecursiveFk.php");
 
-class ClassSql_conditionAdvancedMain extends GenerateEntityRecursive{
+class ClassSql_conditionAdvancedMain extends GenerateEntityRecursiveFk{
 
 
 

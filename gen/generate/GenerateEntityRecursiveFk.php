@@ -14,7 +14,8 @@ abstract class GenerateEntityRecursiveFk extends GenerateEntityRecursive{
   protected function recursive(Entity $entity, array $tablesVisited = NULL, $prefix = ""){
     if (is_null($tablesVisited)) $tablesVisited = array();
 
-    $this->string .= $this->body($entity, $prefix);
+    if (!empty($prefix)) $this->string .= $this->body($entity, $prefix);
+    
     $this->fk($entity, $tablesVisited, $prefix);
   }
 }

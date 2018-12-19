@@ -1,9 +1,9 @@
 <?php
 
 //NO UTILIZADO, SE DEJA COMO REFERENCIA
-require_once("generate/GenerateEntityRecursive.php");
+require_once("generate/GenerateEntityRecursiveFk.php");
 
-class ClassSql_order extends GenerateEntityRecursive{
+class ClassSql_order extends GenerateEntityRecursiveFk{
 
   public function generate(){
     $this->start();

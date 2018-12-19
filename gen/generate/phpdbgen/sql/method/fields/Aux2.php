@@ -1,6 +1,6 @@
 <?php
-require_once("generate/GenerateEntityRecursive.php");
-class ClassSql_fieldsAux extends GenerateEntityRecursive {
+require_once("generate/GenerateEntityRecursiveFk.php");
+class ClassSql_fieldsAux extends GenerateEntityRecursiveFk {
   public $fields = [];
   public function generate(){
     if(!$this->getEntity()->hasRelations()) return "";

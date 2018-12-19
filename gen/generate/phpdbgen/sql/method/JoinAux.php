@@ -1,8 +1,8 @@
 <?php
 
-require_once("generate/GenerateEntityRecursive.php");
+require_once("generate/GenerateEntityRecursiveFk.php");
 
-class ClassSql_joinAux extends GenerateEntityRecursive {
+class ClassSql_joinAux extends GenerateEntityRecursiveFk {
   public $fields = [];
 
   public function generate(){
