@@ -201,7 +201,6 @@ class Dba {
 
   public static function all($entity, $render = null){ //devolver todos los valores
     $sql = self::sqlo($entity)->all($render);
-    echo $sql;
     $rows = self::fetchAll($sql);
     return self::sql($entity)->jsonAll($rows);
   }
