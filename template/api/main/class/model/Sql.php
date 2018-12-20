@@ -5,16 +5,16 @@ require_once("function/concat.php");
 require_once("function/settypebool.php");
 require_once("class/db/Interface.php");
 
+abstract class EntitySql { //Definir SQL
+  /**
+   * Facilitar la definición de SQL
+   * Definir una serie de metodos que son de uso comun para todas las consultas
+   * Algunos métodos que requieren una conexion abierta a la base de datos, como por ejemplo "escapar caracteres"
+   */
 
-//Facilitar la definicion de sql
-//Para definir el sql se deben utilizar algunos métodos que requieren una conexion abierta a la base de datos, como por ejemplo "escapar caracteres"
-//Facilitar la generacion de consultas SQL a traves de una serie de metodos que son de uso comun para todas las consultas
-//Esta clase ofrece soporte y traduccion para motores MySql (prioritario) y Postgresql. Si se dificulta la traduccion para motores no prioritarios entonces no se definen los metodos
-abstract class EntitySql {
-
-  public $prefix = '';
+  public $prefix = ''; //string. prefijo de identificacion
   public $entity; //Entity. Configuracion de la tabla
-  public $db;
+  public $db; //DB. Conexion con la bse de datos
   /**
    * Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren.
    * Ademas, ciertos metodos requieren determinar el motor de base de datos para definir la sintaxis SQL adecuada
@@ -35,13 +35,15 @@ abstract class EntitySql {
     return $rows_;
   }
 
-  public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); }
-
-  public function mappingField($field){
+  public function mappingField($field){ //Traducir campo para ser interpretado correctamente por el SQL
+    /**
+     * Recorre relaciones (si existen)
+     */
     $field_ = $this->_mappingField($field);
     if(!$field_) throw new Exception("Campo no reconocido");
     return $field_;
   }
+  public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); } //traduccion local
 
   public function fieldsAll() { //todos los fields
     return (!empty($this->fieldsAux())) ? "{$this->fieldsFull()},

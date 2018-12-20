@@ -43,6 +43,9 @@ class Dba {
   }
 
   public static function sql($entity, $prefix = NULL) { //crear instancias de sql
+    /**
+     * sql, a diferencia de sus pares entity y sqlo, no puede ser implementada como singleton porque utiliza prefijos de identificacion
+     */
     $sqlName = snake_case_to("XxYy", $entity) . "Sql";
     $sql = new $sqlName;
     if($prefix) $sql->prefix = $prefix;

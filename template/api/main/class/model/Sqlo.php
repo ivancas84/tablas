@@ -6,10 +6,10 @@ require_once("class/db/Interface.php");
 require_once("function/settypebool.php");
 require_once("class/model/Render.php");
 
-
-//SQL Object
-//Permite crear instancias que sirven para definir SQL
-abstract class EntitySqlo {
+abstract class EntitySqlo { //SQL object
+  /**
+   * Definir SQL para ser ejecutado directamente por el motor de base de datos
+   */
 
   public $entity; //Entity. Configuracion de la entidad
   public $db;     //Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren. Puede requerirse adicionalmente determinar el motor de base de datos para definir la sintaxis adecuada
@@ -49,7 +49,6 @@ abstract class EntitySqlo {
   }
 
   public function update(array $row) { //sql de actualizacion
-
     $r = $this->initializeUpdate($row);
     $r_ = $this->format($r);
     $sql = "
