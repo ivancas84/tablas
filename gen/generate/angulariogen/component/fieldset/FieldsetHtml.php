@@ -56,7 +56,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
         case "select": $this->select($field); break;
         case "typeahead": $this->typeahead($field); break;
       }
-    }    
+    }
   }
 
 
@@ -192,7 +192,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
 ";
     if($field->isNotNull()) $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.required\">Debe completar valor</div>
 ";
-    if($field->isUnique()) $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.notUnique\">El valor ya se encuentra utilizado: <a href=\"{$field->getEntity()->getName("xx-yy")}-admin?{$field->getName()}={{{$field->getName()}.value}}\">Cargar</a></div>
+    if($field->isUnique()) $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.notUnique\">El valor ya se encuentra utilizado: <a routerLink=\"/{$field->getEntity()->getName("xx-yy")}-admin\" [queryParams]=\"{'{$field->getName()}':{$field->getName('xxYy')}.value}\">Cargar</a></div>
 ";
     switch($field->getSubtype()) {
       case "email": $this->templateErrorEmail($field); break;
