@@ -12,9 +12,7 @@ class ClassSql__mappingField extends GenerateEntity{
 
 
   protected function start(){
-    $this->string .= "
-  //@override
-  public function _mappingField(\$field){
+    $this->string .= "  public function _mappingField(\$field){
     \$p = \$this->prf();
     \$t = \$this->prt();
 
@@ -33,6 +31,7 @@ class ClassSql__mappingField extends GenerateEntity{
     $this->string .= "      default: return null;
     }
   }
+
 ";
   }
 

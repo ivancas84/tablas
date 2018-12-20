@@ -14,9 +14,7 @@ class ClassSql_mappingField extends GenerateEntity{
   }
 
   protected function start(){
-    $this->string .= "
-  //@override
-  public function mappingField(\$field){
+    $this->string .= "  public function mappingField(\$field){
     if(\$f = \$this->_mappingField(\$field)) return \$f;
 ";
   }
@@ -54,13 +52,10 @@ class ClassSql_mappingField extends GenerateEntity{
 
   }
 
-
-
-
-
   protected function end(){
     $this->string .= "    throw new Exception(\"Campo no reconocido \" . \$field);
   }
+
 ";
   }
 

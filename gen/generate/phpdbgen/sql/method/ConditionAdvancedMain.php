@@ -8,8 +8,7 @@ class ClassSql_conditionAdvancedMain extends GenerateEntityRecursiveFk{
 
 
   protected function start(){
-    $this->string .= "  //@override
-  protected function conditionAdvancedMain(\$field, \$option, \$value) {
+    $this->string .= "  protected function conditionAdvancedMain(\$field, \$option, \$value) {
     if(\$c = \$this->_conditionAdvanced(\$field, \$option, \$value)) return \$c;
 ";
   }

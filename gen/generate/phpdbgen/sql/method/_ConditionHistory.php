@@ -15,6 +15,7 @@ class ClassSql__conditionHistory extends GenerateEntity{
     \$f = \$this->_mappingField(\$p.'{$this->field->getName()}');
     return (\$history[\"{\$p}history\"]) ? {$this->condition("true")} : {$this->condition("false")};
   }
+
 ";
   }
 

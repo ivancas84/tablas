@@ -6,9 +6,7 @@ class ClassSql_join extends GenerateEntity {
 
 
  protected function start(){
-    $this->string .= "
-  //@override
-  public function join(){
+    $this->string .= "  public function join(){
     return ";
 
   }
@@ -16,8 +14,9 @@ class ClassSql_join extends GenerateEntity {
   protected function end(){
     $pos = strrpos($this->string, ".");
     $this->string = substr_replace($this->string , ";" , $pos, 3);
-    $this->string .= "      
+    $this->string .= "
   }
+
 ";
   }
 

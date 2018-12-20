@@ -13,8 +13,7 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
   }
 
   protected function start(){
-    $this->string .= "  //@override
-  public function _conditionAdvanced(\$field, \$option, \$value){
+    $this->string .= "  public function _conditionAdvanced(\$field, \$option, \$value){
     \$p = \$this->prf();
 
     \$f = \$this->_mappingField(\$field);

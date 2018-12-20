@@ -15,8 +15,7 @@ class ClassSql_conditionAux extends GenerateEntityRecursiveFk{
   }
 
   protected function start(){
-    $this->string .= "  //@override
-  public function conditionAux() {
+    $this->string .= "  public function conditionAux() {
     \$sqlCond = \$this->_conditionAux();
 ";
   }
@@ -29,6 +28,7 @@ class ClassSql_conditionAux extends GenerateEntityRecursiveFk{
   protected function end(){
     $this->string .= "    return (empty(\$sqlCond)) ? '' : \"({\$sqlCond})\";
   }
+
 ";
   }
 

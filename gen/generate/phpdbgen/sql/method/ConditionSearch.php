@@ -54,9 +54,7 @@ class ClassSql_conditionSearch extends GenerateEntity{
 
 
   protected function start(){
-    $this->string .= "
-  //***** @override *****
-  public function conditionSearch(\$search = \"\"){
+    $this->string .= "  public function conditionSearch(\$search = \"\"){
     if(empty(\$search)) return '';
     \$condition = \$this->_conditionSearch(\$search) . \"
 ";

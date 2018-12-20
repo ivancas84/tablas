@@ -19,9 +19,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
 
 
   protected function start(){
-    $this->string .= "
-  //***** @override *****
-  public function _conditionSearch(\$search = \"\"){
+    $this->string .= "  public function _conditionSearch(\$search = \"\"){
     if(empty(\$search)) return '';
     \$p = \$this->prf();
     \$condition = \"\";

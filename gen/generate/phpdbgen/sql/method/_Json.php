@@ -14,9 +14,7 @@ class ClassSql__json extends GenerateEntity {
   }
 
   protected function start(){
-    $this->string .= "
-  //@override
-  public function _json(array \$row = NULL){
+    $this->string .= "  public function _json(array \$row = NULL){
     if(empty(\$row)) return null;
     \$prefix = \$this->prf();
     \$row_ = [];
@@ -66,7 +64,8 @@ class ClassSql__json extends GenerateEntity {
     protected function end(){
       $this->string .= "    return \$row_;
   }
-  ";
+
+";
     }
 
 

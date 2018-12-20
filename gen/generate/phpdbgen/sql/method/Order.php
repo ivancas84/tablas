@@ -14,8 +14,7 @@ class ClassSql_order extends GenerateEntityRecursiveFk{
   }
 
   protected function start(){
-    $this->string .= "  //@override
-  //Existe un método genérico pero solo funciona para MySql, este metodo permite dar soporte a los dos motores MySql y Postgres
+    $this->string .= "  //Existe un método genérico pero solo funciona para MySql, este metodo permite dar soporte a los dos motores MySql y Postgres
   //Define ordenamiento, si el field ingresado no es mapeado, entonces no se define ordenamiento pero no genera error
   public function orderBy(array \$order = null) {
     if(empty(\$order)) return '';
@@ -48,6 +47,7 @@ class ClassSql_order extends GenerateEntityRecursiveFk{
 
     return \$sql;
   }
+
 ";
   }
 
