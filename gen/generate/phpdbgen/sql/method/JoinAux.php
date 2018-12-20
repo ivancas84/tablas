@@ -17,9 +17,8 @@ class ClassSql_joinAux extends GenerateEntityRecursiveFk {
 
   protected function start(){
     $this->string .= "  public function joinAux(){
-    \$join = \"\";
-    if(\$j = \$this->_joinAux()) \$join .= \"{\$j}
-\";
+    return \"
+{\$this->_joinAux()}
 ";
   }
 
@@ -30,8 +29,7 @@ class ClassSql_joinAux extends GenerateEntityRecursiveFk {
   * @return string Codigo generado
   */
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    if (\$j = Dba::sql('{$entity->getName()}', '{$prefix}')->_joinAux()) \$join .= \"{\$j}
-\";
+    $this->string .= "\" . Dba::sql('{$entity->getName()}', '{$prefix}')->_joinAux() . \"
 ";
 
   }
@@ -39,7 +37,7 @@ class ClassSql_joinAux extends GenerateEntityRecursiveFk {
   protected function end(){
     //$pos = strrpos($this->string, ".");
     //$this->string = substr_replace($this->string , ";" , $pos, 3);
-    $this->string .= "  return \$join;
+    $this->string .= "\";
   }
 
 ";

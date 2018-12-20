@@ -17,8 +17,7 @@ class ClassSql_fields extends GenerateEntity {
 
 
   protected function start(){
-    $this->string .= "
-  public function fields(){
+    $this->string .= "  public function fields(){
     //No todos los campos se extraen de la entidad, por eso es necesario mapearlos
     \$p = \$this->prf();
     return '
@@ -54,7 +53,7 @@ class ClassSql_fields extends GenerateEntity {
     $this->string .= "';
   }
 
-  ";
+";
   }
 
 

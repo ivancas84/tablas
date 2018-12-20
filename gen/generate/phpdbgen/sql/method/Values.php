@@ -33,7 +33,7 @@ class ClassSql_values extends GenerateEntity {
     }
 
     $this->fk($entity, $tablesVisited, $arrayName, $prefixField);
-    $this->u_($entity, $tablesVisited, $arrayName, $prefixField);
+    //$this->u_($entity, $tablesVisited, $arrayName, $prefixField);
   }
 
 

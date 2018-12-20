@@ -3,6 +3,7 @@
 require_once("config/structure.php");
 require_once("config/modelClasses.php");
 require_once("config/entityClasses.php");
+require_once("config/valuesClasses.php");
 require_once("function/snake_case_to.php");
 require_once("class/db/My.php");
 require_once("class/db/Pg.php");
@@ -50,6 +51,13 @@ class Dba {
     $sql = new $sqlName;
     if($prefix) $sql->prefix = $prefix;
     return $sql;
+  }
+
+  public static function value($entity, array $row = NULL) { //crear instancias de values
+    //TODO: Implementar metodo setRow fuera del constructor
+    $name = snake_case_to("XxYy", $entity);
+    $value = new $name;
+    return $value;
   }
 
   public static function dbInstance() { //singleton db

@@ -1,10 +1,12 @@
 <?php
 
 
-//Comportamiento comun recursivo
-abstract class GenerateEntityRecursive extends GenerateEntity{
+abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento comun recursivo
+  public $hasRelations = false;
 
   public function generate(){
+    if($this->hasRelations && !$this->getEntity()->hasRelations()) return "";
+
     $this->start();
     $this->recursive($this->getEntity());
     $this->end();
@@ -16,8 +18,8 @@ abstract class GenerateEntityRecursive extends GenerateEntity{
   abstract protected function end();
   abstract protected function body(Entity $entity, $prefix);
 
-  
-  protected function recursive(Entity $entity, array $tablesVisited = NULL, $prefix = ""){ //Metodo recursivo de generacion de codigo
+
+  protected function recursive(Entity $entity, array $tablesVisited = [], $prefix = ""){ //Metodo recursivo de generacion de codigo
     /**
      * Genera codigo solo para las relaciones
      * @param Entity $entity
@@ -25,9 +27,8 @@ abstract class GenerateEntityRecursive extends GenerateEntity{
      * @param type $prefix
      * @return type
      */
-    if (is_null($tablesVisited)) $tablesVisited = array();
 
-    if (!empty($prefix)){ $this->string .= $this->body($entity, $prefix); } //Genera codigo solo para las relaciones
+    if (!empty($prefix)) $this->string .= $this->body($entity, $prefix); //Genera codigo solo para las relaciones
     /**
      * Para determinar que se este recorriendo una relacion en vez de la entidad actual, se utiliza el prefix
      * Si prefix esta vacio, significa que recien se comenzo a recorrer la tabla actual y no se debe generar el codigo

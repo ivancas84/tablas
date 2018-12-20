@@ -20,7 +20,7 @@ class GenerateClassSqlMain extends GenerateFileEntity{
     $this->filters();
     $this->conditionAux();
     $this->conditionHistory();
-    $this->json();
+    $this->json(); //este metodo no coincide con la responsabilidad de la clase SQL pero por el momento se deja aqui hasta encontrar un lugar mas apropiado
     //$this->values(); este metodo transforma el resultado json en values, pero por el momento se descarta
     //$this->order(); hay un metodo general que resuelve la tarea de ordenamiento para ambos motores
     $this->end();

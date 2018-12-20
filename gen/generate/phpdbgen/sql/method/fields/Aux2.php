@@ -11,7 +11,7 @@ class ClassSql_fieldsAux extends GenerateEntityRecursiveFk {
   }
   protected function start(){
     $this->string .= "  public function fieldsAux(){
-    \$fields = \$this->_fieldsAux();
+    return \$this->_fieldsAux();
 ";
   }
   /**
@@ -29,6 +29,7 @@ class ClassSql_fieldsAux extends GenerateEntityRecursiveFk {
     //$this->string = substr_replace($this->string , "" , $pos, 2);
     $this->string .= "    return \$fields;
   }
+
 ";
   }
 }

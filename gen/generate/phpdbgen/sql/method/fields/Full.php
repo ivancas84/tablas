@@ -17,7 +17,7 @@ class ClassSql_fieldsFull extends GenerateEntityRecursiveFk {
 
   protected function start(){
     $this->string .= "  public function fieldsFull(){
-    \$fields = \$this->fields() . ',
+    return \$this->fields() . ',
 ' . ";
   }
 
@@ -38,7 +38,6 @@ class ClassSql_fieldsFull extends GenerateEntityRecursiveFk {
     $this->string = substr_replace($this->string , "" , $pos, 6);
     $this->string .= "
 ';
-    return \$fields;
   }
 
 ";
