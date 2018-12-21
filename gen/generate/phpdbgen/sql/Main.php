@@ -20,6 +20,9 @@ class GenerateClassSqlMain extends GenerateFileEntity{
     $this->filters();
     $this->conditionAux();
     $this->conditionHistory();
+    $this->initializeInsert();
+    $this->initializeUpdate();
+    $this->format();
     $this->json(); //este metodo no coincide con la responsabilidad de la clase SQL pero por el momento se deja aqui hasta encontrar un lugar mas apropiado
     //$this->values(); este metodo transforma el resultado json en values, pero por el momento se descarta
     //$this->order(); hay un metodo general que resuelve la tarea de ordenamiento para ambos motores
@@ -33,8 +36,9 @@ require_once(\"class/model/Sql.php\");
 class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
   public function __construct(){
+    parent::__construct();
     \$this->entity = Dba::entity('{$this->getEntity()->getName()}');
-    \$this->db = Dba::dbInstance();
+
   }
 ";
   }
@@ -145,6 +149,22 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     $this->string .= $gen->generate();
   }
 
+  protected function initializeInsert(){
+    require_once("generate/phpdbgen/sql/method/InitializeInsert.php");
+    $gen = new Sql_initializeInsert($this->getEntity());
+    $this->string .= $gen->generate();
+  }
 
+  protected function initializeUpdate(){
+    require_once("generate/phpdbgen/sql/method/InitializeUpdate.php");
+    $gen = new Sql_initializeUpdate($this->getEntity());
+    $this->string .= $gen->generate();
+  }
+
+  protected function format(){
+    require_once("generate/phpdbgen/sql/method/Format.php");
+    $gen = new Sql_FormatSql($this->getEntity());
+    $this->string .= $gen->generate();
+  }
 
 }

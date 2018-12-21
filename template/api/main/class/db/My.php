@@ -23,26 +23,16 @@ class DbSqlMy extends mysqli implements DbInterface {
 
   }
 
+  public function getSchema(){ return $this->schema; } //@override
 
-  //***** @override *****
-  public function getSchema(){
-    return $this->schema;
-  }
-
-  //***** @override *****
-  public function getSchemaDot(){
+  public function getSchemaDot(){ //@override
     if (!empty($this->schema)) return $this->schema . ".";
     return "";
   }
 
-  //***** @override *****
-  public function getDbms(){
-    return "mysql";
-  }
+  public function getDbms(){ return "mysql"; } //@override
 
-  //***** @override *****
-  public function query($query, $resultmode = NULL){
-
+  public function query($query, $resultmode = NULL){ //@override
     $result = parent::query($query);
     if(!$result) throw new Exception($this->error);
     return $result;
@@ -79,14 +69,9 @@ class DbSqlMy extends mysqli implements DbInterface {
     }
   }
 
-  //***** @override *****
-  public function numRows($result){
-    return $result->num_rows;
-  }
+  public function numRows($result){ return $result->num_rows; } //@override
 
-  public function numFields($result){
-    return $result->field_count;
-  }
+  public function numFields($result){ return $result->field_count; }
 
   public function fetchAll($result) {
     $rows = array();
@@ -97,13 +82,9 @@ class DbSqlMy extends mysqli implements DbInterface {
     return $rows;
   }
 
-  public function fetchAssoc($result){
-    return $result->fetch_assoc();
-  }
+  public function fetchAssoc($result){ return $result->fetch_assoc(); }
 
-  public function fetchRow($result){
-    return $result->fetch_row();
-  }
+  public function fetchRow($result){ return $result->fetch_row(); }
 
 
   public function fetchAllColumns($result, $fieldNumber) {
@@ -185,15 +166,9 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
 
             return $r ;
 
-    }
+  }
 
-
-
-
-  /**
-   * Retornar array con el nombre de las tablas de la base de datos *****
-   */
-  function tablesName () {
+  function tablesName () { //Retornar array con el nombre de las tablas de la base de datos
     $sql = "SHOW TABLES FROM " . $this->dbname . ";";
     $result = $this->query($sql);
 
@@ -205,13 +180,9 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
     }
   }
 
-  public function begin() {
-    return $this->begin_transaction();
-  }
+  public function begin() { return $this->begin_transaction(); }
 
-  public function escapeString($string){
-    return $this->escape_string($string);
-  }
+  public function escapeString($string){ return $this->escape_string($string); }
 
 
 
@@ -413,11 +384,8 @@ ORDER BY COLUMNS.ORDINAL_POSITION;";
         }
     }*/
 
-  //generar id unico
-  public function uniqId(){
+  public function uniqId(){  //generar id unico
     usleep(1);
     return hexdec(uniqid());
   }
 }
-
-?>

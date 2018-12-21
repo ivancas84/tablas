@@ -12,6 +12,15 @@ class ClassSqloMain extends GenerateFileEntity {
     parent::__construct($directorio, $nombreArchivo, $entity);
   }
 
+  protected function body(){
+    $this->construct();
+    $this->insert();
+    $this->update();
+    $this->uploadSql();
+    $this->uploadSqlIndex();
+    //$this->values(); deprecated
+   }
+
 
   protected function generateCode(){
     $this->start();
@@ -57,23 +66,7 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
 
 
 
-  protected function initializeInsert(){
-    require_once("generate/phpdbgen/sqlo/method/InitializeInsert.php");
-    $gen = new initializeInsert($this->getEntity());
-    $this->string .= $gen->generate();
-  }
 
-  protected function initializeUpdate(){
-    require_once("generate/phpdbgen/sqlo/method/InitializeUpdate.php");
-    $gen = new initializeUpdate($this->getEntity());
-    $this->string .= $gen->generate();
-  }
-
-  protected function format(){
-    require_once("generate/phpdbgen/sqlo/method/Format.php");
-    $gen = new Sqlo_FormatSql($this->getEntity());
-    $this->string .= $gen->generate();
-  }
 
 
   protected function update(){
@@ -106,17 +99,6 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
   }
 
 
-  protected function body(){
-    $this->construct();
-    $this->insert();
-    $this->initializeInsert();
-    $this->update();
-    $this->initializeUpdate();
-    $this->format();
-    $this->uploadSql();
-    $this->uploadSqlIndex();
-    //$this->values(); deprecated
-   }
 
 
 }

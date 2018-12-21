@@ -1,12 +1,12 @@
 <?php
 
 
-class initializeUpdate extends GenerateEntity{
+class Sql_initializeInsert extends GenerateEntity{
 
 protected function start(){
     $this->string .= "
   //@override
-  public function initializeUpdate(array \$data){
+  public function initializeInsert(array \$data){
 ";
 
   }
@@ -14,6 +14,7 @@ protected function start(){
 
   public function generate(){
     $this->start();
+    $this->pk();
     $this->nf($this->getEntity());
     $this->fk($this->getEntity());
     $this->end();
@@ -21,6 +22,12 @@ protected function start(){
     return $this->string;
   }
 
+  protected function pk(){
+    $pk = $this->getEntity()->getPk();
+    $this->string .= "    \$data['" . $pk->getName() . "'] = (!empty(\$data['id'])) ? \$data['" . $pk->getName() . "'] : \$this->nextPk();
+";
+
+  }
 
 
 
@@ -41,13 +48,23 @@ protected function start(){
     unset ( $field );
   }
 
+
   protected function fk(Entity $entity){
     foreach ( $entity->getFieldsFk() as $field) {
       if(!$field->isAdmin()) continue;
-      $this->number($field);
+
+      $default = ($field->getDefault()) ? $field->getDefault() : "\"null\"";
+
+      $this->string .= "    if(empty(\$data['" . $field->getName() . "'])) ";
+      if($field->isNotNull() && !$field->getDefault()){
+        $this->string .= "throw new Exception('dato obligatorio sin valor: " . $field->getName() . "');
+  ";
+      } else {
+        $this->string .= "\$data['" . $field->getName() . "'] = " . $default . ";
+  ";
+      }
     }
   }
-
 
 
 
@@ -55,14 +72,14 @@ protected function start(){
   protected function number(Field $field){
     $default = ($field->getDefault()) ? $field->getDefault() : "\"null\"";
 
-    $this->string .= "    if(array_key_exists('" . $field->getName() . "', \$data)) { if(!isset(\$data['" . $field->getName() . "']) || (\$data['" . $field->getName() . "'] == '')) ";
+    $this->string .= "    if(!isset(\$data['" . $field->getName() . "']) || (\$data['" . $field->getName() . "'] == '')) ";
     if($field->isNotNull() && !$field->getDefault()){
-      $this->string .= "throw new Exception('dato obligatorio sin valor: " . $field->getName() . "')";
-    } else {
-      $this->string .= "\$data['" . $field->getName() . "'] = " . $default;
-    }
-    $this->string .= "; }
+      $this->string .= "throw new Exception('dato obligatorio sin valor: " . $field->getName() . "');
 ";
+    } else {
+      $this->string .= "\$data['" . $field->getName() . "'] = " . $default . ";
+";
+    }
   }
 
 
@@ -73,30 +90,31 @@ protected function start(){
       default: $default =  "\"" .  $field->getDefault() . "\"";
     }
 
-    $this->string .= "    if(array_key_exists('" . $field->getName() . "', \$data)) { if(empty(\$data['" . $field->getName() . "'])) ";
+    $this->string .= "    if(!isset(\$data['" . $field->getName() . "'])) ";
 
     if($field->isNotNull() && !$field->getDefault()){
-      $this->string .= " throw new Exception('fecha/hora obligatoria sin valor: " . $field->getName() . "')";
-    } else {
-      $this->string .= " \$data['" . $field->getName() . "'] = " . $default . "";
-    }
-    $this->string .= "; }
+      $this->string .= " throw new Exception('fecha/hora obligatoria sin valor: " . $field->getName() . "');
 ";
+    } else {
+      $this->string .= " \$data['" . $field->getName() . "'] = " . $default . ";
+";
+    }
   }
 
 
   protected function string(Field $field){
     $default = ($field->getDefault()) ? "\"" . $field->getDefault() . "\"": "\"null\"";
 
-    $this->string .= "    if(array_key_exists('" . $field->getName() . "', \$data)) { if(empty(\$data['" . $field->getName() . "'])) ";
+    $this->string .= "    if(empty(\$data['" . $field->getName() . "'])) ";
 
     if($field->isNotNull() && !$field->getDefault()){
-      $this->string .= "throw new Exception('dato obligatorio sin valor: " . $field->getName() . "')";
-    } else {
-      $this->string .= "\$data['" . $field->getName() . "'] = " . $default;
-    }
-      $this->string .= "; }
+      $this->string .= "throw new Exception('dato obligatorio sin valor: " . $field->getName() . "');
 ";
+    } else {
+      $this->string .= "\$data['" . $field->getName() . "'] = " . $default . ";
+";
+    }
+
   }
 
 
@@ -108,14 +126,17 @@ protected function start(){
       case "true":
       case "t":
         $default = "true";
+      break;
 
       default:
         $default = "false";
     }
 
-    $this->string .= "    if(array_key_exists('" . $field->getName() . "', \$data)) { if(!isset(\$data['" . $field->getName() . "']) || (\$data['" . $field->getName() . "'] == '')) \$data['" . $field->getName() . "'] = \"" . $default . "\"; }
+
+    $this->string .= "    if(!isset(\$data['" . $field->getName() . "']) || (\$data['" . $field->getName() . "'] == '')) \$data['" . $field->getName() . "'] = \"" . $default . "\";
 ";
   }
+
 
 
 
@@ -127,5 +148,8 @@ protected function start(){
   }
 ";
   }
+
+
+
 
 }

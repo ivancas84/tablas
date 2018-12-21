@@ -9,6 +9,8 @@ require_once("class/db/My.php");
 require_once("class/db/Pg.php");
 require_once("function/toString.php");
 require_once("class/model/Transaction.php");
+require_once("class/model/SqlFormat.php");
+
 
 //Facilita el acceso a la base de datos y clases del modelo
 class Dba {
@@ -24,6 +26,7 @@ class Dba {
   public static $sqlos = [];
   public static $sqls = [];
   public static $entities = [];
+  public static $sqlFormat = NULL;
 
   public static function entity($entity) { //singleton Entity
     if(!array_key_exists($entity, self::$entities)){
@@ -33,6 +36,12 @@ class Dba {
     }
     return self::$entities[$entity];
   }
+
+  public static function sqlFormat() { //singleton sqlFormat
+    if(is_null(self::$sqlFormat)) self::$sqlFormat = new SqlFormat();
+    return self::$sqlFormat;
+  }
+
 
   public static function sqlo($entity) { //singleton sqlo
     if(!array_key_exists($entity, self::$sqlos)){

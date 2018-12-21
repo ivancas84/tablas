@@ -42,6 +42,7 @@ function rows($entity, array $rows = [], array $params = null){ //procesar un co
     if(!empty($row["id"])) { //eliminar id persistido del array de $ids previamente consultado
       $key = array_search($row["id"], $idsActuales);
       if($key !== false) unset($idsActuales[$key]);
+      $idsActuales = array_values($idsActuales); //resetear indices
     }
 
     $persist = Dba::persist($entity, $row);
@@ -91,8 +92,7 @@ try {
     $row = (isset($d["row"])) ? $d["row"]: null; //row a procesar
     $rows = (isset($d["rows"])) ? $d["rows"]: null; //rows a procesar
     $params = (isset($d["params"])) ? $d["params"] : null; //campos relacionados para identificacion
-    $delete = (isset($d["delete"])) ? $d["delete"] : null; //ids a eliminar (en construccion)
-
+    //$delete = (isset($d["delete"])) ? $d["delete"] : null; //ids a eliminar (NO IMPLEMENTADO)
     /**
      * $params["name"]: Nombre de la clave foranea
      * $params["value]: Valor de la clave foranea
@@ -115,9 +115,9 @@ try {
     }
   }
 
-  //Transaction::begin();
-  //Transaction::update(["descripcion"=> $sql, "detalle" => implode(",",$detail)]);
-  //Transaction::commit();
+  Transaction::begin();
+  Transaction::update(["descripcion"=> $sql, "detalle" => implode(",",$detail)]);
+  Transaction::commit();
   echo json_encode($response);
 
 } catch (Exception $ex) {

@@ -205,15 +205,15 @@ class CursoSqlMain extends EntitySql{
     $condition = "";
 
     $field = $this->_mappingField($p.'id');
-    $condition .= "" . $this->_conditionNumberApprox($field, $search);
+    $condition .= "" . $this->format->_conditionNumberApprox($field, $search);
     $field = $this->_mappingField($p.'estado');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     $field = $this->_mappingField($p.'alta');
-    $condition .= " OR " . $this->_conditionTimestampApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTimestampApprox($field, $search);
     $field = $this->_mappingField($p.'baja');
-    $condition .= " OR " . $this->_conditionTimestampApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTimestampApprox($field, $search);
     $field = $this->_mappingField($p.'horario');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     return "(" . $condition . ")";
   }
 
@@ -223,12 +223,12 @@ class CursoSqlMain extends EntitySql{
 
     $f = $this->_mappingField($field);
     switch ($field){
-      case "{$p}id": return $this->conditionNumber($f, $value, $option);
-      case "{$p}estado": return $this->conditionText($f, $value, $option);
-      case "{$p}horario": return $this->conditionText($f, $value, $option);
-      case "{$p}comision": return $this->conditionNumber($f, $value, $option);
-      case "{$p}carga_horaria": return $this->conditionNumber($f, $value, $option);
-      case "{$p}profesor_activo": return $this->conditionNumber($f, $value, $option);
+      case "{$p}id": return $this->format->conditionNumber($f, $value, $option);
+      case "{$p}estado": return $this->format->conditionText($f, $value, $option);
+      case "{$p}horario": return $this->format->conditionText($f, $value, $option);
+      case "{$p}comision": return $this->format->conditionNumber($f, $value, $option);
+      case "{$p}carga_horaria": return $this->format->conditionNumber($f, $value, $option);
+      case "{$p}profesor_activo": return $this->format->conditionNumber($f, $value, $option);
     }
   }
 

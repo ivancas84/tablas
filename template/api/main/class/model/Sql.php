@@ -14,14 +14,23 @@ abstract class EntitySql { //Definir SQL
 
   public $prefix = ''; //string. prefijo de identificacion
   public $entity; //Entity. Configuracion de la tabla
+  public $format; //FormatSql
   public $db; //DB. Conexion con la bse de datos
   /**
    * Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren.
    * Ademas, ciertos metodos requieren determinar el motor de base de datos para definir la sintaxis SQL adecuada
    */
 
+  public function __construct(){
+    $this->db = Dba::dbInstance();
+    $this->format = Dba::sqlFormat();
+  }
+
   public function prf(){ return (empty($this->prefix)) ?  ''  : $this->prefix . '_'; }   //prefijo fields
   public function prt(){ return (empty($this->prefix)) ?  $this->entity->getAlias() : $this->prefix; } //prefijo tabla
+  public function initializeInsert(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //inicializar valores para insercion
+  public function initializeUpdate(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //inicializar valores para actualizacion
+  public function format(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //formato de sql
   public function _json(array $row) { throw new BadMethodCallException("No implementado"); }
   public function json(array $row) { return $this->_json($row); }
   public function jsonAll(array $rows){
@@ -33,6 +42,15 @@ abstract class EntitySql { //Definir SQL
     }
 
     return $rows_;
+  }
+
+  public function formatIds(array $ids = []) { //formato sql de ids
+    $ids_ = [];
+    for($i = 0; $i < count($ids); $i++) {
+      $r = $this->format(["id"=>$ids[$i]]);
+      array_push($ids_, $r["id"]);
+    }
+    return implode(', ', $ids_);
   }
 
   public function mappingField($field){ //Traducir campo para ser interpretado correctamente por el SQL
@@ -157,82 +175,7 @@ abstract class EntitySql { //Definir SQL
     return "";
   }
 
-  //***** Definir condicion de busqueda de texto aproximada (en base al motor de base de datos define la sintaxis correspondiente *****
-  protected function _conditionTextApprox($field, $value){
-    return "(lower(" . $field . ") LIKE lower('%" . $value . "%'))";
-  }
 
-  //***** Definir condicion de busqueda de texto aproximada (en base al motor de base de datos define la sintaxis correspondiente *****
-  protected function _conditionDateApprox($field, $value){
-    if($this->db->getDbms() == "mysql") return "(CAST(DATE_FORMAT(" . $field . ", '%d/%m/%Y') AS CHAR) LIKE '%" . $value . "%' )";
-    else return "(TO_CHAR(" . $field . ", 'DD/MM/YYYY') LIKE '%" . $value . "%' )";
-  }
-
-   //***** Definir condicion de busqueda de texto aproximada (en base al motor de base de datos define la sintaxis correspondiente *****
-  protected function _conditionDate($field, $value, $option){
-    if($this->db->getDbms() == "mysql") return "(" . $field . " " . $option. " '" . $value . "')";
-    else return "(" . $field . " " . $option. " TO_DATE('" . $value . "', 'YYYY-MM-DD') )";
-  }
-
-
-
-
-  protected function _conditionNumberApprox($field, $value){
-    if($this->db->getDbms() == "mysql") return "(CAST(" . $field . " AS CHAR) LIKE '%" . $value . "%' )";
-    else return "(trim(both ' ' from to_char(" . $field . ", '99999999999999999999')) LIKE '%" . $value . "%' ) ";
-  }
-
-
-  protected function _conditionTimestampApprox($field, $value){
-    if($this->db->getDbms() == "mysql") return "(CAST(DATE_FORMAT(" . $field . ", '%d/%m/%Y %H:%i') AS CHAR) LIKE '%" . $value . "%' )";
-    else return "(TO_CHAR(" . $field . ", 'DD/MM/YYYY HH:MI') LIKE '%" . $value . "%' )";
-  }
-
-  protected function _conditionYearApprox($field, $value){
-    if($this->db->getDbms() == "mysql") return "(CAST(DATE_FORMAT(" . $field . ", '%Y') AS CHAR) LIKE '%" . $value . "%' )";
-    else return "(TO_CHAR(" . $field . ", 'YYYY') LIKE '%" . $value . "%' )";
-  }
-
-
-  //***** Definir condicion de busqueda de texto *****
-  protected function conditionText($field, $value, $option = "="){
-    if($value === false) return "(" . $field . " IS NULL) ";
-    if($value === true) return "(" . $field . " IS NOT NULL) ";
-    if($option == "=~") return $this->_conditionTextApprox($field, $value);
-    return "(lower(" . $field . ") " . $option . " lower('" . $value . "')) ";
-  }
-
-  protected function conditionDate($field, $value, $option = "="){
-    if($value === false) return "(" . $field . " IS NULL) ";
-    if($value === true) return "(" . $field . " IS NOT NULL) ";
-    return $this->_conditionDate($field, $value, $option);
-  }
-
-  protected function conditionTimestamp($field, $value, $option = "="){
-    if($value === false) return "(" . $field . " IS NULL) ";
-    if($value === true) return "(" . $field . " IS NOT NULL) ";
-    return $this->_conditionTimestamp($field, $value, $option);
-  }
-
-  //***** Definir condicion de busqueda de texto aproximada (en base al motor de base de datos define la sintaxis correspondiente *****
- protected function _conditionTimestamp($field, $value, $option){
-   if($this->db->getDbms() == "mysql") return "(" . $field . " " . $option. " '" . $value . "')";
-   else return "(" . $field . " " . $option. " TO_TIMESTAMP('" . $value . "', 'YYYY-MM-DD HH24:MI:SS') )";
- }
-
-
-  protected function conditionNumber($field, $value, $option = "="){
-    if($value === false) return "(" . $field . " IS NULL) ";
-    if($value === true) return "(" . $field . " IS NOT NULL) ";
-    if($option === true) return "(" . $field . " IS NULL) ";
-    if($option === false) return "(" . $field . " IS NOT NULL) ";
-    return "(" . $field . " " . $option . " " . $value . ") ";
-  }
-
-  protected function conditionBoolean($field, $value = NULL){ //definir condicion de busqueda de booleano
-    $v = (settypebool($value)) ? "true" : "false";
-    return "(" . $field . " = " . $v . ") ";
-  }
 
   public function conditionAll(Render $render = null, $connect = "WHERE") { //definir todas las condiciones
     /**
@@ -387,136 +330,6 @@ abstract class EntitySql { //Definir SQL
     } catch(Exception $exception){
       return $exception->getMessage();
     }
-  }
-
-
-
-
-
-
-  //Definir valor numerico para la base de datos
-  //@param mixed $value Valor a definir.
-  //  'null': Valor especial que indica que el campo debe definirse en null
-  //@throws Exception si value no se encuentra correctamente definido
-  public function numeric($value){
-    if(is_null($value) || ($value === 'null')) return 'null';
-
-    if ( !is_numeric($value) ) throw new Exception('Valor numerico incorrecto: ' . $value);
-    else return $value;
-  }
-
-  //Definir valor numerico entero mayor a 0 para la base de datos
-  //@param $value Valor a definir.
-  //  'null': Valor especial que indica que el campo debe definirse en null
-  //@throws Exception si value no se encuentra correctamente definido
-  public function positiveIntegerWithoutZerofill($value){
-    if(is_null($value) || ($value === 'null')) return 'null';
-    if ((!is_numeric($value)) && (!intval($value) > 0)) throw new Exception('Valor entero positivo sin ceros incorrecto: ' . $value);
-    return $value;
-  }
-
-  //Definir valor timestamp para la base de datos
-  //@param $value Valor a definir.
-  //  'null': Valor especial que indica que el campo debe definirse en null
-  //@throws Exception si value no se encuentra correctamente definido
-  public function timestamp($value){
-    if($value == 'null') return 'null';
-
-    if(is_object($value) && get_class($value) == "DateTime"){
-      $datetime = $value;
-    } else {
-      $datetime = DateTime::createFromFormat('Y-m-d H:i:s', $value);
-    }
-
-    if ( !$datetime ) throw new Exception('Valor fecha y hora incorrecto: ' . $value);
-    else return "'" . $datetime->format('Y-m-d H:i:s') . "'";
-  }
-
-  //Definir valor date para la base de datos
-  //@param $value Valor a definir.
-  //  'null': Valor especial que indica que el campo debe definirse en null
-  //@throws Exception si value no se encuentra correctamente definido
-  public function date($value){
-    if($value == 'null') return 'null';
-
-    if(is_object($value) && get_class($value) == "DateTime"){
-      $datetime = $value;
-    } else {
-      $datetime = DateTime::createFromFormat('Y-m-d', $value);
-    }
-
-    if ( !$datetime ) throw new Exception('Valor fecha incorrecto: ' . $value);
-    else return "'" . $datetime->format('Y-m-d') . "'";
-  }
-
-
-  //Definir valor time para la base de datos
-  //@param $value Valor a definir.
-  //  'null': Valor especial que indica que el campo debe definirse en null
-  //@throws Exception si value no se encuentra correctamente definido
-  public function time($value){
-    if($value == 'null') return 'null';
-
-    if(is_object($value) && get_class($value) == "DateTime"){
-      $datetime = $value;
-    } else {
-      $datetime = DateTime::createFromFormat('H:i', $value);
-    }
-
-    if ( !$datetime ) throw new Exception('Valor fecha incorrecto: ' . $value);
-    else return "'" . $datetime->format('H:i') . "'";
-  }
-
-
-  //Definir valor time para la base de datos
-  //@param $value Valor a definir.
-  //  'null': Valor especial que indica que el campo debe definirse en null
-  //@throws Exception si value no se encuentra correctamente definido
-  public function year($value){
-    if($value == 'null') return 'null';
-
-    if(is_object($value) && get_class($value) == "DateTime"){
-      $datetime = $value;
-    } else {
-      $datetime = DateTime::createFromFormat('Y', $value);
-    }
-
-    if ( !$datetime ) throw new Exception('Valor año incorrecto: ' . $value);
-    else return "'" . $datetime->format('Y') . "'";
-  }
-
-
-
-  //Definir valor boolean para la base de datos
-  //@param $value Valor a definir. 'null': Valor especial que indica que el campo debe definirse en null
-  public function boolean($value){
-    if(is_null($value) || ($value === 'null')) return 'null';
-
-    return ( settypebool($value) ) ? 'true' : 'false';
-  }
-
-
-
-  //Definir string
-  //@param string $value Valor a definir. 'null': Valor especial que indica que el campo debe definirse en null
-  //@throws Exception si value no se encuentra correctamente definido
-  public function string($value){
-    if(is_null($value) || ($value === 'null')) return 'null';
-
-    if (!is_string($value)) throw new Exception('Valor de caracteres incorrecto: ' . $value);
-    else return "'" . $value . "'";
-  }
-
-  //Definir string
-  //@param string $value Valor a definir. 'null': Valor especial que indica que el campo debe definirse en null
-  //@throws Exception si value no se encuentra correctamente definido
-  public function escapeString($value){
-    if($value == 'null') return 'null';
-
-    $v = (is_numeric($value)) ? strval($value) : $value;
-    if (!is_string($v)) throw new Exception('Valor de caracteres incorrecto: ' . $v);
-    else $escapedString = $this->db->escapeString($v);
-    return "'" . $escapedString . "'";
   }
 
 }

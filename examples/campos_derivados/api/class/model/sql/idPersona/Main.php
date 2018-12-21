@@ -101,29 +101,29 @@ class IdPersonaSqlMain extends EntitySql{
     $condition = "";
 
     $field = $this->_mappingField($p.'id');
-    $condition .= "" . $this->_conditionNumberApprox($field, $search);
+    $condition .= "" . $this->format->_conditionNumberApprox($field, $search);
     $field = $this->_mappingField($p.'nombres');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     $field = $this->_mappingField($p.'apellidos');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     $field = $this->_mappingField($p.'sobrenombre');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     $field = $this->_mappingField($p.'fecha_nacimiento');
-    $condition .= " OR " . $this->_conditionDateApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionDateApprox($field, $search);
     $field = $this->_mappingField($p.'tipo_documento');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     $field = $this->_mappingField($p.'numero_documento');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     $field = $this->_mappingField($p.'email');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     $field = $this->_mappingField($p.'genero');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     $field = $this->_mappingField($p.'cuil');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     $field = $this->_mappingField($p.'alta');
-    $condition .= " OR " . $this->_conditionTimestampApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTimestampApprox($field, $search);
     $field = $this->_mappingField($p.'telefonos');
-    $condition .= " OR " . $this->_conditionTextApprox($field, $search);
+    $condition .= " OR " . $this->format->_conditionTextApprox($field, $search);
     return "(" . $condition . ")";
   }
 
@@ -133,17 +133,17 @@ class IdPersonaSqlMain extends EntitySql{
 
     $f = $this->_mappingField($field);
     switch ($field){
-      case "{$p}id": return $this->conditionNumber($f, $value, $option);
-      case "{$p}nombres": return $this->conditionText($f, $value, $option);
-      case "{$p}apellidos": return $this->conditionText($f, $value, $option);
-      case "{$p}sobrenombre": return $this->conditionText($f, $value, $option);
-      case "{$p}fecha_nacimiento": return $this->conditionDate($f, $value, $option);
-      case "{$p}tipo_documento": return $this->conditionText($f, $value, $option);
-      case "{$p}numero_documento": return $this->conditionText($f, $value, $option);
-      case "{$p}email": return $this->conditionText($f, $value, $option);
-      case "{$p}genero": return $this->conditionText($f, $value, $option);
-      case "{$p}cuil": return $this->conditionText($f, $value, $option);
-      case "{$p}telefonos": return $this->conditionText($f, $value, $option);
+      case "{$p}id": return $this->format->conditionNumber($f, $value, $option);
+      case "{$p}nombres": return $this->format->conditionText($f, $value, $option);
+      case "{$p}apellidos": return $this->format->conditionText($f, $value, $option);
+      case "{$p}sobrenombre": return $this->format->conditionText($f, $value, $option);
+      case "{$p}fecha_nacimiento": return $this->format->conditionDate($f, $value, $option);
+      case "{$p}tipo_documento": return $this->format->conditionText($f, $value, $option);
+      case "{$p}numero_documento": return $this->format->conditionText($f, $value, $option);
+      case "{$p}email": return $this->format->conditionText($f, $value, $option);
+      case "{$p}genero": return $this->format->conditionText($f, $value, $option);
+      case "{$p}cuil": return $this->format->conditionText($f, $value, $option);
+      case "{$p}telefonos": return $this->format->conditionText($f, $value, $option);
     }
   }
 

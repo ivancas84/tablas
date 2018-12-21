@@ -21,9 +21,9 @@ class ClassSql__conditionHistory extends GenerateEntity{
 
   protected function condition($history){
     switch ( $this->field->getDataType() ) {
-      case "boolean": return "\$this->conditionBoolean(\$f, {$history})"; break;
-      case "date": return "\$this->conditionDate(\$f, {$history})"; break;
-      case "timestamp": return "\$this->conditionTimestamp(\$f, {$history})"; break;
+      case "boolean": return "\$this->format->conditionBoolean(\$f, {$history})"; break;
+      case "date": return "\$this->format->conditionDate(\$f, {$history})"; break;
+      case "timestamp": return "\$this->format->conditionTimestamp(\$f, {$history})"; break;
     }
   }
 }

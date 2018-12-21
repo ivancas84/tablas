@@ -99,13 +99,13 @@ LIMIT 20;
     self::$id = null;
   }
 
-  //commit transaction
-  public static function commit() {
+  public static function commit() {  //commit transaction
     if(empty(self::$id)) throw new UnexpectedValueException("Id de transaccion no definido");
 
     $db = Dba::dbInstance();
     try {
       $id = $db->escapeString(self::$id);
+      if(empty($_SESSION["transaction"][self::$id]["descripcion"])) throw new Exception("Transaccion no definida");
       $descripcion = $_SESSION["transaction"][self::$id]["descripcion"];
       $descripcionEscaped = $db->escapeString($descripcion);  //se escapa para almacenarlo en la base de datos
       $detalle = $db->escapeString($_SESSION["transaction"][self::$id]["detalle"]);

@@ -16,11 +16,8 @@ abstract class EntitySqlo { //SQL object
   public $sql;    //EntitySql. Atributo auxiliar para facilitar la definicion de consultas sql
 
   public function nextPk(){ return $this->db->uniqId(); } //siguiente identificador unico
-  protected function initializeInsert(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //inicializar valores para insercion
-  protected function initializeUpdate(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //inicializar valores para actualizacion
   protected function _insert(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //sql de insercion
   protected function _update(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //sql de actualizacion
-  protected function format(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //formato de sql
 
   protected function render($render = null){ //Definir clase de presentacion
     /**
@@ -41,19 +38,19 @@ abstract class EntitySqlo { //SQL object
      * Puede incluirse un id en el array de parametro, si no esta definido se definira uno automaticamente
      * @return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
      */
-    $r = $this->initializeInsert($row);
-    $r_ = $this->format($r);
+    $r = $this->sql->initializeInsert($row);
+    $r_ = $this->sql->format($r);
     $sql = $this->_insert($r_);
 
     return array("id" => $r["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
   }
 
   public function update(array $row) { //sql de actualizacion
-    $r = $this->initializeUpdate($row);
-    $r_ = $this->format($r);
+    $r = $this->sql->initializeUpdate($row);
+    $r_ = $this->sql->format($r);
     $sql = "
 {$this->_update($r_)}
-WHERE id = {$row['id']};
+WHERE {$this->entity->getPk()->getName()} = {$row['id']};
 ";
 
     return array("id" => $r_["id"], "sql" => $sql, "detail"=>[$this->entity->getName().$r["id"]]);
@@ -63,18 +60,19 @@ WHERE id = {$row['id']};
     /**
      * Formatear valores y definir sql de actualizacion para un conjunto de ids
      * La actualizacion solo tiene en cuenta los campos definidos, los que no estan definidos, no seran considerados manteniendo su valor previo.
-     * TODO: La version actual no permite actualizar el id, pero no estoy seguro por que no, cambiarlo para que permita
+     * No permite actualizar ids (por que habria de considerarlo)
      * @return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
      */
     if(empty($ids)) throw new Exception("No existen identificadores definidos");
-    $r = $this->initializeUpdate($row);
-    $r_ = $this->format($r);
+    $ids_ = $this->sql->formatIds($ids);
+    $r = $this->sql->initializeUpdate($row);
+    $r_ = $this->sql->format($r);
     $sql = "
 {$this->_update($r_)}
-WHERE ids IN ({implode(',', $ids)});
+WHERE {$this->entity->getPk()->getName()} IN ({$ids_});
 ";
     $detail = $ids;
-    array_walk($detail, function(&$item) { $item = $this->entity.$item; });
+    array_walk($detail, function(&$item) { $item = $this->entity->getName().$item; });
     return ["ids"=>$ids, "sql"=>$sql, "detail"=>$detail];
   }
 
@@ -85,13 +83,7 @@ WHERE ids IN ({implode(',', $ids)});
 
 
   public function deleteAll(array $ids) { //eliminar
-
-    $ids_ = [];
-    for($i = 0; $i < count($ids); $i++) {
-      $r = $this->format(["id"=>$ids[$i]]);
-      array_push($ids_, $r["id"]);
-    }
-    $ids_ = implode(', ', $ids_);
+    $ids_ = $this->sql->formatIds($ids);
     $sql = "
 DELETE FROM {$this->entity->sn_()}
 WHERE {$this->entity->getPk()->getName()} IN ({$ids_});

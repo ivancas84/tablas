@@ -47,29 +47,29 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
 
 
   protected function string($fieldName){
-    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionText(\$f, \$value, \$option);
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->format->conditionText(\$f, \$value, \$option);
 " ;
 
   }
 
 
   protected function number($fieldName){
-    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionNumber(\$f, \$value, \$option);
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->format->conditionNumber(\$f, \$value, \$option);
 " ;
 	}
 
   protected function date($fieldName){
-    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionDate(\$f, \$value, \$option);
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->format->conditionDate(\$f, \$value, \$option);
 " ;
   }
 
   protected function timestamp($fieldName){
-    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionTimestamp(\$f, \$value, \$option);
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->format->conditionTimestamp(\$f, \$value, \$option);
 " ;
   }
 
   protected function boolean($fieldName){
-    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->conditionBoolean(\$f, \$value);
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->format->conditionBoolean(\$f, \$value);
 " ;
   }
 
