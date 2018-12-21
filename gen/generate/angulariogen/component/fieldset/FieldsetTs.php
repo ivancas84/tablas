@@ -28,6 +28,8 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { ValidatorsService } from '../../main/service/validators/validators.service';
 import { FieldsetComponent } from '../../main/component/fieldset/fieldset.component';
+import { {$this->entity->getName("XxYy")} } from '../../class/entity/{$this->entity->getName("xx-yy")}/{$this->entity->getName("xx-yy")}';
+
 
 @Component({
   selector: 'app-" . $this->entity->getName("xx-yy") . "-fieldset',
@@ -38,6 +40,12 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
     super(fb, dd, validators);
     this.entity = '" . $this->entity->getName() . "';
     this.fieldset = '" . $this->entity->getName() . "';
+  }
+
+  initData(){
+    var r = new " . $this->entity->getName('XxYy') . ";
+    Object.assign(r, this.row);
+    this.fieldsetForm.reset(r);
   }
 
 ";

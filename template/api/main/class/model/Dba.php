@@ -89,17 +89,19 @@ class Dba {
   }
 
   public static function uniqId(){ //identificador unico
-    usleep(1); //con esto se evita que los procesadores modernos generen el mismo id
+    usleep(1); //con esto se evita que los procesadores generen el mismo id
     return hexdec(uniqid());
   }
 
   public static function nextId($entity) { //siguiente identificador
-    return self::uniqId(); //mysql
+    return self::uniqId(); //uniq id
 
     //postgresql
-    $sql = "select nextval('" . self::entity($entity)->sn_() . "_id_seq')";
-    $row = self::fetchRow($sql);
-    return $row[0];
+    /**
+     * $sql = "select nextval('" . self::entity($entity)->sn_() . "_id_seq')";
+     * $row = self::fetchRow($sql);
+     * return $row[0];
+     */
   }
 
   public static function isPersistible($entity, array $row){ //es persistible?

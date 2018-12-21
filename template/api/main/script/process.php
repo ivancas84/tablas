@@ -92,11 +92,11 @@ try {
     $row = (isset($d["row"])) ? $d["row"]: null; //row a procesar
     $rows = (isset($d["rows"])) ? $d["rows"]: null; //rows a procesar
     $params = (isset($d["params"])) ? $d["params"] : null; //campos relacionados para identificacion
-    //$delete = (isset($d["delete"])) ? $d["delete"] : null; //ids a eliminar (NO IMPLEMENTADO)
     /**
      * $params["name"]: Nombre de la clave foranea
      * $params["value]: Valor de la clave foranea
      */
+    //$delete = (isset($d["delete"])) ? $d["delete"] : null; //ids a eliminar (NO IMPLEMENTADO)
 
 
     if(isset($row)) {

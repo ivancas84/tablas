@@ -14,7 +14,7 @@ class ComponentAdminTs extends GenerateFileEntity {
     //***** @override *****
     protected function generateCode() {
       $this->start();
-      $this->initData();
+      //$this->initData();
       $this->end();
     }
 

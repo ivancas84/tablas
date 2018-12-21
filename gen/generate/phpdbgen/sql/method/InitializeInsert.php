@@ -24,7 +24,7 @@ protected function start(){
 
   protected function pk(){
     $pk = $this->getEntity()->getPk();
-    $this->string .= "    \$data['" . $pk->getName() . "'] = (!empty(\$data['id'])) ? \$data['" . $pk->getName() . "'] : \$this->nextPk();
+    $this->string .= "    \$data['" . $pk->getName() . "'] = (!empty(\$data['id'])) ? \$data['" . $pk->getName() . "'] : Dba::nextId('{$this->entity->getName()}');
 ";
 
   }
