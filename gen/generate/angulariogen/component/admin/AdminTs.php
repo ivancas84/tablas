@@ -26,7 +26,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { AdminComponent } from '../../main/component/admin/admin.component';
 import { MessageService } from '../../main/service/message/message.service';
-import { {$this->entity->getName("XxYy")} } from '../../class/entity/{$this->entity->getName("xx-yy")}/{$this->entity->getName("xx-yy")}';
 
 @Component({
   selector: 'app-" . $this->entity->getName("xx-yy") . "-admin',
