@@ -15,7 +15,6 @@ class ComponentFieldsetTs extends GenerateFileEntity {
   protected function generateCode(){
     $this->start();
     $this->getters();
-    $this->setChange();
     $this->formGroup();
     $this->end();
   }
@@ -58,20 +57,6 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
 ";
     }
     $this->string .= "
-";
-  }
-
-  protected function setChange(){
-    $this->string .= "  setChange(){
-";
-    foreach($this->entity->getFieldsNf() as $field){
-      if(!$field->isAdmin()) continue;
-      if($field->isUnique()) $this->string .= "    this.changeUpdate('{$field->getName()}');
-";
-
-    }
-
-    $this->string .= "  }
 ";
   }
 
