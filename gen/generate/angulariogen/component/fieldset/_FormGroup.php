@@ -27,6 +27,8 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
     $fields = $this->getEntity()->getFieldsNf();
 
     foreach($fields as $field){
+      if(!$field->isAdmin()) continue;
+
       switch ( $field->getSubtype() ) {
         case "checkbox": $this->checkbox($field); break;
         case "email": $this->email($field); break;
@@ -49,6 +51,8 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
     $fields = $this->getEntity()->getFieldsFk();
 
     foreach($fields as $field){
+      if(!$field->isAdmin()) continue;
+
       switch ( $field->getSubtype() ) {
         default: $this->defectoFk($field); //name, email
       }
