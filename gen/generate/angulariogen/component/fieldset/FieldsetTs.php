@@ -42,11 +42,11 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
     this.fieldset = '" . $this->entity->getName() . "';
   }
 
-  initData(){
+  /*initData(){
     var r = new " . $this->entity->getName('XxYy') . ";
     Object.assign(r, this.row);
     this.fieldsetForm.reset(r);
-  }
+  }*/
 
 ";
   }
