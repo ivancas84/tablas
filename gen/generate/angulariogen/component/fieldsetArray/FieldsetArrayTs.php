@@ -27,7 +27,8 @@ class ComponentFieldsetArrayTs extends GenerateFileEntity {
 
   protected function getters(){
     foreach($this->entity->getFieldsByType(["nf","fk"]) as $field){
-      $this->string .= "  get {$field->getName('xxYy')}(i) { return this.fieldsetForm[i].get('{$field->getName()}')}
+      if(!$field->isAdmin()) continue;
+      $this->string .= "  {$field->getName('xxYy')}(i) { return this.fieldsetForm[i].get('{$field->getName()}')}
 ";
     }
     $this->string .= "
