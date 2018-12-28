@@ -5,21 +5,26 @@ require_once("function/snake_case_to.php");
 
 abstract class Field {
 
-  protected $default; //valor por defecto definido en base de datos (puede ser null)
+  public $name;
+  public $alias;
+  public $default; //valor por defecto definido en base de datos (puede ser null)
     //false: El dato no tiene definido valor por defecto
-  protected $length; //longitud del field
+
+  public $length; //longitud del field
     //false: El dato no tiene definida longitud
-  protected $notNull; //flag para indicar si es un campo no nulo
-  protected $type; //string. tipo de datos definido en la base de datos
-  protected $dataType; //tipo de datos generico
-  protected $fieldType; //string. tipo de field
+
+  public $notNull; //flag para indicar si es un campo no nulo
+  public $type; //string. tipo de datos definido en la base de datos
+  public $dataType; //tipo de datos generico
+  public $fieldType; //string. tipo de field
     //"pk": Clave primaria
     //"nf": Field normal
     //"mu": Clave foranea muchos a uno
     //"_u": Clave foranea uno a uno
-  protected $unique; //flag para indicar si es un campo unico
 
-  protected $subtype = null; //tipo de datos avanzado
+  public $unique; //flag para indicar si es un campo unico
+
+  public $subtype = null; //tipo de datos avanzado
     //text texto simple
     //textarea texto grande
     //checkbox Booleanos
@@ -30,75 +35,43 @@ abstract class Field {
     //cuil Texto para cuil
     //dni Texto para dni
 
-  protected $typescriptType = null; //tipo de datos typescript
-
-  protected $main = null; //flag para indicar si es un campo principal.
+  public $main = null; //flag para indicar si es un campo principal.
     //Por defecto se define la clave primaria como campo principal. En versiones anteriores se hacia la siguiente logica:
     // Si tiene algun campo main, se define el main
     // Si no tiene campo main, se define el unique
     // Si no tiene campo unique, se define la pk.
     // Pero debido a la complicacion en la logica y a la confusion que generaba se decidio dejar por defecto a la pk como campo principal siempre y definir adicionalmente a la pk los campos unique. El desarrollador debera cambiar este comportamiento manualmente.
 
-  protected $selectValues = array();
+  public $selectValues = array();
     //si subtype = "select_text", deben asignarse valores "text"
     //si subtype = "select_int", deben asignarse valores "int"
 
-  protected $admin = true; //administracion de campo, al desactivarlo, no se incluye el campo en los formularios de administracion
+  public $admin = true; //administracion de campo, al desactivarlo, no se incluye el campo en los formularios de administracion
 
   public $history = false;
+
+  //public $typescriptType = null; //tipo de datos typescript
+
 
   public function __construct() {
     $this->defineDataType($this->type);
     $this->defineSubtype($this->dataType, $this->fieldType);
     $this->defineNotNull($this->subtype);
-    $this->redefineLength($this->length, $this->type, $this->subtype);
+    $this->defineLength($this->type, $this->subtype);
   }
 
-  public static function name(){ return null; }
-  public static function alias(){ return null; }
 
   //Retornar instancia de Entity correspondiente al field
   abstract function getEntity();
-
-  //Retornar instancia de Entity referenciado por el field
-  //Metodo semiabstracto, debe sobrescribirse para aquellos fields que sean fk
-  public function getEntityRef(){ return null; }
-
+  public function getEntityRef(){ return null; } //Retornar instancia de Entity referenciado por el field
+  /**
+   * Debe sobrescribirse para aquellos fields que sean fk
+   */
   public function getDefault(){ return $this->default; }
   public function getFieldType(){ return $this->fieldType; }
   public function getLength(){ return $this->length; }
   public function getSubtype(){ return $this->subtype; }
   public function getDataType(){ return $this->dataType; }
-
-
-  public function getAlias($format = null) {
-    switch($format){
-      case "Xx": return ucfirst(strtolower(static::alias()));
-      case ".": return (!empty(static::alias())) ? static::alias() . '.' : '';
-      case "_Xx": return $this->getEntity()->getAlias("Xx") . $this->getAlias("Xx");
-      case "_": return $this->getEntity()->getAlias() . $this->getAlias();
-
-      default: return static::alias();
-    }
-
-  }
-
-  public function getName($format = null) {
-    switch($format){
-      case "XxYy": return str_replace(" ", "", ucwords(str_replace("_", " ", strtolower(static::name()))));
-      case "xxyy": return strtolower(str_replace("_", "", static::name()));
-      case "Xx Yy": return ucwords(str_replace("_", " ", strtolower(static::name())));
-      case "xxYy": return str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower(static::name())))));
-      case "Xx yy": return ucfirst(str_replace("_", " ", strtolower(static::name())));
-      case "_XxYy": return $this->getEntity()->getName("XxYy") . $this->getName("XxYy");
-      case "_.":  return $this->getEntity()->getName() . "." . $this->getName();
-
-      default: return static::name();
-    }
-  }
-
-
-
   public function getSelectValues(){ return $this->selectValues; }
   public function getType() { return $this->type; }
   public function isMain(){ return $this->main; }
@@ -107,6 +80,31 @@ abstract class Field {
   public function isAdmin(){ return $this->admin; }
   public function isHistory(){ return $this->history; }
 
+  public function getAlias($format = null) {
+    switch($format){
+      case "Xx": return ucfirst(strtolower($this->alias));
+      case ".": return (!empty($this->alias)) ? $this->alias . '.' : '';
+      case "_Xx": return $this->getEntity()->getAlias("Xx") . $this->getAlias("Xx");
+      case "_": return $this->getEntity()->getAlias() . $this->getAlias();
+
+      default: return $this->alias;
+    }
+
+  }
+
+  public function getName($format = null) {
+    switch($format){
+      case "XxYy": return str_replace(" ", "", ucwords(str_replace("_", " ", strtolower($this->name))));
+      case "xxyy": return strtolower(str_replace("_", "", $this->name));
+      case "Xx Yy": return ucwords(str_replace("_", " ", strtolower($this->name)));
+      case "xxYy": return str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower($this->name)))));
+      case "Xx yy": return ucfirst(str_replace("_", " ", strtolower($this->name)));
+      case "_XxYy": return $this->getEntity()->getName("XxYy") . $this->getName("XxYy");
+      case "_.":  return $this->getEntity()->getName() . "." . $this->getName();
+
+      default: return $this->name;
+    }
+  }
 
 
 
@@ -174,14 +172,8 @@ abstract class Field {
     }
   }
 
-
-  protected function defineUpdateNull(){
-    if (is_null($this->updateNull) ) $this->updateNull = true;
-  }
-
-
-  protected function redefineLength($length, $type, $subtype){
-    if ($this->length === false || $this->length === null){
+  protected function defineLength($type, $subtype){
+    if (empty($this->length)){
       switch ($type) {
         case "tinyint": $this->length = 3; break;
         case "smallint": $this->length = 5; break;
