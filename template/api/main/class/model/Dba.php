@@ -116,9 +116,10 @@ class Dba {
     return $sqlo->sql->isInsertable($row); //3) Si 1 no dio resultado, verificar si es insertable
   }
 
-  public static function display(array $params){ //generar display a partir de params
+  public static function display(array $params){ //generar display
     /**
-     * para facilitar la generacion de render, se puede definir un array $display
+     * Desde el cliente se recibe un Display, es una objeto similar a Render pero con algunas caracteristicas adicionales
+     *
      */
     $data = null;
 
@@ -154,6 +155,9 @@ class Dba {
   }
 
   public static function render($entity, array $display = null) { //instancia de render a partir de un display
+    /**
+     * @todo El ordenamiento por defecto no deberia ser una caracteristica de entity sino de las clases de generacion de sql
+     */
     $render = new Render();
 
     $render->setPagination($display["size"], $display["page"]);
@@ -161,7 +165,7 @@ class Dba {
 
     if(!empty($display["search"])) $render->setSearch($display["search"]);
     if(!empty($display["filters"])) $render->setAdvanced($display["filters"]);
-    if(!empty($display["params"])) $render->addAdvanced($display["params"]);
+    //if(!empty($display["params"])) $render->addAdvanced($display["params"]);
 
     return $render;
   }
