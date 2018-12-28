@@ -124,9 +124,9 @@ class Dba {
     $data = null;
 
     //data es utilizado debido a la facilidad de comunicacion entre el cliente y el servidor. Se coloca todo el json directamente en una variable data que es convertida en el servidor.
-    if(isset($params["data"])) {
-      $data = $params["data"];
-      unset($params["data"]);
+    if(isset($params["display"])) {
+      $data = $params["display"];
+      unset($params["display"]);
     }
 
     $f_ = json_decode($data);
@@ -138,7 +138,7 @@ class Dba {
 
     foreach($params as $key => $value) {
       switch($key){
-        case "size": case "page": case "search": //pueden redefinirse ciertos parametros la prioridad la tiene los que estan fuera del elemento data (parametros definidos directamente)
+        case "size": case "page": case "search": case "history"://pueden redefinirse ciertos parametros la prioridad la tiene los que estan fuera del elemento data (parametros definidos directamente)
           $display[$key] = $value;
         break;
         case "order": //ejemplo http://localhost/programacion/api/curso/all?order={%22horario%22:%22asc%22}
@@ -165,6 +165,8 @@ class Dba {
 
     if(!empty($display["search"])) $render->setSearch($display["search"]);
     if(!empty($display["filters"])) $render->setAdvanced($display["filters"]);
+    if(!empty($display["history"])) $render->setHistory($display["history"]);
+
     //if(!empty($display["params"])) $render->addAdvanced($display["params"]);
 
     return $render;

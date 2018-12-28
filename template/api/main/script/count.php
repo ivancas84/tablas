@@ -6,7 +6,7 @@ require_once("class/model/Dba.php");
 try{
   $params = Filter::requestAll();
   //el uso de parametros es dinamico
-  //se puede definir un parametro opcional "data" que posee un string en formato json para facilitar el uso de tipos basicos
+  //se puede definir un parametro opcional "display" que posee un string en formato json para facilitar el uso de tipos basicos
 
   $display = Dba::display($params);
   $render = Dba::render(ENTITY, $display);
