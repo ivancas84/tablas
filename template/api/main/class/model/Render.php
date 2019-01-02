@@ -23,6 +23,8 @@ class Render {
 
   public function addAdvanced ($advanced = null) { if(!empty($advanced)) array_push ( $this->advanced, $advanced ); }
 
+  public function setParams (array $params = null) { foreach($params as $key => $value) array_push ( $this->advanced, [$key, "=", $value] ); } //params es una forma corta de asignar filtros a traves de un array asociativo
+
   public function setSearch ($search = null) { $this->search = $search; }
 
   public function setHistory ($history = null) { $this->history = $history; }

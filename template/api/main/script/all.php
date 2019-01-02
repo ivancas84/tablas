@@ -11,6 +11,7 @@ try{
   //se puede definir un parametro opcional "display" que posee un string en formato json para facilitar el uso de tipos basicos
 
   $display = Dba::display($params);
+
   $render = Dba::render(ENTITY, $display);
   $rows = Dba::all(ENTITY, $render);
   echo json_encode($rows);

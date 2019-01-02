@@ -119,7 +119,6 @@ class Dba {
   public static function display(array $params){ //generar display
     /**
      * Desde el cliente se recibe un Display, es una objeto similar a Render pero con algunas caracteristicas adicionales
-     *
      */
     $data = null;
 
@@ -137,6 +136,10 @@ class Dba {
     if(!isset($display["filters"])) $display["filters"] = [];
 
     foreach($params as $key => $value) {
+      /**
+       * Los parametros fuera de display, se priorizan y reasignan a Display
+       * Si los atributos son desconocidos se agregan como filtros
+       */
       switch($key){
         case "size": case "page": case "search": case "history"://pueden redefinirse ciertos parametros la prioridad la tiene los que estan fuera del elemento data (parametros definidos directamente)
           $display[$key] = $value;
@@ -166,8 +169,7 @@ class Dba {
     if(!empty($display["search"])) $render->setSearch($display["search"]);
     if(!empty($display["filters"])) $render->setAdvanced($display["filters"]);
     if(!empty($display["history"])) $render->setHistory($display["history"]);
-
-    //if(!empty($display["params"])) $render->addAdvanced($display["params"]);
+    if(!empty($display["params"])) $render->setParams($display["params"]);
 
     return $render;
   }
