@@ -14,12 +14,22 @@ abstract class EntitySqlo { //SQL object
   public $entity; //Entity. Configuracion de la entidad
   public $db;     //Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren. Puede requerirse adicionalmente determinar el motor de base de datos para definir la sintaxis adecuada
   public $sql;    //EntitySql. Atributo auxiliar para facilitar la definicion de consultas sql
-  
+  private static $instances;
+
   public function nextPk(){ return $this->db->uniqId(); } //siguiente identificador unico
   protected function _insert(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //sql de insercion
   protected function _update(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //sql de actualizacion
 
-   
+  final public static function getInstance() {
+    $className = get_called_class();
+    if (!isset($instances[$className])) { $instances[$className] = new $className; }
+    return $instances[$className];
+  }
+
+  final public function __clone() { trigger_error('Clone is not allowed.', E_USER_ERROR); }
+
+  final public function __wakeup(){ trigger_error('Unserializing is not allowed.', E_USER_ERROR); }
+ 
   protected function render($render = null){ //Definir clase de presentacion
     /**
      * @param String | Object | Array | Render En función del tipo de parámetro define el render
