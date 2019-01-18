@@ -12,22 +12,15 @@ class ClassSqloMain extends GenerateFileEntity {
     parent::__construct($directorio, $nombreArchivo, $entity);
   }
 
-  protected function body(){
+  protected function generateCode(){
     $this->construct();
     $this->insert();
     $this->update();
-    $this->uploadSql();
-    $this->uploadSqlIndex();
-    //$this->values(); deprecated
-   }
-
-
-  protected function generateCode(){
-    $this->start();
-    $this->body();
-    $this->end();
+    $this->deleteAll();
+    //$this->uploadSql(); //deprecated
+    //$this->uploadSqlIndex(); //deprecated
+    //$this->values(); //deprecated
   }
-
 
   protected function start(){
     $this->string .= "<?php
@@ -37,13 +30,6 @@ require_once(\"class/model/Sqlo.php\");
 //Implementacion principal de Sqlo para una entidad especifica
 class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
 ";
-  }
-
-  protected function end(){
-    $this->string .= "
-
-}
-" ;
   }
 
   protected function construct(){
@@ -64,16 +50,25 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
     $this->string .=  $g->generate();
   }
 
-
-
-
-
-
   protected function update(){
     require_once("generate/phpdbgen/sqlo/method/Update.php");
     $gen = new Sqlo_update($this->getEntity());
     $this->string .= $gen->generate();
   }
+
+  protected function deleteAll(){
+    require_once("generate/phpdbgen/sqlo/method/DeleteAll.php");
+    $gen = new Sqlo_deleteAll($this->getEntity());
+    $this->string .= $gen->generate();
+  }
+
+  protected function end(){
+    $this->string .= "
+
+}
+" ;
+  }
+
 
   protected function uploadSql(){
     require_once("generate/phpdbgen/sqlo/method/UploadSql.php");
@@ -85,11 +80,6 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
     require_once("generate/phpdbgen/sqlo/method/UploadSqlIndex.php");
     $this->string .= GenerateClassDataSqlMethodUploadSqlIndex::createAndGetString($this->getEntity());
   }
-
-
-
-
-
 
   protected function values(){
     require_once("generate/phpdbgen/sqlo/method/_Values.php");
