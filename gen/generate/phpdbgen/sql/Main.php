@@ -35,11 +35,19 @@ require_once(\"class/model/Sql.php\");
 
 class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
+  static \$instance = null;
+
+  public static function instance() {
+      if (self::\$instance === null) self::\$instance = new " .  $this->getEntity()->getName("XxYy") . "Sql 
+      return self::\$instance;
+  }
+
   public function __construct(){
     parent::__construct();
     \$this->entity = Dba::entity('{$this->getEntity()->getName()}');
-
   }
+
+
 ";
   }
 
