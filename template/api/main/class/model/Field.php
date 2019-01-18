@@ -49,6 +49,9 @@ abstract class Field {
   public $admin = true; //administracion de campo, al desactivarlo, no se incluye el campo en los formularios de administracion
 
   public $history = false;
+    /**
+     * Los campos history deben ser del tipo timestamp
+     */
 
   //public $typescriptType = null; //tipo de datos typescript
 
