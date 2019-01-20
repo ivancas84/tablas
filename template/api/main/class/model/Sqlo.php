@@ -140,7 +140,6 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     return $sql;
   }
 
-  //@override
   public function getAll(array $ids, $render = NULL) {
     $r = $this->render($render);
 

@@ -24,7 +24,6 @@ class Dba {
   public static $dbInstance = NULL; //conexion con una determinada db
   public static $dbCount = 0;
   public static $sqlos = [];
-  public static $sqls = [];
   public static $entities = [];
   public static $sqlFormat = NULL;
 
@@ -43,13 +42,9 @@ class Dba {
   }
 
 
-  public static function sqlo($entity) { //singleton sqlo
-    if(!array_key_exists($entity, self::$sqlos)){
-      $sqloName = snake_case_to("XxYy", $entity) . "Sqlo";
-      $sqlo = new $sqloName;
-      self::$sqlos[$entity] = $sqlo;
-    }
-    return self::$sqlos[$entity];
+  public static function sqlo($entity) { //instancia singleton de sqlo
+    $sqloName = snake_case_to("XxYy", $entity) . "Sqlo";
+    return call_user_func("{$sqloName}::getInstance");
   }
 
   public static function sql($entity, $prefix = NULL) { //crear instancias de sql

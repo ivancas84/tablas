@@ -13,6 +13,7 @@ class ClassSqloMain extends GenerateFileEntity {
   }
 
   protected function generateCode(){
+    $this->start();
     $this->construct();
     $this->insert();
     $this->update();
@@ -20,6 +21,7 @@ class ClassSqloMain extends GenerateFileEntity {
     //$this->uploadSql(); //deprecated
     //$this->uploadSqlIndex(); //deprecated
     //$this->values(); //deprecated
+    $this->end();
   }
 
   protected function start(){
@@ -87,8 +89,5 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
     $this->string .= $gen->generate();
 
   }
-
-
-
 
 }
