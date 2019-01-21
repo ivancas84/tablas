@@ -45,8 +45,9 @@ export class " . $this->entity->getName("XxYy") . "AdminComponent extends AdminC
   }
 
   protected function initData(){
-    $this->string .= "  data = {'{$this->entity->getName()}': new {$this->entity->getName("XxYy")} };
-
+    $this->string .= "  initData(): void{
+    this.data = {'{$this->entity->getName()}': new {$this->entity->getName("XxYy")} };
+  }
 ";
   }
 

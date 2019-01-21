@@ -23,7 +23,6 @@ class Dba {
    */
   public static $dbInstance = NULL; //conexion con una determinada db
   public static $dbCount = 0;
-  public static $sqlos = [];
   public static $entities = [];
   public static $sqlFormat = NULL;
 
