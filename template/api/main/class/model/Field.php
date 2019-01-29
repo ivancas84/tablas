@@ -51,6 +51,8 @@ abstract class Field {
   public $history = false;
     /**
      * Los campos history deben ser del tipo timestamp
+     * Habitualmente los campos history se definen con admin = false,
+     * el valor se define al eliminar un campo, por lo que deben sobrescribirse los metodos de eliminacion (ej delete, deleteAll)
      */
 
   //public $typescriptType = null; //tipo de datos typescript

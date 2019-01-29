@@ -10,6 +10,12 @@
 */
 require_once("class/Filter.php");
 require_once("class/model/Dba.php");
+
+require_once("config/structure.php");
+require_once("config/modelClasses.php");
+require_once("config/entityClasses.php");
+require_once("config/valuesClasses.php");
+require_once("class/model/Sqlo.php");
 require_once("function/stdclass_to_array.php");
 
 
@@ -52,7 +58,7 @@ function rows($entity, array $rows = [], array $params = null){ //procesar un co
   }
 
   if(!empty($idsActuales)) {
-    $persist = Dba::deleteRequiredAll($entity, $idsActuales, $params);
+    $persist = EntitySqlo::getInstanceFromString($entity)->deleteRequiredAll($idsActuales, $params);
 
     /**
      * La eliminacion puede ser fisica, logica o simplemente puede nulificar ciertos campos
@@ -103,7 +109,7 @@ try {
       $persist = row($entity, $row);
       $sql .= $persist["sql"];
       $detail = array_merge($detail, $persist["detail"]);
-      if(!empty($persist["id"])) array_push($response, ["entity" => $entity, "id" => $persist["id"]]);
+      if(!empty($persist["id"])) array_push($response, ["entity" => $entity, "id" => $persist["id"], "data"=>$detail]);
     }
 
 
@@ -111,7 +117,7 @@ try {
       $persist = rows($entity, $rows, $params);
       $sql .= $persist["sql"];
       $detail = array_merge($detail, $persist["detail"]);
-      if(!empty($persist["ids"])) array_push($response, ["entity" => $entity, "ids" => $persist["ids"]]);
+      if(!empty($persist["ids"])) array_push($response, ["entity" => $entity, "ids" => $persist["ids"], "data" => $detail]);
     }
   }
 

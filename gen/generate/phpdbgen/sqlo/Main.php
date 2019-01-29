@@ -17,7 +17,6 @@ class ClassSqloMain extends GenerateFileEntity {
     $this->construct();
     $this->insert();
     $this->update();
-    $this->deleteAll();
     //$this->uploadSql(); //deprecated
     //$this->uploadSqlIndex(); //deprecated
     //$this->values(); //deprecated
@@ -55,12 +54,6 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
   protected function update(){
     require_once("generate/phpdbgen/sqlo/method/Update.php");
     $gen = new Sqlo_update($this->getEntity());
-    $this->string .= $gen->generate();
-  }
-
-  protected function deleteAll(){
-    require_once("generate/phpdbgen/sqlo/method/DeleteAll.php");
-    $gen = new Sqlo_deleteAll($this->getEntity());
     $this->string .= $gen->generate();
   }
 

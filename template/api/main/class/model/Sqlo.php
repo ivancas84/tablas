@@ -26,9 +26,14 @@ abstract class EntitySqlo { //SQL object
     return $instances[$className];
   }
 
-  final public function __clone() { trigger_error('Clone is not allowed.', E_USER_ERROR); }
+  final public static function getInstanceFromString($entity) {
+    $sqloName = snake_case_to("XxYy", $entity) . "Sqlo";
+    return call_user_func("{$sqloName}::getInstance");
+  }
 
-  final public function __wakeup(){ trigger_error('Unserializing is not allowed.', E_USER_ERROR); }
+  final public function __clone() { trigger_error('Clone is not allowed.', E_USER_ERROR); } //singleton
+
+  final public function __wakeup(){ trigger_error('Unserializing is not allowed.', E_USER_ERROR); } //singleton
  
   protected function render($render = null){ //Definir clase de presentacion
     /**
@@ -71,7 +76,9 @@ WHERE {$this->entity->getPk()->getName()} = {$row['id']};
     /**
      * Formatear valores y definir sql de actualizacion para un conjunto de ids
      * La actualizacion solo tiene en cuenta los campos definidos, los que no estan definidos, no seran considerados manteniendo su valor previo.
-     * No permite actualizar ids (por que habria de considerarlo)
+     * este metodo define codigo que modifica la base de datos, debe utilizarse cuidadosamente
+     * debe verificarse la existencia de ids correctos
+     * No permite actualizar ids (no se me ocurre una razon valida por la que permitirlo)
      * @return array("id" => "identificador principal actualizado", "sql" => "sql de actualizacion", "detail" => "detalle de campos modificados")
      */
     if(empty($ids)) throw new Exception("No existen identificadores definidos");
@@ -94,20 +101,28 @@ WHERE {$this->entity->getPk()->getName()} IN ({$ids_});
 
 
   public function deleteAll(array $ids) { //eliminar
+    /**
+     * este metodo define codigo que modifica la base de datos, debe utilizarse cuidadosamente
+     * debe verificarse la existencia de ids correctos
+     */
+    if(empty($ids)) throw new Exception("No existen identificadores definidos");
     $ids_ = $this->sql->formatIds($ids);
     $sql = "
 DELETE FROM {$this->entity->sn_()}
 WHERE {$this->entity->getPk()->getName()} IN ({$ids_});
 ";
 
-    array_walk($ids, function(&$item) { $item = $this->entity->getName().$item; });
-    return ["ids"=>$ids, "sql"=>$sql, "detail"=>$ids];
+    $detail = $ids;
+    array_walk($detail, function(&$item) { $item = $this->entity->getName().$item; });
+    return ["ids"=>$ids, "sql"=>$sql, "detail"=>$detail];
   }
 
   public function deleteRequiredAll($ids, $params){ //eliminacion relacionada a clave foranea
     /**
-     * En su caso mas general, este metodo es similar a delete
+     * En su caso mas general, este metodo es similar a deleteAll
      * Esta pensado para facilitar la reimplementacion en el caso de que se lo requiera
+     * En muchos casos, una entidad A puede requerir la eliminacion de otra entidad B, 
+     * dependiendo de las restricciones de B puede ser necesario una eliminacion o nulificacion
      */
     return $this->deleteAll($ids);
   }

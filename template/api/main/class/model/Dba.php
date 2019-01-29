@@ -278,10 +278,11 @@ class Dba {
     return "Esta asociado a " . implode(', ', array_unique($entities)) . ".";
   }
 
+  /*
   public static function deleteRequiredAll($entity, array $ids, array $params = []) { //eliminacion requerida
     $sqlo = self::sqlo($entity);
     return $sqlo->deleteRequiredAll($ids, $params);
-  }
+  }*/
 
 
 
@@ -299,8 +300,8 @@ class Dba {
      */
     $sqlo = self::sqlo($entity);
     $row_ = self::_unique($entity, $row); //1
-
-    if (count($row_)){ //2
+    
+    if (!empty($row_)){ //2
       $row["id"] = $row_["id"];
       return $sqlo->update($row);
     }
