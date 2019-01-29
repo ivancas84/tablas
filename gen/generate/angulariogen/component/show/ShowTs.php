@@ -10,10 +10,9 @@ class ComponentShowTs extends GenerateFileEntity {
     parent::__construct($dir, $file, $entity);
   }
 
-
   protected function start(){
     $this->string .= "import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { ShowComponent } from '../../main/component/show/show.component';
 
@@ -23,8 +22,8 @@ import { ShowComponent } from '../../main/component/show/show.component';
 })
 export class " . $this->entity->getName("XxYy") . "ShowComponent extends ShowComponent {
 
-  constructor(protected dd: DataDefinitionService, protected route: ActivatedRoute) {
-    super(dd, route);
+  constructor(protected dd: DataDefinitionService, protected route: ActivatedRoute, protected router: Router) {
+    super(dd, route, router);
     this.entity = \"" . $this->entity->getName() . "\";
   }
 
@@ -33,10 +32,7 @@ export class " . $this->entity->getName("XxYy") . "ShowComponent extends ShowCom
 ";
   }
 
-
-
-  //***** @override *****
-  protected function generateCode() {
+  protected function generateCode() { //@override
     $this->start();
   }
 

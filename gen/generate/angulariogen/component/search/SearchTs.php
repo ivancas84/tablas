@@ -23,19 +23,19 @@ class ComponentSearchTs extends GenerateFileEntity {
   protected function start(){
     $this->string .= "import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs';
 
 import { SearchComponent } from '../../main/component/search/search.component';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { RouterService } from '../../main/service/router/router.service';
 
 @Component({
   selector: 'app-" . $this->entity->getName("xx-yy") . "-search',
   templateUrl: './" . $this->entity->getName("xx-yy") . "-search.component.html',
 })
 export class " . $this->entity->getName("XxYy") . "SearchComponent extends SearchComponent {
-  constructor(protected fb: FormBuilder, protected dd: DataDefinitionService, protected router: RouterService)  {
+  constructor(protected fb: FormBuilder, protected dd: DataDefinitionService, protected router: Router)  {
     super(fb, dd, router);
     this.entity = '" . $this->entity->getName() . "';
   }
