@@ -17,13 +17,13 @@ class ComponentSearchHtml extends GenerateFileEntity {
     $this->selectOptionsStart();
     $this->selectOptionsPk();
     $this->selectOptionsNf();
-    $this->selectOptionsRecursive($this->entity);
+    //$this->selectOptionsRecursive($this->entity);
     $this->selectOptionsEnd();
 
     $this->switchStart();
     $this->switchPk();
     $this->switchNf();
-    $this->switchRecursive($this->entity);
+    //$this->switchRecursive($this->entity);
     $this->switchEnd();
 
     $this->end();

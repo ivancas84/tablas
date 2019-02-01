@@ -9,7 +9,7 @@ class ComponentSearchTs_onSubmit extends GenerateEntity {
     $this->start();
     $this->pk();
     $this->nf();
-    $this->fk();
+    //$this->fk();
     $this->end();
 
     return $this->string;
@@ -18,9 +18,10 @@ class ComponentSearchTs_onSubmit extends GenerateEntity {
 
   protected function start(){
     $this->string .= "  onSubmit(): void {
-    this.display.filters = [];
+    let d = {search:null, filters:[]}
+    d.filters = [];
     for(let i = 0; i < this.filters.controls.length; i++){
-      switch(this.getField(i)){
+      switch(this.f(i)){
 ";
   }
 
@@ -51,9 +52,8 @@ class ComponentSearchTs_onSubmit extends GenerateEntity {
     $this->string .= "      }
     }
 
-    this.display.search = this.searchForm.get('search').value;
-    let sid = encodeURI(JSON.stringify(this.display));
-    this.router.navigateByUrl('/{$this->entity->getName('xx-yy')}-show?sid=' + sid);
+    d.search = this.searchForm.get('search').value;
+    this.changeSearch.emit(d);
   }
 
 ";
@@ -63,7 +63,7 @@ class ComponentSearchTs_onSubmit extends GenerateEntity {
   protected function pk(){
     $field = $this->entity->getPk();
     $this->string .= "        case '" . $field->getName() . "':
-          if (typeof this.getValue(i) == 'object') this.assignFilter(this.getField(i), this.getOption(i), this.getValue(i).id);
+          if (typeof this.v(i) == 'object') d.filters.push([this.f(i), this.o(i), this.v(i).id]);
         break;
 ";
   }
@@ -71,17 +71,14 @@ class ComponentSearchTs_onSubmit extends GenerateEntity {
 
   protected function date(Field $field){
     $this->string .= "        case '" . $field->getName() . "':
-          if(this.getValue(i)) {
-            var value = this.dd.parser.dateFormat(this.getValue(i));
-            this.assignFilter(this.getField(i), this.getOption(i), value);
-          }
+          //TODO: Verificar el formulario de administracion y copiar la implementacion de date
         break;
 ";
   }
 
   protected function defecto(Field $field){
     $this->string .= "        case '" . $field->getName() . "':
-          if(this.getValue(i)) this.assignFilter(this.getField(i), this.getOption(i), this.getValue(i));
+          if(this.v(i)) d.filters.push([this.f(i), this.o(i), this.v(i).id]);
         break;
 ";
   }
