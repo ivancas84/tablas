@@ -85,7 +85,7 @@ class ComponentSearchTs_onSubmit extends GenerateEntity {
 
   protected function typeahead(Field $field){
     $this->string .= "       case '" . $field->getName() . "':
-          if(this.getValue(i) == 'object') if(this.getValue(i)) this.assignFilter(this.getField(i), this.getOption(i), this.getValue(i).id);
+          if(this.v(i) == 'object') if(this.v(i)) this.assignFilter(this.f(i), this.o(i), this.v(i).id);
         break;
 ";
   }
