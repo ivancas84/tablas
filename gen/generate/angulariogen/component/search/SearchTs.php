@@ -14,8 +14,8 @@ class ComponentSearchTs extends GenerateFileEntity {
 
   protected function generateCode(){
     $this->start();
-    //$this->initFilters();
-    $this->onSubmit();
+    //$this->initFilters(); DEPRECATED
+    //$this->onSubmit(); DEPRECATED 
     $this->end();
   }
 
