@@ -230,6 +230,7 @@ class Dba {
   }
 
   public static function get($entity, $id, $render = null) { //busqueda por id
+    if(!$id) throw new Exception("No se encuentra definido el id");
     $rows = self::getAll($entity, [$id], $render);
     if (!count($rows)) throw new Exception("La búsqueda por id no arrojó ningun resultado");
     return $rows[0];

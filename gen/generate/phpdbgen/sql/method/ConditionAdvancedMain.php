@@ -20,7 +20,7 @@ class ClassSql_conditionAdvancedMain extends GenerateEntityRecursiveFk{
   }
 
   protected function end(){
-    $this->string .= "    throw new Exception(\"No pudo definirse la condicion avanzada {\$field} {\$option} {\$value}\");
+    $this->string .= "    throw new Exception(\"No pudo definirse el SQL de la condicion avanzada {\$field} {\$option} {\$value}\");
   }
 
 ";

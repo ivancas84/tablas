@@ -26,7 +26,9 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
       switch ( $field->getDataType() ) {
 
         case "string":
-        case "text": $this->string($field->getName()); break;
+        case "text":
+        case "year":
+          $this->string($field->getName()); break;
 
         case "integer":
         case "float": $this->number($field->getName()); break;
