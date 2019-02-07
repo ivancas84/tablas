@@ -18,15 +18,9 @@ class EntityDataDefinition_Options extends GenerateEntity {
     return $this->string;
   }
 
-  protected function defineOptions(Entity $entity, array $tablesVisited = null){
-    if(is_null($tablesVisited)) $tablesVisited = array($entity->getName());
-
-    $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
-    if(!count($fk)) return;
-    foreach($fk as $field){
+  protected function defineOptions(Entity $entity){
+    foreach($entity->getFieldsFk() as $field){
       if($field->getSubtype() == "select") array_push($this->options, $field);
-      array_push($tablesVisited, $entity->getName());
-      $this->defineOptions($field->getEntityRef(), $tablesVisited);
     }
   }
 
