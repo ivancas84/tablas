@@ -17,13 +17,13 @@ class ComponentSearchHtml extends GenerateFileEntity {
     $this->selectOptionsStart();
     $this->selectOptionsPk();
     $this->selectOptionsNf();
-    //$this->selectOptionsRecursive($this->entity);
+    $this->selectOptionsRecursive($this->entity);
     $this->selectOptionsEnd();
 
     $this->switchStart();
     $this->switchPk();
     $this->switchNf();
-    //$this->switchRecursive($this->entity);
+    $this->switchRecursive($this->entity);
     $this->switchEnd();
 
     $this->end();
@@ -129,7 +129,6 @@ class ComponentSearchHtml extends GenerateFileEntity {
    $this->string .= $this->switchRelation($entity, $prefix);
 
    $this->switchFk($entity, $tablesVisited, $prefix);
-   //$this->switchFieldsU_($entity, $tablesVisited, $prefixTable, $prefixField);
   }
 
 
@@ -195,33 +194,22 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
   protected function typeahead(Field $field, Entity $entity, $prefix = ""){
     $this->string .= "        <span *ngSwitchCase=\"'" . $prefix . $field->getName() . "'\">
-          <select class=\"form-control form-control-sm\" ng-model=\"row.option\" ng-change=\"filterConfig()\">
-            <option value=\"=\">=</option>
-            <option value=\"!=\">&ne;</option>
-";
-   if(!$field->isNotNull())
-     $this->string .= "            <option value=\"1\">S</option>
-            <option value=\"0\">N</option>
-";
-   $this->string .= "          </select>
-          <app-filter-typeahead [entity]=\"'" . $this->entity->getName() . "'\" [filter]=\"filter\" ></app-filter-typeahead>
-        </span>
-
+      <select class=\"form-control form-control-sm\" formControlName=\"option\">
+        <option value=\"=\">=</option>
+        <option value=\"!=\">&ne;</option>
+      </select>
+      <app-filter-typeahead [entity]=\"'" . $field->getEntityRef()->getName() . "'\" [filter]=\"filter\" ></app-filter-typeahead>
+    </span>
 ";
 
   }
 
   protected function select(Field $field, Entity $entity, $prefix = ""){
     $this->string .= "        <span *ngSwitchCase=\"'" . $prefix . $field->getName() . "'\">
-          <select class=\"form-control form-control-sm\" ng-model=\"row.option\" ng-change=\"filterConfig()\">
+          <select class=\"form-control form-control-sm\" ng-model=\"option\">
             <option value=\"=\">=</option>
             <option value=\"!=\">&ne;</option>
-";
-   if(!$field->isNotNull())
-     $this->string .= "            <option value=\"1\">S</option>
-            <option value=\"0\">N</option>
-";
-   $this->string .= "          </select>
+         </select>
           <select class=\"form-control form-control-sm\" formControlName=\"value\" >
             <option *ngFor=\"let opt of options." . $field->getEntityRef()->getName() . "\" [value]=\"opt.id\" >{{opt.id | label:\"{$field->getEntityRef()->getName()}\"}}</option>
           </select>
