@@ -31,9 +31,15 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
 
   protected function start(){
-    $this->string .= "<form [formGroup]=\"searchForm\" novalidate (ngSubmit)=\"onSubmit()\" >
-  <div formArrayName=\"filters\">
-    <div class=\"form-inline m-1 border bg-light\" *ngFor=\"let filter of filters.controls; let i=index\" [formGroupName]=\"i\" >
+    $this->string .= "<ngb-accordion #acc=\"ngbAccordion\">
+  <ngb-panel>
+    <ng-template ngbPanelTitle>
+      <span>Buscar</span>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <form [formGroup]=\"searchForm\" novalidate (ngSubmit)=\"onSubmit()\" >
+        <div formArrayName=\"filters\">
+          <div class=\"form-row align-items-center\" *ngFor=\"let filter of filters.controls; let i=index\" [formGroupName]=\"i\">
 ";
   }
 
@@ -43,20 +49,21 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
 
   protected function selectOptionsStart(){
-    $this->string .= "      <select class=\"form-control form-control-sm\" formControlName=\"field\">
-        <option value=\"\">--Campo--</option>
+    $this->string .= "            <div class=\"col-4\">
+              <select class=\"form-control form-control-sm\" formControlName=\"field\">
+                <option value=\"\">--Campo--</option>
 ";
   }
 
   protected function selectOptionsPk(){
    $field = $this->entity->getPk();
-   $this->string .= "        <option value=\"" . $field->getName() . "\">" . $field->getEntity()->getName("Xx Yy") . "</option>
+   $this->string .= "                <option value=\"" . $field->getName() . "\">" . $field->getEntity()->getName("Xx Yy") . "</option>
 ";
   }
 
   protected function selectOptionsNf(){
    $fields = $this->entity->getFieldsNf();
-   foreach($fields as $field) $this->string .= "        <option value=\"" . $field->getName() . "\">" . $field->getName("Xx Yy") . "</option>
+   foreach($fields as $field) $this->string .= "                <option value=\"" . $field->getName() . "\">" . $field->getName("Xx Yy") . "</option>
 ";
   }
 
@@ -76,36 +83,35 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
   protected function selectOptionsRelation(Entity $entity, $prefix){
     $fields = $entity->getFieldsFk();
-    foreach($fields as $field) $this->string .= "        <option value=\"" . $prefix . $field->getName() . "\">" . $field->getName("Xx Yy") . "</option>
+    foreach($fields as $field) $this->string .= "                <option value=\"" . $prefix . $field->getName() . "\">" . $field->getName("Xx Yy") . "</option>
 ";
   }
 
   protected function selectOptionsEnd(){
-    $this->string .= "      </select>
+    $this->string .= "              </select>
+            </div>
 ";
   }
 
 
-
-
-
-
   protected function switchStart(){
-    $this->string .= "
-      <span [ngSwitch]=\"filter.get('field').value\">
+    $this->string .= "            <div class=\"col-6\" [ngSwitch]=\"f(i)\">
 ";
   }
 
   protected function switchPk(){
     $field = $this->entity->getPk();
-    $this->string .= "        <span *ngSwitchCase=\"'" . $field->getName() . "'\">
-          <select class=\"form-control form-control-sm\" formControlName=\"option\">
-            <option value=\"=\">=</option>
-            <option value=\"!=\">&ne;</option>
-          </select>
-          <app-filter-typeahead [entity]=\"'" . $this->entity->getName() . "'\" [filter]=\"filter\" ></app-filter-typeahead>
-        </span>
-
+    $this->string .= "              <div class=\"form-row\" *ngSwitchCase=\"'" . $field->getName() . "'\">
+                <div class=\"col-sm-3\">
+                  <select class=\"form-control form-control-sm\" formControlName=\"option\">
+                    <option value=\"=\">=</option>
+                    <option value=\"!=\">&ne;</option>
+                  </select>
+                </div>  
+                <div class=\"col\">
+                  <app-filter-typeahead [entity]=\"'" . $this->entity->getName() . "'\" [filter]=\"filter\" ></app-filter-typeahead>
+                </div>
+              </div>
 ";
   }
 
@@ -153,8 +159,8 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
 
   protected function switchEnd(){
-   $this->string .= "        <span *ngSwitchDefault>Seleccione campo</span>
-      </span>
+   $this->string .= "        <div *ngSwitchDefault>Seleccione campo</div>
+      </div>
 ";
   }
 
@@ -164,20 +170,24 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
 
   protected function defecto(Field $field){
-    $this->string .= "        <span *ngSwitchCase=\"'" . $field->getName() . "'\">
-          <select class=\"form-control form-control-sm\" formControlName=\"option\">
-            <option value=\"=\">=</option>
-            <option value=\"!=\">&ne;</option>
-            <option value=\"<=\">&le;</option>
-            <option value=\">=\">&ge;</option>
+    $this->string .= "              <div class=\"form-row\" *ngSwitchCase=\"'{$field->getName()}'\">
+                <div class=\"col-sm-3\">    
+                  <select class=\"form-control form-control-sm\" formControlName=\"option\">
+                    <option value=\"=\">=</option>
+                    <option value=\"!=\">&ne;</option>
+                    <option value=\"<=\">&le;</option>
+                    <option value=\">=\">&ge;</option>
 ";
 
     if(!$field->isNotNull())
-      $this->string .= "            <option value=\"1\">S</option>
-            <option value=\"0\">N</option>
+      $this->string .= "                    <option value=\"1\">S</option>
+                    <option value=\"0\">N</option>
 ";
 
-      $this->string .= "          </select>
+      $this->string .= "                  </select>
+                </div>
+                <div class=\"col-sm-3\">    
+
           <input class=\"form-control form-control-sm\" formControlName=\"value\">
         </span>
 
