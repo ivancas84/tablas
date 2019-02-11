@@ -2,7 +2,6 @@
 
 require_once("class/Filter.php");
 require_once("class/model/Dba.php");
-require_once("function/stdclass_to_array.php");
 
 try{
 

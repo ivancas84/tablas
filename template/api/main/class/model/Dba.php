@@ -10,10 +10,13 @@ require_once("class/db/Pg.php");
 require_once("function/toString.php");
 require_once("class/model/Transaction.php");
 require_once("class/model/SqlFormat.php");
+require_once("function/stdclass_to_array.php");
+
 
 
 //Facilita el acceso a la base de datos y clases del modelo
 class Dba {
+
   /**
    * Prefijos y sufijos en el nombre de metodos:
    *   get: Utiliza id como parametro principal de busqueda
@@ -301,7 +304,7 @@ class Dba {
      */
     $sqlo = self::sqlo($entity);
     $row_ = self::_unique($entity, $row); //1
-    
+
     if (!empty($row_)){ //2
       $row["id"] = $row_["id"];
       return $sqlo->update($row);
