@@ -107,7 +107,7 @@ class ComponentSearchHtml extends GenerateFileEntity {
                     <option value=\"=\">=</option>
                     <option value=\"!=\">&ne;</option>
                   </select>
-                </div>  
+                </div>
                 <div class=\"col\">
                   <app-filter-typeahead [entity]=\"'" . $this->entity->getName() . "'\" [filter]=\"filter\" ></app-filter-typeahead>
                 </div>
@@ -159,8 +159,8 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
 
   protected function switchEnd(){
-   $this->string .= "        <div *ngSwitchDefault>Seleccione campo</div>
-      </div>
+   $this->string .= "              <div *ngSwitchDefault>Seleccione campo</div>
+            </div>
 ";
   }
 
@@ -171,7 +171,7 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
   protected function defecto(Field $field){
     $this->string .= "              <div class=\"form-row\" *ngSwitchCase=\"'{$field->getName()}'\">
-                <div class=\"col-sm-3\">    
+                <div class=\"col-sm-3\">
                   <select class=\"form-control form-control-sm\" formControlName=\"option\">
                     <option value=\"=\">=</option>
                     <option value=\"!=\">&ne;</option>
@@ -186,61 +186,78 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
       $this->string .= "                  </select>
                 </div>
-                <div class=\"col-sm-3\">    
-
-          <input class=\"form-control form-control-sm\" formControlName=\"value\">
-        </span>
-
+                <div class=\"col\">
+                  <input class=\"form-control form-control-sm\" formControlName=\"value\">
+                </div>
+              </div>
 ";
 
   }
 
   protected function checkbox(Field $field){
-    $this->string .= "        <span *ngSwitchCase=\"'" . $field->getName() . "'\">
-          <input class=\"form-control form-control-sm\" type=\"checkbox\" formControlName=\"option\">
-        </span>
+    $this->string .= "              <div class=\"form-row\" *ngSwitchCase=\"'{$field->getName()}'\">
+                <div class=\"col\">
+                  <input class=\"form-control form-control-sm\" type=\"checkbox\" formControlName=\"option\">
+                </div>
+              </div>
 ";
   }
 
   protected function typeahead(Field $field, Entity $entity, $prefix = ""){
-    $this->string .= "        <span *ngSwitchCase=\"'" . $prefix . $field->getName() . "'\">
-      <select class=\"form-control form-control-sm\" formControlName=\"option\">
-        <option value=\"=\">=</option>
-        <option value=\"!=\">&ne;</option>
-      </select>
-      <app-filter-typeahead [entity]=\"'" . $field->getEntityRef()->getName() . "'\" [filter]=\"filter\" ></app-filter-typeahead>
-    </span>
+    $this->string .= "              <div class=\"form-row\" *ngSwitchCase=\"'{$prefix}{$field->getName()}'\">
+                <div class=\"col-sm-3\">
+                  <select class=\"form-control form-control-sm\" formControlName=\"option\">
+                    <option value=\"=\">=</option>
+                    <option value=\"!=\">&ne;</option>
+                  </select>
+                </div>
+                <div class=\"col\">
+                  <app-filter-typeahead [entity]=\"'" . $field->getEntityRef()->getName() . "'\" [filter]=\"filter\" ></app-filter-typeahead>
+                </div>
+              </div>
 ";
 
   }
 
   protected function select(Field $field, Entity $entity, $prefix = ""){
-    $this->string .= "        <span *ngSwitchCase=\"'" . $prefix . $field->getName() . "'\">
-          <select class=\"form-control form-control-sm\" ng-model=\"option\">
-            <option value=\"=\">=</option>
-            <option value=\"!=\">&ne;</option>
-         </select>
-          <select class=\"form-control form-control-sm\" formControlName=\"value\" >
-            <option *ngFor=\"let opt of options." . $field->getEntityRef()->getName() . "\" [value]=\"opt.id\" >{{opt.id | label:\"{$field->getEntityRef()->getName()}\"}}</option>
-          </select>
-        </span>
-
+    $this->string .= "              <div class=\"form-row\" *ngSwitchCase=\"'{$prefix}{$field->getName()}'\">
+                <div class=\"col-sm-3\">
+                  <select class=\"form-control form-control-sm\" formControlName=\"option\">
+                    <option value=\"=\">=</option>
+                    <option value=\"!=\">&ne;</option>
+                  </select>
+                </div>
+                <div class=\"col\">
+                  <select class=\"form-control form-control-sm\" formControlName=\"value\" >
+                    <option *ngFor=\"let opt of options." . $field->getEntityRef()->getName() . "\" [value]=\"opt.id\" >{{opt.id | label:\"{$field->getEntityRef()->getName()}\"}}</option>
+                  </select>
+                </div>
+              </div>
 ";
 
   }
 
 
   protected function end(){
-    $this->string .= "        <button type=\"button\" class=\"btn btn-danger btn-sm\" (click)=\"removeFilter(i)\"><span class=\"oi oi-x\"></span></button>
-    </div>
-  </div>
+    $this->string .= "            <div class=\"col-2\">
+              <button type=\"button\" class=\"btn btn-danger btn-sm\" (click)=\"removeFilter(i)\"><span class=\"oi oi-x\"></span></button>
+            </div>
+          </div>
+        </div> <!-- formArrayName=\"filters\" -->
 
-  <div class=\"form-inline m-1 border bg-light\">
-    <input class=\"form-control form-control-sm\" formControlName=\"search\" placeholder=\"Buscar\" >
-    <button type=\"button\" class=\"btn btn-info btn-sm\" (click)=\"addFilter()\"><span class=\"oi oi-layers\"></span></button>
-    <button type=\"submit\" class=\"btn btn-primary btn-sm\"><span class=\"oi oi-magnifying-glass\"></span></button>
-  </div>
-</form>
+        <div class=\"form-row\">
+          <div class=\"col-4\">
+            <input class=\"form-control form-control-sm\" formControlName=\"search\" placeholder=\"Buscar\" >
+          </div>
+          <div class=\"col\">
+            <button type=\"button\" class=\"btn btn-info btn-sm\" (click)=\"addFilter()\"><span class=\"oi oi-layers\"></span></button>
+            <button type=\"submit\" class=\"btn btn-primary btn-sm\"><span class=\"oi oi-magnifying-glass\"></span></button>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
 ";
   }
 
@@ -254,41 +271,6 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
 
 
-
-
-
-
-
-
-//TODO 17/2/2018:
-//El codigo siguiente corresponde a la version anterior y aun no ha sido refactorizado a angular.io
-
-
-
-
-
-
-
-  protected function date(Field $field){
-   $this->string .= "        <span ng-switch-when=\"" . $field->getName() . "\">
-         <select ng-model=\"row.option\" ng-change=\"filterConfig()\">
-           <option value=\"=\">=</option>
-           <option value=\"!=\">&ne;</option>
-           <option value=\"<=\">&le;</option>
-           <option value=\">=\">&ge;</option>
-  ";
-   if(!$field->isNotNull())
-     $this->string .= "            <option value=\"1\">S</option>
-           <option value=\"0\">N</option>
-  ";
-   $this->string .= "          </select>
-         <input ng-show=\"showValue(\$index)\"  placeholder=\"dd/mm/aaaa\" type=\"text\" uib-datepicker-popup=\"dd/MM/yyyy\" uib-datepicker-options=\"datePickerOptions\" ng-model=\"row.value\" is-open=\"row.picker\" ng-change=\"filterConfig()\" />
-         <button type=\"button\" class=\"btn btn-xs btn-default\" ng-click=\"row.picker = true\"><i class=\"glyphicon glyphicon-calendar\"></i></button>
-         <button class=\"btn btn-sm btn-danger\" type=\"button\" ng-click=\"deleteFilter(\$index)\"/>Eliminar</button>
-       </span>
-  ";
-
-  }
 
 
 
