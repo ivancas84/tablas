@@ -14,8 +14,9 @@ class ComponentSearchTs extends GenerateFileEntity {
 
   protected function generateCode(){
     $this->start();
+    $this->ngOnInit();
     //$this->initFilters(); DEPRECATED
-    //$this->onSubmit(); DEPRECATED 
+    //$this->onSubmit(); DEPRECATED
     $this->end();
   }
 
@@ -40,6 +41,14 @@ export class " . $this->entity->getName("XxYy") . "SearchComponent extends Searc
 
 ";
   }
+
+  protected function ngOnInit(){
+    require_once("generate/angulariogen/component/search/_ngOnInit.php");
+    $gen = new ComponentSearchTs_ngOnInit($this->entity);
+    $this->string .= $gen->generate();
+  }
+
+
   protected function initFilters(){
     require_once("generate/angulariogen/component/search/_InitFilters.php");
     $gen = new ComponentSearchTs_initFilters($this->entity);
