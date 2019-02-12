@@ -43,7 +43,7 @@ class ComponentTableHtml extends GenerateFileEntity {
       $name = $field->getName("Xx Yy");
       $sort = $field->getName();
 
-      $this->string .= "            <th>" . $name . "&nbsp;<span class=\"oi oi-elevator pointer\" (click)=\"setOrder('" . $sort . "')\"></span></th>
+      $this->string .= "            <th><button type=\"button\" class=\"btn btn-link text-dark font-weight-bold\" (click)=\"setOrder('{$sort}')\">{$name}</button></th>
 " ;
 
     }
@@ -62,7 +62,7 @@ class ComponentTableHtml extends GenerateFileEntity {
         }
       }
 
-     $this->string .= "            <th *ngIf=\"isSync('" . $field->getName() . "')\">" . $name . "&nbsp;<span class=\"oi oi-elevator pointer\" (click)=\"setOrder('" . implode("', '", $fieldsFkMain) . "')\"></span></th>
+     $this->string .= "            <th *ngIf=\"isSync('" . $field->getName() . "')\"><button type=\"button\" class=\"btn btn-link text-dark font-weight-bold\" (click)=\"setOrder('" . implode("', '", $fieldsFkMain) . "')\">{$name}</button></th>
 " ;
 
     }
