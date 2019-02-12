@@ -34,7 +34,7 @@ abstract class EntitySqlo { //SQL object
   final public function __clone() { trigger_error('Clone is not allowed.', E_USER_ERROR); } //singleton
 
   final public function __wakeup(){ trigger_error('Unserializing is not allowed.', E_USER_ERROR); } //singleton
- 
+
   protected function render($render = null){ //Definir clase de presentacion
     /**
      * @param String | Object | Array | Render En función del tipo de parámetro define el render
@@ -121,7 +121,7 @@ WHERE {$this->entity->getPk()->getName()} IN ({$ids_});
     /**
      * En su caso mas general, este metodo es similar a deleteAll
      * Esta pensado para facilitar la reimplementacion en el caso de que se lo requiera
-     * En muchos casos, una entidad A puede requerir la eliminacion de otra entidad B, 
+     * En muchos casos, una entidad A puede requerir la eliminacion de otra entidad B,
      * dependiendo de las restricciones de B puede ser necesario una eliminacion o nulificacion
      */
     return $this->deleteAll($ids);
@@ -157,7 +157,6 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
 
   public function getAll(array $ids, $render = NULL) {
     $r = $this->render($render);
-
     //Para dar soporte a distintos tipos de id, se define la condicion de ids a traves del metodo conditionAdvanced en vez de utilizar IN como se hacia habitualmente
     $advanced = [];
     for($i = 0; $i < count($ids); $i++){ array_push($advanced, ["id", "=", $ids[$i], "OR"]); }
