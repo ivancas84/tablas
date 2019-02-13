@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @todo Implementar render en el getall
+ */
+
 require_once("config/structure.php");
 require_once("config/modelClasses.php");
 require_once("config/entityClasses.php");
