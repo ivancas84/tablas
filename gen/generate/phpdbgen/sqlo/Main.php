@@ -57,6 +57,12 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
     $this->string .= $gen->generate();
   }
 
+  protected function json(){
+    require_once("generate/phpdbgen/sqlo/method/Json.php");
+    $gen = new Sqlo_json($this->getEntity());
+    $this->string .= $gen->generate();
+  }
+
   protected function end(){
     $this->string .= "
 

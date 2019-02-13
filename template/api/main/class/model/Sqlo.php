@@ -19,6 +19,18 @@ abstract class EntitySqlo { //SQL object
   public function nextPk(){ return $this->db->uniqId(); } //siguiente identificador unico
   protected function _insert(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //sql de insercion
   protected function _update(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //sql de actualizacion
+  public function json(array $row) { return $this->sql->_json($row); }
+
+  public function jsonAll(array $rows){
+    $rows_ = [];
+
+    foreach($rows as $row){
+      $row_ = $this->json($row);
+      array_push($rows_, $row_);
+    }
+
+    return $rows_;
+  }
 
   final public static function getInstance() {
     $className = get_called_class();

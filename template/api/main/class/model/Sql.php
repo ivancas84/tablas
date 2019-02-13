@@ -32,8 +32,16 @@ abstract class EntitySql { //Definir SQL
   public function initializeUpdate(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //inicializar valores para actualizacion
   public function format(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //formato de sql
   public function _json(array $row) { throw new BadMethodCallException("No implementado"); }
+
   public function json(array $row) { return $this->_json($row); }
+    /**
+     * @todo Metodo obsoleto, debe pasar a formar parte de Sqlo
+     */
+
   public function jsonAll(array $rows){
+    /**
+     * @todo Metodo obsoleto, debe pasar a formar parte de Sqlo
+     */
     $rows_ = [];
 
     foreach($rows as $row){
