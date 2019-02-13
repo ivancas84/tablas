@@ -191,7 +191,7 @@ class Dba {
     $rows = self::fetchAll($sql);
 
     if(count($rows) > 1) throw new Exception("La busqueda estricta por campos unicos de {$entity} retorno mas de un resultado");
-    if(count($rows) == 1) return self::sql($entity)->json($rows[0]);
+    if(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
     return null;
   }
 
@@ -205,7 +205,7 @@ class Dba {
 
     $rows = self::fetchAll($sql);
     if(count($rows) > 1) throw new Exception("La busqueda por campos unicos de {$entity} retorno mas de un resultado");
-    if(count($rows) == 1) return self::sql($entity)->json($rows[0]);
+    if(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
     return null;
   }
 
@@ -233,7 +233,7 @@ class Dba {
   public static function all($entity, $render = null){ //devolver todos los valores
     $sql = self::sqlo($entity)->all($render);
     $rows = self::fetchAll($sql);
-    return self::sql($entity)->jsonAll($rows);
+    return self::sqlo($entity)->jsonAll($rows);
   }
 
   public static function get($entity, $id, $render = null) { //busqueda por id
@@ -251,20 +251,20 @@ class Dba {
   public static function getAll($entity, array $ids, $render = null){ //busqueda por ids
     $sql = self::sqlo($entity)->getAll($ids, $render);
     $rows = self::fetchAll($sql);
-    return self::sql($entity)->jsonAll($rows);
+    return self::sqlo($entity)->jsonAll($rows);
   }
 
   public static function one($entity, $render = null) { //un solo valor
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($rows) == 1) return self::sql($entity)->json($rows[0]);
+    elseif(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
     else throw new Exception("La consulta no arrojó resultados");
   }
 
   public static function oneOrNull($entity, $render = null) { //un solo valor o null
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($rows) == 1) return self::sql($entity)->json($rows[0]);
+    elseif(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
     else return null;
   }
 
@@ -357,12 +357,11 @@ class Dba {
     }
   }
 
-  //query and fetch result
-  public static function fetchAllColumns($sql, $column){
+  public static function fetchAllColumns($sql, $column = 0){ //query and fetch result
     $db = self::dbInstance();
     try {
       $result = $db->query($sql);
-      return $db->fetchAllColumns($result, 0);
+      return $db->fetchAllColumns($result, $column);
     } finally { self::dbClose(); }
   }
 
