@@ -171,7 +171,10 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     $r = $this->render($render);
     //Para dar soporte a distintos tipos de id, se define la condicion de ids a traves del metodo conditionAdvanced en vez de utilizar IN como se hacia habitualmente
     $advanced = [];
-    for($i = 0; $i < count($ids); $i++){ array_push($advanced, ["id", "=", $ids[$i], "OR"]); }
+    for($i = 0; $i < count($ids); $i++) {
+      $connect = ($i == 0) ? "AND" : "OR";
+      array_push($advanced, ["id", "=", $ids[$i], $connect]);
+    }
     if(!count($advanced)) return [];
 
     $r->addAdvanced($advanced);

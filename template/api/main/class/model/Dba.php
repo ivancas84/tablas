@@ -250,6 +250,8 @@ class Dba {
 
   public static function getAll($entity, array $ids, $render = null){ //busqueda por ids
     $sql = self::sqlo($entity)->getAll($ids, $render);
+    error_log($sql);
+
     $rows = self::fetchAll($sql);
     return self::sqlo($entity)->jsonAll($rows);
   }
