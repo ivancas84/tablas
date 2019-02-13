@@ -19,7 +19,7 @@ class Sqlo_json extends GenerateEntity {
 
   protected function bodyMain(){
     $this->string .= "    if(empty(\$row)) return null;
-    \$row_ = \$this->_json(\$row);
+    \$row_ = \$this->sql->_json(\$row);
 
 ";
   }

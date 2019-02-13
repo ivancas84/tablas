@@ -17,9 +17,10 @@ class ClassSqloMain extends GenerateFileEntity {
     $this->construct();
     $this->insert();
     $this->update();
-    //$this->uploadSql(); //deprecated
-    //$this->uploadSqlIndex(); //deprecated
-    //$this->values(); //deprecated
+    $this->json();
+    //$this->uploadSql(); //@todo deprecated
+    //$this->uploadSqlIndex(); //@todo deprecated
+    //$this->values(); //@todo deprecated
     $this->end();
   }
 
