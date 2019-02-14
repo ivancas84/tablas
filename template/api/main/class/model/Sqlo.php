@@ -175,7 +175,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
       $connect = ($i == 0) ? "AND" : "OR";
       array_push($advanced, ["id", "=", $ids[$i], $connect]);
     }
-    if(!count($advanced)) return [];
+    if(!count($advanced)) return null;
 
     $r->addAdvanced($advanced);
 
