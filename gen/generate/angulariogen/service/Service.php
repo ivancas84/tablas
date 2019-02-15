@@ -38,7 +38,7 @@ class GenerateService {
 
       require_once("generate/angulariogen/service/data-definition/entity-data-definition/EntityDataDefinition.php");
       $gen = new EntityDataDefinition($entity);
-      $gen->generate();
+      $gen->generateIfNotExists();
     }
 
     protected function loader($entity){
