@@ -34,7 +34,7 @@ class ComponentSearchHtml extends GenerateFileEntity {
     $this->string .= "<ngb-accordion #acc=\"ngbAccordion\">
   <ngb-panel>
     <ng-template ngbPanelTitle>
-      <span>Buscar</span>
+      <span>Opciones</span>
     </ng-template>
     <ng-template ngbPanelContent>
       <form [formGroup]=\"searchForm\" novalidate (ngSubmit)=\"onSubmit()\" >
