@@ -114,14 +114,14 @@ WHERE {$this->entity->getPk()->getName()} IN ({$ids_});
 
   public function deleteAll(array $ids) { //eliminar
     /**
-     * este metodo define codigo que modifica la base de datos, debe utilizarse cuidadosamente
+     * Este metodo define codigo que modifica la base de datos, debe utilizarse cuidadosamente
      * debe verificarse la existencia de ids correctos
      */
     if(empty($ids)) throw new Exception("No existen identificadores definidos");
     $ids_ = $this->sql->formatIds($ids);
     $sql = "
 DELETE FROM {$this->entity->sn_()}
-WHERE {$this->entity->getPk()->getName()} IN ({$ids_});
+WHERE id IN ({$ids_});
 ";
 
     $detail = $ids;
