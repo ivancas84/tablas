@@ -67,9 +67,9 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     <label class=\"col-sm-2 col-form-label\">{$field->getName('Xx yy')}</label>
     <div class=\"col-sm-10\">
       <div class=\"input-group\">
-        <input class=\"form-control\" placeholder=\"yyyy-mm-dd\" ngbDatepicker #" . $field->getName("xxYy") . "=\"ngbDatepicker\" formControlName=\"{$field->getName()}\"  [ngClass]=\"{'is-invalid':(fieldsetForm.get('" . $field->getName() . "').invalid && (fieldsetForm.get('" . $field->getName() . "').dirty || fieldsetForm.get('" . $field->getName() . "').touched))}\">
+        <input class=\"form-control\" placeholder=\"yyyy-mm-dd\" ngbDatepicker #" . $field->getName("xxYy") . "_=\"ngbDatepicker\" formControlName=\"{$field->getName()}\" [ngClass]=\"{'is-invalid':({$field->getName("xxYy")}.invalid && ({$field->getName("xxYy")}.dirty || {$field->getName("xxYy")}.touched))}\">
         <div class=\"input-group-append\">
-          <button class=\"btn btn-outline-secondary\" (click)=\"" . $field->getName("xxYy") . ".toggle()\" type=\"button\">
+          <button class=\"btn btn-outline-secondary\" (click)=\"" . $field->getName("xxYy") . "_.toggle()\" type=\"button\">
             <span class=\"oi oi-calendar\"></span>
           </button>
         </div>
@@ -133,7 +133,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     $this->string .= "  <div class=\"form-group form-row\">
     <label class=\"col-sm-2 col-form-label\">" . $field->getName("Xx Yy") . ":</label>
     <div class=\"col-sm-10\">
-      <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':({$field->getName()}.invalid && ({$field->getName()}.dirty || {$field->getName()}.touched))}\">
+      <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':({$field->getName("xxYy")}.invalid && ({$field->getName("xxYy")}.dirty || {$field->getName("xxYy")}.touched))}\">
         <option [ngValue]=\"null\">--" . $field->getName("Xx Yy") . "--</option>
 " ;
 
@@ -154,7 +154,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     $this->string .= "  <div *ngIf=\"isSync('" . $field->getName() . "')\" class=\"form-group form-row\">
     <label class=\"col-sm-2 col-form-label\">" . $field->getName("Xx Yy") . "</label>
     <div class=\"col-sm-10\">
-      <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':({$field->getName()}.invalid && ({$field->getName()}.dirty || {$field->getName()}.touched))}\">
+      <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':({$field->getName("xxYy")}.invalid && ({$field->getName("xxYy")}.dirty || {$field->getName("xxYy")}.touched))}\">
         <option [ngValue]=\"null\">--" . $field->getName("Xx Yy") . "--</option>
         <option *ngFor=\"let option of options." . $field->getEntityRef()->getName() . "\" [value]=\"option.id\" >{{option.id | label:\"{$field->getEntityRef()->getName()}\"}}</option>
       </select>
