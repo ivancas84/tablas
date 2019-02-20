@@ -20,7 +20,7 @@ class ComponentFieldsetArrayHtml extends GenerateFileEntity {
 
   protected function start() {
     $this->string .= "<h3>{$this->entity->getName("Xx Yy")}</h3>
-    <fieldset *ngFor=\"let form of fieldsetForm.controls; let i=index\">
+<fieldset *ngFor=\"let form of fieldsetForm.controls; let i=index\" [formGroup]=\"fieldsetForm.controls[i]\">
 ";
   }
 
