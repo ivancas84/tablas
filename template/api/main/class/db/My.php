@@ -74,12 +74,14 @@ class DbSqlMy extends mysqli implements DbInterface {
   public function numFields($result){ return $result->field_count; }
 
   public function fetchAll($result) {
+    return $result->fetch_all(MYSQLI_ASSOC);
+    /*
     $rows = array();
     while ($row = $result->fetch_assoc()) {
       array_push($rows,$row);
     }
 
-    return $rows;
+    return $rows;*/
   }
 
   public function fetchAssoc($result){ return $result->fetch_assoc(); }

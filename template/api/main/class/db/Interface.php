@@ -19,12 +19,15 @@ interface DbInterface {
   public function fetchAllColumns($result, $fieldNumber);
   public function fetchAssoc($result);
   public function fetchRow($result);
+
+  //transacciones
   public function begin();
   public function commit();
   public function rollback();
+
+  //cierre
   public function close();
-  
-  
+  //public function free();
   //public function dataSeek($result, $rowNumber);
   
 }
