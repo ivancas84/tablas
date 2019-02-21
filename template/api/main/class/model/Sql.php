@@ -98,7 +98,7 @@ abstract class EntitySql { //Definir SQL
      * Array $advanced:
      *  [
      *    0 => "field"
-     *    1 => "=", "!=", ">=", "<=", "<", ">", ...
+     *    1 => "=", "!=", ">=", "<=", "<", ">", "=="
      *    2 => "value" array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array)
      *    3 => "AND" | "OR" | null (opcional, por defecto AND)
      *  ]
@@ -115,19 +115,24 @@ abstract class EntitySql { //Definir SQL
 
 
   private function conditionAdvancedRecursive(array $advanced){
+    /**
+     * Para facilitar la definicion de condiciones, retorna un array con dos elementos:
+     * "condition": SQL
+     * "mode": Concatenacion de condiciones "AND" | "OR"
+     */
 
-    if(!is_array($advanced[0])) { //si en la posicion 0 es un string significa que es un campo a buscar, caso contrario es un nuevo conjunto (array) de campos que debe ser recorrido
-      $option = (empty($advanced[1])) ? "=" : $advanced[1]; //por defecto se define "="
-      $value = (empty($advanced[2])) ? null : $advanced[2]; //hay opciones de configuracion que pueden no definir valores
-      $mode = (empty($advanced[3])) ? "AND" : $advanced[3];  //el modo indica la concatenacion con la opcion precedente, se usa en un mismo conjunto (array) de opciones
+    if(is_array($advanced[0])) return $this->conditionAdvancedIterable($advanced);
+    /**
+     * si en la posicion 0 es un string significa que es un campo a buscar, caso contrario es un nuevo conjunto (array) de campos que debe ser recorrido
+     */
 
-      $condicion = $this->conditionAdvancedDefined($advanced[0], $option, $value);
-      if(!$condicion) $condicion = $this->conditionAdvancedMain($advanced[0], $option, $value);
-      return ["condition" => $condicion, "mode" => $mode];
+    $option = (empty($advanced[1])) ? "=" : $advanced[1]; //por defecto se define "="
+    $value = (empty($advanced[2])) ? null : $advanced[2]; //hay opciones de configuracion que pueden no definir valores
+    $mode = (empty($advanced[3])) ? "AND" : $advanced[3];  //el modo indica la concatenacion con la opcion precedente, se usa en un mismo conjunto (array) de opciones
 
-    } else {
-      return $this->conditionAdvancedIterable($advanced);
-    }
+    $condicion = $this->conditionAdvancedDefined($advanced[0], $option, $value);
+    if(!$condicion) $condicion = $this->conditionAdvancedValue($advanced[0], $option, $value);
+    return ["condition" => $condicion, "mode" => $mode];
   }
 
   private function conditionAdvancedIterable(array $advanced) {
@@ -150,9 +155,29 @@ abstract class EntitySql { //Definir SQL
     return ["condition"=>"(".$condition.")", "mode"=>$modeReturn];
   }
 
+  private function conditionAdvancedValue($field, $option, $value){
+    if(!is_array($value)) {
+      $cond = $this->conditionAdvancedMain($field, $option, $value);
+      return $cond;
+    }
+
+    $condition = "";
+    $or = false;
+
+    foreach($value as $v){
+      if($or) $condition .= " OR ";
+      else $or = true;
+      $condition .= $this->conditionAdvancedMain($field, $option, $v);
+    }
+
+    return $condition;
+  }
+
+
   protected function conditionAdvancedMain($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //condicion avanzada principal
   /**
    * Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
+   * La restriccion de conditionAdvancedMain es que $value no puede ser un array, ya que definirá un conjunto de condiciones asociadas
    */
 
   protected function conditionAdvancedDefined($field, $option, $value){
