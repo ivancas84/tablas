@@ -28,7 +28,12 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
      * @return type
      */
 
-    if (!empty($prefix)) $this->string .= $this->body($entity, $prefix); //Genera codigo solo para las relaciones
+     if(in_array($entity->getName(), $tablesVisited)) return;
+    if (!empty($prefix)){
+      $this->string .= $this->body($entity, $prefix); //Genera codigo solo para las relaciones
+    }
+    $this->fk($entity, $tablesVisited, $prefix);
+    $this->u_($entity, $tablesVisited, $prefix);
     /**
      * Para determinar que se este recorriendo una relacion en vez de la entidad actual, se utiliza el prefix
      * Si prefix esta vacio, significa que recien se comenzo a recorrer la tabla actual y no se debe generar el codigo
@@ -36,8 +41,7 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
      * El codigo para la entidad actual se genera fuera de este metodo
      */
 
-    $this->fk($entity, $tablesVisited, $prefix);
-    $this->u_($entity, $tablesVisited, $prefix);
+
   }
 
   public function fk(Entity $entity, array $tablesVisited, $prefix){

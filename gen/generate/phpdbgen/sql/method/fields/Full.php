@@ -5,14 +5,14 @@ require_once("generate/GenerateEntityRecursiveFk.php");
 class ClassSql_fieldsFull extends GenerateEntityRecursiveFk {
   public $fields = [];
 
-  public function generate(){
+  /*public function generate(){
     if(!$this->getEntity()->hasRelations()) return "";
 
     $this->start();
     $this->recursive($this->getEntity());
     $this->end();
     return $this->string;
-  }
+  }*/
 
 
   protected function start(){

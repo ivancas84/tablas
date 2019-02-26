@@ -34,6 +34,8 @@ class DbSqlMy extends mysqli implements DbInterface {
 
   public function query($query, $resultmode = NULL){ //@override
     $result = parent::query($query);
+    $tmp = "/tmp/consultas.sql";
+    file_put_contents($tmp, $query);
     if(!$result) throw new Exception($this->error);
     return $result;
   }

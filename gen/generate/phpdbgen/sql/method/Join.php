@@ -28,12 +28,16 @@ class ClassSql_join extends GenerateEntity {
       $pk = $field->getEntityRef()->getPk();
       $prefixTemp = $prefixAux . $field->getAlias();
 
-      $this->string .= "Dba::sql('{$field->getEntityRef()->getName()}', '{$prefixTemp}')->_join('{$field->getName()}', '{$tableAux}') . '
+      if(!in_array($field->getEntityRef()->getName(), $tablesVisited)) {
+
+        $this->string .= "Dba::sql('{$field->getEntityRef()->getName()}', '{$prefixTemp}')->_join('{$field->getName()}', '{$tableAux}') . '
 ' . ";
 
-      $this->recursive($field->getEntityRef(), $tablesVisited, $prefixTemp);
+        $this->recursive($field->getEntityRef(), $tablesVisited, $prefixTemp);
+      }
+
+
     }
-    unset($fk, $field, $tablesVisited, $tableAux, $prefixAux, $pk, $prefixTemp);
   }
 
   protected function u_(array $u_, array $tablesVisited, $tableAux, $prefixAux){
@@ -57,6 +61,8 @@ class ClassSql_join extends GenerateEntity {
     $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
     $u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
 
+
+
     array_push ($tablesVisited, $entity->getName());
 
     if (empty ($prefix)){
@@ -70,7 +76,6 @@ class ClassSql_join extends GenerateEntity {
     $this->fk($fk, $tablesVisited, $tableAux, $prefixAux);
     $this->u_($u_, $tablesVisited, $tableAux, $prefixAux);
 
-    unset($entity, $tablesVisited, $prefix, $fk, $u_, $prefixAux, $tableAux);
   }
 
 

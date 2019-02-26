@@ -45,6 +45,7 @@ abstract class Entity {
   public static function setStructure(array $structure){ self::$structure = $structure; }
   public static function getStructure(){ return self::$structure; }
 
+
   public function getName($format = null) {
     switch($format){
       case "XxYy": return str_replace(" ", "", ucwords(str_replace("_", " ", strtolower($this->name))));
@@ -211,5 +212,13 @@ abstract class Entity {
   public function hasRelations(){ return ($this->hasRelationsFk() || $this->hasRelationsU_()) ? true : false; }
   public function hasRelationsFk(){ return (count($this->getFieldsFk())) ? true : false; }
   public function hasRelationsU_(){ return (count($this->getFieldsU_())) ? true : false; }
+
+  public function hasRelationsFk_(){
+    $fk = $this->getFieldsFk();
+    foreach($fk as $field ) {
+      if($field->getEntityRef()->getName() != $this->getName()) return true;
+    }
+    return false;
+  }
 
 }
