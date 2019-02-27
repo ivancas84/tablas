@@ -216,9 +216,10 @@ class Dba { //Facilita el acceso a la base de datos
 
   public static function getAll($entity, array $ids, $render = null){ //busqueda por ids
     if(empty($ids)) return [];
-    $sql = EntitySqlo::getInstanceFromString($entity)->getAll($ids, $render);
+    $sqlo = EntitySqlo::getInstanceFromString($entity);
+    $sqlo->getAll($ids, $render);
     $rows = self::fetchAll($sql);
-    return EntitySqlo::getInstanceFromString($entity)->jsonAll($rows);
+    return $sqlo->jsonAll($rows);
   }
 
   public static function one($entity, $render = null) { //un solo valor
@@ -299,7 +300,8 @@ class Dba { //Facilita el acceso a la base de datos
     $db = self::dbInstance();
     try {
       $result = $db->query($sql);
-      return $db->fetchAssoc($result);
+      try { return $db->fetchAssoc($result); }
+      finally { $result->close(); }
     } finally { self::dbClose(); }
   }
 
@@ -311,7 +313,6 @@ class Dba { //Facilita el acceso a la base de datos
 
       try { return $db->fetchAll($result); }
       finally { $result->close(); }
-
     } finally { self::dbClose(); }
   }
 
@@ -321,17 +322,17 @@ class Dba { //Facilita el acceso a la base de datos
     try {
       $db->query("SET lc_time_names = 'es_AR';");
       $result = $db->query($sql);
-      return $db->fetchAll($result);
-    } finally {
-      self::dbClose();
-    }
+      try { return $db->fetchAll($result); }
+      finally { $result->close(); }
+    } finally { self::dbClose(); }
   }
 
   public static function fetchAllColumns($sql, $column = 0){ //query and fetch result
     $db = self::dbInstance();
     try {
       $result = $db->query($sql);
-      return $db->fetchAllColumns($result, $column);
+      try { return $db->fetchAllColumns($result, $column); }
+      finally { $result->close(); }
     } finally { self::dbClose(); }
   }
 

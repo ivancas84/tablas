@@ -5,7 +5,9 @@ require_once("class/model/Dba.php");
 require_once("function/stdclass_to_array.php");
 
 try{
-  $ids_ = Filter::request("ids");
+  $ids_ = Filter::post("ids");
+  if(empty($ids_)) throw new Exception("Identificadores no definidos");
+
   $ids =  json_decode($ids_);
   $rows = Dba::getAll(ENTITY, $ids);
   echo json_encode($rows);
