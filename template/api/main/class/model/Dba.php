@@ -82,7 +82,7 @@ class Dba { //Facilita el acceso a la base de datos
     return $sqlo->sql->isInsertable($row); //3) Si 1 no dio resultado, verificar si es insertable
   }
 
-  public static function renderParams(array $params){ //generar display
+  public static function displayParams(array $params) {
     /**
      * Desde el cliente se recibe un Display, es una objeto similar a Render pero con algunas caracteristicas adicionales
      */
@@ -120,6 +120,11 @@ class Dba { //Facilita el acceso a la base de datos
       }
     }
 
+    return $display;
+  }
+
+  public static function renderParams(array $params){ //generar display
+    $display = self::displayParams($params);
     return self::renderDisplay($display);
   }
 
@@ -217,7 +222,7 @@ class Dba { //Facilita el acceso a la base de datos
   public static function getAll($entity, array $ids, $render = null){ //busqueda por ids
     if(empty($ids)) return [];
     $sqlo = EntitySqlo::getInstanceFromString($entity);
-    $sqlo->getAll($ids, $render);
+    $sql = $sqlo->getAll($ids, $render);
     $rows = self::fetchAll($sql);
     return $sqlo->jsonAll($rows);
   }
