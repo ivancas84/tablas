@@ -187,24 +187,7 @@ abstract class Entity {
     return null;
   }
 
-  public function getOrder(){   //ordenamiento por defecto
-    /**
-     * por defecto se definen los campos principales nf de la tabla principal
-     * Si se incluyen campos de relaciones, asegurarse de incluir las relaciones
-     * TODO: El ordenamiento no deberia formar parte de las entidades de generacion de sql?
-     */
-    $fields = $this->getFieldsNf();
-    $orderBy = array();
-
-    foreach($fields as $field){
-      if($field->isMain()){
-        $orderBy[$field->getName()] = "asc";
-      }
-    }
-
-    return $orderBy;
-  }
-
+  
   /**
    * Tiene relaciones?
    * Utilizado generalmente para verificar si es viable la generacion de cierto codigo que requiere relaciones

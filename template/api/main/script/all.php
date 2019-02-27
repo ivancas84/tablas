@@ -5,7 +5,7 @@ require_once("class/model/Dba.php");
 
 try{
 
-  $params = Filter::requestAll();
+  $params = Filter::postAll();
   //el uso de parametros es dinamico
   //se puede definir un parametro opcional "display" que posee un string en formato json para facilitar el uso de tipos basicos
 

@@ -40,14 +40,8 @@ class Render {
   //    nombre_field => asc | desc,
   //  )
   //Dependiendo del motor de base de datos utilizado, puede requerirse que el campo utilizado en el ordenamiento sea incluido en los campos de la consulta
-  public function setOrder (array $order = [], array $orderDefault = []) {
-    foreach($order as $key => $value){
-      if(array_key_exists($key, $orderDefault)){
-        unset($orderDefault[$key]);
-      }
-    }
-
-    $this->order = array_merge($order, $orderDefault);
+  public function setOrder (array $order) {
+    $this->order = $order;
   }
 
   public function setPagination($size, $page) {

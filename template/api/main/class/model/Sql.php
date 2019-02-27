@@ -314,7 +314,38 @@ abstract class EntitySql { //Definir SQL
   public function _joinAux() { return ""; }
 
   //Ordenamiento de cadena de relaciones
+  protected function orderDefault(){   //ordenamiento por defecto
+    /**
+     * por defecto se definen los campos principales nf de la tabla principal
+     * Si se incluyen campos de relaciones, asegurarse de incluir las relaciones
+     * TODO: El ordenamiento no deberia formar parte de las entidades de generacion de sql?
+     */
+    $fields = $this->getFieldsNf();
+    $orderBy = array();
+
+    foreach($fields as $field){
+      if($field->isMain()){
+        $orderBy[$field->getName()] = "asc";
+      }
+    }
+
+    return $orderBy;
+  }
+
+  protected function initOrder(array $order) {
+    $orderDefault = $this->orderDefault();
+    foreach($order as $key => $value){
+      if(array_key_exists($key, $orderDefault)){
+        unset($orderDefault[$key]);
+      }
+    }
+
+    return array_merge($order, $orderDefault);
+  }
+
+
   public function orderBy(array $order = null){
+    $order = $this->initOrder($order);
     if(empty($order)) return "";
 
     $sql = '';
