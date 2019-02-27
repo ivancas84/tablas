@@ -14,12 +14,14 @@ require_once("class/db/Pg.php");
 require_once("function/toString.php");
 require_once("class/model/Transaction.php");
 require_once("class/model/SqlFormat.php");
+require_once("class/model/Sqlo.php");
+
 require_once("function/stdclass_to_array.php");
 
 
 
-//Facilita el acceso a la base de datos y clases del modelo
-class Dba {
+class Dba { //Facilita el acceso a la base de datos
+
 
   /**
    * Prefijos y sufijos en el nombre de metodos:
@@ -30,45 +32,8 @@ class Dba {
    */
   public static $dbInstance = NULL; //conexion con una determinada db
   public static $dbCount = 0;
-  public static $entities = [];
-  public static $sqlFormat = NULL;
-
-  public static function entity($entity) { //singleton Entity
-    if(!array_key_exists($entity, self::$entities)){
-      $entityName = snake_case_to("XxYy", $entity) . "Entity";
-      $entity_ = new $entityName;
-      self::$entities[$entity] = $entity_;
-    }
-    return self::$entities[$entity];
-  }
-
-  public static function sqlFormat() { //singleton sqlFormat
-    if(is_null(self::$sqlFormat)) self::$sqlFormat = new SqlFormat();
-    return self::$sqlFormat;
-  }
 
 
-  public static function sqlo($entity) { //instancia singleton de sqlo
-    $sqloName = snake_case_to("XxYy", $entity) . "Sqlo";
-    return call_user_func("{$sqloName}::getInstance");
-  }
-
-  public static function sql($entity, $prefix = NULL) { //crear instancias de sql
-    /**
-     * sql, a diferencia de sus pares entity y sqlo, no puede ser implementada como singleton porque utiliza prefijos de identificacion
-     */
-    $sqlName = snake_case_to("XxYy", $entity) . "Sql";
-    $sql = new $sqlName;
-    if($prefix) $sql->prefix = $prefix;
-    return $sql;
-  }
-
-  public static function value($entity, array $row = NULL) { //crear instancias de values
-    //TODO: Implementar metodo setRow fuera del constructor
-    $name = snake_case_to("XxYy", $entity);
-    $value = new $name;
-    return $value;
-  }
 
   public static function dbInstance() { //singleton db
     /**
@@ -107,7 +72,7 @@ class Dba {
 
   public static function isPersistible($entity, array $row){ //es persistible?
     $row_ = self::_unique($entity, $row); //1) Consultar valores a partir de los datos
-    $sqlo = self::sqlo($entity);
+    $sqlo = EntitySqlo::getInstanceFromString($entity);
 
     if (count($row_)){
       $row["id"] = $row_["id"];
@@ -117,7 +82,7 @@ class Dba {
     return $sqlo->sql->isInsertable($row); //3) Si 1 no dio resultado, verificar si es insertable
   }
 
-  public static function display(array $params){ //generar display
+  public static function renderParams(array $params){ //generar display
     /**
      * Desde el cliente se recibe un Display, es una objeto similar a Render pero con algunas caracteristicas adicionales
      */
@@ -155,17 +120,17 @@ class Dba {
       }
     }
 
-    return $display;
+    return self::renderDisplay($display);
   }
 
-  public static function render($entity, array $display = null) { //instancia de render a partir de un display
+  public static function renderDisplay(array $display = null) { //instancia de render a partir de un display
     /**
      * @todo El ordenamiento por defecto no deberia ser una caracteristica de entity sino de las clases de generacion de sql
      */
     $render = new Render();
 
     $render->setPagination($display["size"], $display["page"]);
-    $render->setOrder($display["order"], self::entity($entity)->getOrder());
+    $render->setOrder($display["order"]);
 
     if(!empty($display["search"])) $render->setSearch($display["search"]);
     if(!empty($display["filters"])) $render->setAdvanced($display["filters"]);
@@ -176,7 +141,7 @@ class Dba {
   }
 
   public static function count($entity, $render = null){ //cantidad
-    $sql = self::sqlo($entity)->count($render);
+    $sql = EntitySqlo::getInstanceFromString($entity)->count($render);
     $row = self::fetchAssoc($sql);
     return intval($row["num_rows"]);
   }
@@ -186,12 +151,12 @@ class Dba {
      * $params
      *   array("nombre_field" => "valor_field", ...)
      */
-    $sql = self::sqlo($entity)->_unique($params, $render);
+    $sql = EntitySqlo::getInstanceFromString($entity)->_unique($params, $render);
     if(!$sql) return null;
     $rows = self::fetchAll($sql);
 
     if(count($rows) > 1) throw new Exception("La busqueda estricta por campos unicos de {$entity} retorno mas de un resultado");
-    if(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
+    if(count($rows) == 1) return EntitySqlo::getInstanceFromString($entity)->json($rows[0]);
     return null;
   }
 
@@ -200,17 +165,17 @@ class Dba {
      * $params
      *   array("nombre_field" => "valor_field", ...)
      */
-    $sql = self::sqlo($entity)->unique($params);
+    $sql = EntitySqlo::getInstanceFromString($entity)->unique($params);
     if(empty($sql)) return null;
 
     $rows = self::fetchAll($sql);
     if(count($rows) > 1) throw new Exception("La busqueda por campos unicos de {$entity} retorno mas de un resultado");
-    if(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
+    if(count($rows) == 1) return EntitySqlo::getInstanceFromString($entity)->json($rows[0]);
     return null;
   }
 
   public static function ids($entity, $render = null){ //devolver ids
-    $sql = self::sqlo($entity)->all($render);
+    $sql = EntitySqlo::getInstanceFromString($entity)->all($render);
     $ids = self::fetchAllColumns($sql, 0);
     array_walk($ids, "toString"); //los ids son tratados como string para evitar un error que se genera en Angular (se resta un numero en los enteros largos)
     return $ids;
@@ -231,9 +196,10 @@ class Dba {
   }
 
   public static function all($entity, $render = null){ //devolver todos los valores
-    $sql = self::sqlo($entity)->all($render);
+    $sqlo = EntitySqlo::getInstanceFromString($entity);
+    $sql = $sqlo->all($render);
     $rows = self::fetchAll($sql);
-    return self::sqlo($entity)->jsonAll($rows);
+    return $sqlo->jsonAll($rows);
   }
 
   public static function get($entity, $id, $render = null) { //busqueda por id
@@ -250,22 +216,22 @@ class Dba {
 
   public static function getAll($entity, array $ids, $render = null){ //busqueda por ids
     if(empty($ids)) return [];
-    $sql = self::sqlo($entity)->getAll($ids, $render);
+    $sql = EntitySqlo::getInstanceFromString($entity)->getAll($ids, $render);
     $rows = self::fetchAll($sql);
-    return self::sqlo($entity)->jsonAll($rows);
+    return EntitySqlo::getInstanceFromString($entity)->jsonAll($rows);
   }
 
   public static function one($entity, $render = null) { //un solo valor
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
+    elseif(count($rows) == 1) return EntitySqlo::getInstanceFromString($entity)->json($rows[0]);
     else throw new Exception("La consulta no arrojó resultados");
   }
 
   public static function oneOrNull($entity, $render = null) { //un solo valor o null
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($rows) == 1) return self::sqlo($entity)->json($rows[0]);
+    elseif(count($rows) == 1) return EntitySqlo::getInstanceFromString($entity)->json($rows[0]);
     else return null;
   }
 
@@ -289,7 +255,7 @@ class Dba {
 
   /*
   public static function deleteRequiredAll($entity, array $ids, array $params = []) { //eliminacion requerida
-    $sqlo = self::sqlo($entity);
+    $sqlo = EntitySqlo::getInstanceFromString($entity);
     return $sqlo->deleteRequiredAll($ids, $params);
   }*/
 
@@ -307,7 +273,7 @@ class Dba {
      *     "id": Dependiendo de la implementacion, el id del campo persistido puede no coincidir con el enviado
      *     "detail": array de elementos, cada elemento es un string concatenado de la forma entidadId, ejemplo "persona1234567890"
      */
-    $sqlo = self::sqlo($entity);
+    $sqlo = EntitySqlo::getInstanceFromString($entity);
     $row_ = self::_unique($entity, $row); //1
 
     if (!empty($row_)){ //2
@@ -342,7 +308,10 @@ class Dba {
     $db = self::dbInstance();
     try {
       $result = $db->query($sql);
-      return $db->fetchAll($result);
+
+      try { return $db->fetchAll($result); }
+      finally { $result->close(); }
+
     } finally { self::dbClose(); }
   }
 

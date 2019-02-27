@@ -29,7 +29,7 @@ class ClassSql_joinAux extends GenerateEntityRecursiveFk {
   * @return string Codigo generado
   */
   protected function body(Entity $entity, $prefix){
-    $this->string .= "\" . Dba::sql('{$entity->getName()}', '{$prefix}')->_joinAux() . \"
+    $this->string .= "\" . EntitySql::getInstanceFromString('{$entity->getName()}', '{$prefix}')->_joinAux() . \"
 ";
 
   }

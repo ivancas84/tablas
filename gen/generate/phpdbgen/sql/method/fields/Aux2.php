@@ -21,7 +21,7 @@ class ClassSql_fieldsAux extends GenerateEntityRecursiveFk {
   * @return string Codigo generado
   */
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    if(\$f = Dba::sql('{$entity->getName()}', '{$prefix}')->_fieldsAux()) \$fields .= concat(\$f, ', ', '', \$fields);
+    $this->string .= "    if(\$f = EntitySql::getInstanceFromString('{$entity->getName()}', '{$prefix}')->_fieldsAux()) \$fields .= concat(\$f, ', ', '', \$fields);
 ";
   }
   protected function end(){

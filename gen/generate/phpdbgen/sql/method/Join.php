@@ -30,7 +30,7 @@ class ClassSql_join extends GenerateEntity {
 
       if(!in_array($field->getEntityRef()->getName(), $tablesVisited)) {
 
-        $this->string .= "Dba::sql('{$field->getEntityRef()->getName()}', '{$prefixTemp}')->_join('{$field->getName()}', '{$tableAux}') . '
+        $this->string .= "EntitySql::getInstanceFromString('{$field->getEntityRef()->getName()}', '{$prefixTemp}')->_join('{$field->getName()}', '{$tableAux}') . '
 ' . ";
 
         $this->recursive($field->getEntityRef(), $tablesVisited, $prefixTemp);
@@ -47,7 +47,7 @@ class ClassSql_join extends GenerateEntity {
       $pk = $field->getEntityRef()->getPk();
       $prefixTemp = $prefixAux . $fieldAlias ;
 
-      $this->string .= "Dba::sql('{$field->getEntity()->getName()}', '{$prefixTemp}')->_joinR('{$field->getName()}', '{$tableAux}') . '
+      $this->string .= "EntitySql::getInstanceFromString('{$field->getEntity()->getName()}', '{$prefixTemp}')->_joinR('{$field->getName()}', '{$tableAux}') . '
 ' . ";
 
       //$this->string .= $this->recursive($field->getEntity(), $tablesVisited, $prefixTemp);

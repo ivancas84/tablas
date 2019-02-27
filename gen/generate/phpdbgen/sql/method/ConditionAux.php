@@ -21,7 +21,7 @@ class ClassSql_conditionAux extends GenerateEntityRecursiveFk{
   }
 
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    if(\$cond = Dba::sql('{$entity->getName()}', '{$prefix}')->_conditionAux()) \$sqlCond .= concat(\$cond, ' AND', '', \$sqlCond);
+    $this->string .= "    if(\$cond = EntitySql::getInstanceFromString('{$entity->getName()}', '{$prefix}')->_conditionAux()) \$sqlCond .= concat(\$cond, ' AND', '', \$sqlCond);
 ";
   }
 

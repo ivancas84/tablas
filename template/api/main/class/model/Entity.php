@@ -8,6 +8,8 @@
 abstract class Entity {
 
   protected static $structure = NULL; //array. Estructura de tablas.
+  protected static $instances = [];
+
   /**
    * Debido a que la estructura utiliza clases concretas, debe asignarse luego de finalizada la generacion de archivos y solo cuando se requiera su uso.
    */
@@ -29,6 +31,20 @@ abstract class Entity {
 
   //Metodo auxiliares para facilitar la definicion de consultas sql (se definen como metodos estaticos para facilitar la sintaxis)
   //public static function n_(){ return $this->name; } //nombre de la tabla. El nombre de la tabla puede no coincidir con el de la entidad
+
+
+  final public static function getInstance() {
+    $className = get_called_class();
+    if (!isset(self::$instances[$className])) { self::$instances[$className] = new $className; }
+    return self::$instances[$className];
+  }
+
+
+  final public static function getInstanceFromString($entity) {
+    $className = snake_case_to("XxYy", $entity) . "Entity";
+    return call_user_func("{$className}::getInstance");
+  }
+
 
   /**
    * Metodos para facilitar la sintaxis del sql
@@ -187,7 +203,7 @@ abstract class Entity {
     return null;
   }
 
-  
+
   /**
    * Tiene relaciones?
    * Utilizado generalmente para verificar si es viable la generacion de cierto codigo que requiere relaciones

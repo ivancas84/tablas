@@ -39,7 +39,7 @@ class Sqlo_json extends GenerateEntity {
 
 
   protected function body(Entity $entity, $arrayName, $prefixField, $createArray = true){
-    $this->string .= "    \$json = Dba::sql('{$entity->getName()}', '{$prefixField}')->_json(\$row);
+    $this->string .= "    \$json = EntitySql::getInstanceFromString('{$entity->getName()}', '{$prefixField}')->_json(\$row);
     if(!empty(\$json)) " . $arrayName . " = \$json;
 
 ";

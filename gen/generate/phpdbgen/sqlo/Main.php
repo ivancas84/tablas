@@ -40,8 +40,8 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
   //Se definen todos los recursos de forma independiente, sin parametros en el constructor, para facilitar el polimorfismo de las subclases
   public function __construct(){
     \$this->db = Dba::dbInstance();
-    \$this->entity = Dba::entity('{$this->getEntity()->getName()}');
-    \$this->sql = Dba::sql('{$this->getEntity()->getName()}');
+    \$this->entity = Entity::getInstanceFromString('{$this->getEntity()->getName()}');
+    \$this->sql = EntitySql::getInstanceFromString('{$this->getEntity()->getName()}');
   }
 ";
   }

@@ -30,7 +30,7 @@ class " . $this->getEntity()->getName("XxYy") . "ValuesMain extends EntityValues
 
   protected function body(){
     $this->properties();
-    $this->construct();
+    $this->setRow();
     $this->getters();
    }
 
@@ -41,9 +41,9 @@ class " . $this->getEntity()->getName("XxYy") . "ValuesMain extends EntityValues
   }
 
 
-  protected function construct(){
-    require_once("generate/phpdbgen/values/__construct.php");
-    $g = new ClassValues__construct($this->getEntity());
+  protected function setRow(){
+    require_once("generate/phpdbgen/values/setRow.php");
+    $g = new ClassValues_setRow($this->getEntity());
     $this->string .=  $g->generate();
   }
 

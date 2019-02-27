@@ -28,7 +28,7 @@ class ClassSql_fieldsFull extends GenerateEntityRecursiveFk {
   * @return string Codigo generado
   */
   protected function body(Entity $entity, $prefix){
-    $this->string .= "Dba::sql('{$entity->getName()}', '{$prefix}')->fields() . ',
+    $this->string .= "EntitySql::getInstanceFromString('{$entity->getName()}', '{$prefix}')->fields() . ',
 ' . ";
 
   }

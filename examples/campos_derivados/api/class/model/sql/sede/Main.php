@@ -34,9 +34,9 @@ class SedeSqlMain extends EntitySql{
   //@override
   public function mappingField($field){
     if($f = $this->_mappingField($field)) return $f;
-    if($f = Dba::sql('domicilio', 'dom')->_mappingField($field)) return $f;
-    if($f = Dba::sql('id_persona', 'coo')->_mappingField($field)) return $f;
-    if($f = Dba::sql('alumno', 'coo_alumper')->_mappingField($field)) return $f;
+    if($f = EntitySql::getInstanceFromString('domicilio', 'dom')->_mappingField($field)) return $f;
+    if($f = EntitySql::getInstanceFromString('id_persona', 'coo')->_mappingField($field)) return $f;
+    if($f = EntitySql::getInstanceFromString('alumno', 'coo_alumper')->_mappingField($field)) return $f;
     throw new Exception("Campo no reconocido " . $field);
   }
 
@@ -61,9 +61,9 @@ class SedeSqlMain extends EntitySql{
 
     public function fieldsFull(){
     $fields = $this->fields() . ',
-' . Dba::sql('domicilio', 'dom')->fields() . ',
-' . Dba::sql('id_persona', 'coo')->fields() . ',
-' . Dba::sql('alumno', 'coo_alumper')->fields() . '
+' . EntitySql::getInstanceFromString('domicilio', 'dom')->fields() . ',
+' . EntitySql::getInstanceFromString('id_persona', 'coo')->fields() . ',
+' . EntitySql::getInstanceFromString('alumno', 'coo_alumper')->fields() . '
 ';
     return $fields;
   }
@@ -71,29 +71,29 @@ class SedeSqlMain extends EntitySql{
   public function fieldsAux(){
     $fields = $this->_fieldsAux();
 
-    if($f = Dba::sql('domicilio', 'dom')->_fieldsAux()) $fields .= concat($f, ', ', '', $fields);
-    if($f = Dba::sql('id_persona', 'coo')->_fieldsAux()) $fields .= concat($f, ', ', '', $fields);
-    if($f = Dba::sql('alumno', 'coo_alumper')->_fieldsAux()) $fields .= concat($f, ', ', '', $fields);
+    if($f = EntitySql::getInstanceFromString('domicilio', 'dom')->_fieldsAux()) $fields .= concat($f, ', ', '', $fields);
+    if($f = EntitySql::getInstanceFromString('id_persona', 'coo')->_fieldsAux()) $fields .= concat($f, ', ', '', $fields);
+    if($f = EntitySql::getInstanceFromString('alumno', 'coo_alumper')->_fieldsAux()) $fields .= concat($f, ', ', '', $fields);
     return $fields;
   }
 
 
   //@override
   public function join(){
-    return Dba::sql('domicilio', 'dom')->_join('domicilio', 'sede') . '
-' . Dba::sql('id_persona', 'coo')->_join('coordinador', 'sede') . '
-' . Dba::sql('alumno', 'coo_alumper')->_joinR('persona', 'coo') . '
+    return EntitySql::getInstanceFromString('domicilio', 'dom')->_join('domicilio', 'sede') . '
+' . EntitySql::getInstanceFromString('id_persona', 'coo')->_join('coordinador', 'sede') . '
+' . EntitySql::getInstanceFromString('alumno', 'coo_alumper')->_joinR('persona', 'coo') . '
 ' ;      
   }
   public function joinAux(){
     $join = "";
     if($j = $this->_joinAux()) $join .= "{$j}
 ";
-    if ($j = Dba::sql('domicilio', 'dom')->_joinAux()) $join .= "{$j}
+    if ($j = EntitySql::getInstanceFromString('domicilio', 'dom')->_joinAux()) $join .= "{$j}
 ";
-    if ($j = Dba::sql('id_persona', 'coo')->_joinAux()) $join .= "{$j}
+    if ($j = EntitySql::getInstanceFromString('id_persona', 'coo')->_joinAux()) $join .= "{$j}
 ";
-    if ($j = Dba::sql('alumno', 'coo_alumper')->_joinAux()) $join .= "{$j}
+    if ($j = EntitySql::getInstanceFromString('alumno', 'coo_alumper')->_joinAux()) $join .= "{$j}
 ";
   return $join;
   }
@@ -103,9 +103,9 @@ class SedeSqlMain extends EntitySql{
   public function conditionSearch($search = ""){
     if(empty($search)) return '';
     $condition = $this->_conditionSearch($search) . "
- OR " . Dba::sql('domicilio', 'dom')->_conditionSearch($search) . "
- OR " . Dba::sql('id_persona', 'coo')->_conditionSearch($search) . "
- OR " . Dba::sql('alumno', 'coo_alumper')->_conditionSearch($search);
+ OR " . EntitySql::getInstanceFromString('domicilio', 'dom')->_conditionSearch($search) . "
+ OR " . EntitySql::getInstanceFromString('id_persona', 'coo')->_conditionSearch($search) . "
+ OR " . EntitySql::getInstanceFromString('alumno', 'coo_alumper')->_conditionSearch($search);
     return "(" . $condition . ")";
   }
 
@@ -162,18 +162,18 @@ class SedeSqlMain extends EntitySql{
   //@override
   protected function conditionAdvancedMain($field, $option, $value) {
     if($c = $this->_conditionAdvanced($field, $option, $value)) return $c;
-    if($c = Dba::sql('domicilio','dom')->_conditionAdvanced($field, $option, $value)) return $c;
-    if($c = Dba::sql('id_persona','coo')->_conditionAdvanced($field, $option, $value)) return $c;
-    if($c = Dba::sql('alumno','coo_alumper')->_conditionAdvanced($field, $option, $value)) return $c;
+    if($c = EntitySql::getInstanceFromString('domicilio','dom')->_conditionAdvanced($field, $option, $value)) return $c;
+    if($c = EntitySql::getInstanceFromString('id_persona','coo')->_conditionAdvanced($field, $option, $value)) return $c;
+    if($c = EntitySql::getInstanceFromString('alumno','coo_alumper')->_conditionAdvanced($field, $option, $value)) return $c;
     throw new Exception("No pudo definirse la condicion avanzada {$field} {$option} {$value}");
   }
 
   //@override
   public function conditionAux() {
     $sqlCond = $this->_conditionAux();
-    if($cond = Dba::sql('domicilio', 'dom')->_conditionAux()) $sqlCond .= concat($cond, ' AND', '', $sqlCond);
-    if($cond = Dba::sql('id_persona', 'coo')->_conditionAux()) $sqlCond .= concat($cond, ' AND', '', $sqlCond);
-    if($cond = Dba::sql('alumno', 'coo_alumper')->_conditionAux()) $sqlCond .= concat($cond, ' AND', '', $sqlCond);
+    if($cond = EntitySql::getInstanceFromString('domicilio', 'dom')->_conditionAux()) $sqlCond .= concat($cond, ' AND', '', $sqlCond);
+    if($cond = EntitySql::getInstanceFromString('id_persona', 'coo')->_conditionAux()) $sqlCond .= concat($cond, ' AND', '', $sqlCond);
+    if($cond = EntitySql::getInstanceFromString('alumno', 'coo_alumper')->_conditionAux()) $sqlCond .= concat($cond, ' AND', '', $sqlCond);
     return (empty($sqlCond)) ? '' : "({$sqlCond})";
   }
 

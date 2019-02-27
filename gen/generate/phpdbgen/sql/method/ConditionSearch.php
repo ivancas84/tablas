@@ -75,7 +75,7 @@ class ClassSql_conditionSearch extends GenerateEntity{
 
 
   protected function condition(Entity $entity, $alias){
-    $this->string .= " OR \" . Dba::sql('{$entity->getName()}', '{$alias}')->_conditionSearch(\$search) . \"
+    $this->string .= " OR \" . EntitySql::getInstanceFromString('{$entity->getName()}', '{$alias}')->_conditionSearch(\$search) . \"
 ";
   }
 

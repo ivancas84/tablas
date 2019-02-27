@@ -37,7 +37,7 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
   public function __construct(){
     parent::__construct();
-    \$this->entity = Dba::entity('{$this->getEntity()->getName()}');
+    \$this->entity = Entity::getInstanceFromString('{$this->getEntity()->getName()}');
   }
 
 

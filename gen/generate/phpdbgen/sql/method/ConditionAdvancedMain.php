@@ -15,7 +15,7 @@ class ClassSql_conditionAdvancedMain extends GenerateEntityRecursiveFk{
 
 
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    if(\$c = Dba::sql('{$entity->getName()}','{$prefix}')->_conditionAdvanced(\$field, \$option, \$value)) return \$c;
+    $this->string .= "    if(\$c = EntitySql::getInstanceFromString('{$entity->getName()}','{$prefix}')->_conditionAdvanced(\$field, \$option, \$value)) return \$c;
 ";
   }
 

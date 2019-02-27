@@ -6,14 +6,21 @@ class SqlFormat { //Formato SQL
    * Para simplificar las clases del modelo, los metodos de formato sql basicos se reunen en esta clase
    */
 
-  public $db; //DB. Conexion con la bse de datos
+  public $db; //DB. Conexion con la bse de
   /**
    * Para definir el sql es necesaria la existencia de una clase de acceso abierta, ya que ciertos metodos, como por ejemplo "escapar caracteres" lo requieren.
    * Ademas, ciertos metodos requieren determinar el motor de base de datos para definir la sintaxis SQL adecuada
    */
 
+   private static $instance; //singleton
+
   public function __construct() {
     $this->db = Dba::dbInstance();
+  }
+
+  public static function getInstance() { //singleton sqlFormat
+    if(is_null(self::$instance)) self::$instance = new SqlFormat();
+    return self::$instance;
   }
 
 

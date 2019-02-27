@@ -15,7 +15,7 @@ class ClassSql_conditionHistory extends GenerateEntityRecursive{
 
 
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    \$c .= concat(Dba::sql('{$entity->getName()}','{$prefix}')->_conditionHistory(\$history), ' AND');
+    $this->string .= "    \$c .= concat(EntitySql::getInstanceFromString('{$entity->getName()}','{$prefix}')->_conditionHistory(\$history), ' AND');
 ";
   }
 

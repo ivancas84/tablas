@@ -21,9 +21,21 @@ abstract class EntitySql { //Definir SQL
    * Ademas, ciertos metodos requieren determinar el motor de base de datos para definir la sintaxis SQL adecuada
    */
 
+
+   public static function getInstanceFromString($entity, $prefix = NULL) { //crear instancias de sql
+     /**
+      * sql, a diferencia de sus pares entity y sqlo, no puede ser implementada como singleton porque utiliza prefijos de identificacion
+      */
+     $sqlName = snake_case_to("XxYy", $entity) . "Sql";
+     $sql = new $sqlName;
+     if($prefix) $sql->prefix = $prefix;
+     return $sql;
+   }
+
+
   public function __construct(){
     $this->db = Dba::dbInstance();
-    $this->format = Dba::sqlFormat();
+    $this->format = SqlFormat::getInstance();
   }
 
   public function prf(){ return (empty($this->prefix)) ?  ''  : $this->prefix . '_'; }   //prefijo fields
@@ -320,7 +332,7 @@ abstract class EntitySql { //Definir SQL
      * Si se incluyen campos de relaciones, asegurarse de incluir las relaciones
      * TODO: El ordenamiento no deberia formar parte de las entidades de generacion de sql?
      */
-    $fields = $this->getFieldsNf();
+    $fields = $this->entity->getFieldsNf();
     $orderBy = array();
 
     foreach($fields as $field){

@@ -1,7 +1,7 @@
 <?php
 
 
-class ClassValues__construct extends GenerateEntity {
+class ClassValues_setRow extends GenerateEntity {
 
 
    public function generate(){
@@ -14,8 +14,7 @@ class ClassValues__construct extends GenerateEntity {
 
   protected function start(){
     $this->string .= "
-  //@override
-  public function __construct(array \$row = NULL){
+  public function setRow(array \$row = NULL){
     if(empty(\$row)) return;
 ";
   }
