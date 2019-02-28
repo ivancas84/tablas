@@ -26,7 +26,7 @@ class ComponentSearchTs_ngOnInit extends GenerateEntity {
 }
 
   protected function body(){
-    $entities = implode("'", array_unique($this->entities));
+    $entities = implode("', '", array_unique($this->entities));
     $this->string .= "    this.dd.entitiesAll(['{$entities}']).subscribe(
       options => { this.options = options; }
     );
