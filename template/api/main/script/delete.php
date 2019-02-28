@@ -6,7 +6,7 @@ require_once("function/stdclass_to_array.php");
 
 
 try{
-  $id_ = Filter::requestRequired("id");
+  $id_ = Filter::postRequired("id");
   $id =  json_decode($id_);
 
   $isd = Dba::isDeletable(ENTITY, [$id]);
@@ -17,8 +17,8 @@ try{
   }
 
   Transaction::begin();
-  $data = EntitySqlo::getInstanceFromString($entity)->deleteAll([$id]);
-  $transaction_ids = preg_filter('/^/', $entity, $data["ids"]);
+  $data = EntitySqlo::getInstanceFromString(ENTITY)->deleteAll([$id]);
+  $transaction_ids = preg_filter('/^/', ENTITY, $data["ids"]);
   Transaction::update(["descripcion"=> $data["sql"], "detalle" => implode(",",$transaction_ids)]);
   Transaction::commit();
   $idD = array_walk($data["ids"], "toString");

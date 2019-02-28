@@ -249,7 +249,7 @@ class Dba { //Facilita el acceso a la base de datos
     for($i = 0; $i < count($ids); $i++){
       if(empty($ids[$i])) return "El identificador está vacío";
 
-      foreach(self::entity($entity)->getFieldsRef() as $field) {
+      foreach(Entity::getInstanceFromString($entity)->getFieldsRef() as $field) {
         if(self::count($field->getEntity()->getName(), [$field->getName(), "=", $ids[$i]])) array_push($entities, $field->getEntity()->getName());
       }
     }
