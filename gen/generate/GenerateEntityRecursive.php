@@ -2,10 +2,10 @@
 
 
 abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento comun recursivo
-  public $hasRelations = false;
+  //public $hasRelations = false;
 
   public function generate(){
-    if($this->hasRelations && !$this->getEntity()->hasRelations()) return "";
+    if(!$this->getEntity()->hasRelations()) return "";
 
     $this->start();
     $this->recursive($this->getEntity());
@@ -28,7 +28,7 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
      * @return type
      */
 
-     if(in_array($entity->getName(), $tablesVisited)) return;
+    if(in_array($entity->getName(), $tablesVisited)) return;
     if (!empty($prefix)){
       $this->string .= $this->body($entity, $prefix); //Genera codigo solo para las relaciones
     }

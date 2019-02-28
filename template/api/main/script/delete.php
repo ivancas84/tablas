@@ -17,7 +17,7 @@ try{
   }
 
   Transaction::begin();
-  $data = Dba::sqlo($entity)->deleteAll([$id]);
+  $data = EntitySqlo::getInstanceFromString($entity)->deleteAll([$id]);
   $transaction_ids = preg_filter('/^/', $entity, $data["ids"]);
   Transaction::update(["descripcion"=> $data["sql"], "detalle" => implode(",",$transaction_ids)]);
   Transaction::commit();
