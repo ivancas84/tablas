@@ -186,10 +186,13 @@ abstract class EntitySql { //Definir SQL
   }
 
 
-  protected function conditionAdvancedMain($field, $option, $value){ throw new BadMethodCallException("Not Implemented"); } //condicion avanzada principal
+  protected function conditionAdvancedMain($field, $option, $value){ //condicion avanzada principal
+    if($c = $this->_conditionAdvanced($field, $option, $value)) return $c;
+  } 
   /**
    * Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
    * La restriccion de conditionAdvancedMain es que $value no puede ser un array, ya que definirá un conjunto de condiciones asociadas
+   * Si existen relaciones, este metodo debe reimplementarse para contemplarlas
    */
 
   protected function conditionAdvancedDefined($field, $option, $value){
@@ -264,7 +267,6 @@ abstract class EntitySql { //Definir SQL
         }
       }
     }
-
     return $this->conditionAdvanced($advancedSearch);
   }
 

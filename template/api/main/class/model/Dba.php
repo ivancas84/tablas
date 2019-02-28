@@ -82,7 +82,7 @@ class Dba { //Facilita el acceso a la base de datos
     return $sqlo->sql->isInsertable($row); //3) Si 1 no dio resultado, verificar si es insertable
   }
 
-  public static function displayParams(array $params) {
+  public static function displayParams(array $params, $key = "display") {
     /**
      * Desde el cliente se recibe un Display, es una objeto similar a Render pero con algunas caracteristicas adicionales
      */
