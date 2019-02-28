@@ -144,8 +144,8 @@ class ComponentTableHtml extends GenerateFileEntity {
 
   protected function options(){
     $this->string .= "            <td>
-              <a class=\"btn btn-warning btn-sm\" [routerLink]=\"['/" . $this->getEntity()->getName("xx-yy") . "-admin']\" [queryParams]=\"{id:row.id}\"><span class=\"oi oi-pencil\"></span></a>
-              <button class=\"btn btn-danger btn-sm\" type=\"button\" (click)=\"delete(i)\"><span class=\"oi oi-trash\"></span></button>
+              <a class=\"btn btn-warning btn-sm\" [routerLink]=\"['/" . $this->getEntity()->getName("xx-yy") . "-admin']\" [queryParams]=\"{id:row.id}\" ><span class=\"oi oi-pencil\" title=\"Modificar\"></span></a>
+              <button class=\"btn btn-danger btn-sm\" type=\"button\" (click)=\"delete(i)\"><span class=\"oi oi-trash\" title=\"Eliminar\"></span></button>
 ";
 
     //$this->optionsRef();
