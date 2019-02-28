@@ -134,9 +134,7 @@ class ComponentTableHtml extends GenerateFileEntity {
 
 
   protected function optionsRef(){
-    $ref = $this->getEntity()->getFieldsRef();
-
-    foreach($ref as $field){
+    foreach($this->getEntity()->getFieldsRef() as $field){
       $this->string .= "              <a class=\"btn btn-info btn-sm\" [routerLink]=\"['/" . $field->getEntity()->getName("xx-yy") . "-show']\" [queryParams]=\"{" . $field->getName() . ":row.id}\">" . $field->getEntity()->getName("Xx Yy") . "</a>
 ";
     }
@@ -150,7 +148,7 @@ class ComponentTableHtml extends GenerateFileEntity {
               <button class=\"btn btn-danger btn-sm\" type=\"button\" (click)=\"delete(i)\"><span class=\"oi oi-trash\"></span></button>
 ";
 
-    $this->optionsRef();
+    //$this->optionsRef();
 
     $this->string .= "            </td>
 ";

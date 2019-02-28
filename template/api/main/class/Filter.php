@@ -3,26 +3,21 @@
 //Filtros de parametros
 class Filter {
 
-  public static function requestAll(){
-    return $_REQUEST;
-  }
+  public static function requestAll(){ return $_REQUEST; }
+  public static function postAll(){ return $_POST; }
+  public static function post($name){ return filter_input(INPUT_POST, $name); }
+  public static function get($name){ return filter_input(INPUT_GET, $name); }
 
-  public static function postAll(){
-    return $_POST;
+  public static function postAllRequired(){
+    $r = self::postAll();
+    if(empty($r)) throw new Exception("No existen parametros");
+    return $r;
   }
 
   public static function requestAllRequired(){
     $request = self::requestAll();
     if(empty($request)) throw new Exception("No existen parametros");
     return $request;
-  }
-
-  public static function post($name){
-   return filter_input(INPUT_POST, $name);
-  }
-
-  public static function get($name){
-    return filter_input(INPUT_GET, $name);
   }
 
   public static function getRequired($name){
