@@ -55,8 +55,10 @@ class Dba { //Facilita el acceso a la base de datos
   }
 
   public static function uniqId(){ //identificador unico
-    usleep(1); //con esto se evita que los procesadores generen el mismo id
-    return hexdec(uniqid());
+    //usleep(1); //con esto se evita que los procesadores generen el mismo id
+    //return hexdec(uniqid());
+    sleep(1);
+    return strtotime("now");
   }
 
   public static function nextId($entity) { //siguiente identificador
