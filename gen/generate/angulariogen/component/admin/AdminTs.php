@@ -22,6 +22,7 @@ class ComponentAdminTs extends GenerateFileEntity {
   protected function start(){
     $this->string .= "import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { AdminComponent } from '../../main/component/admin/admin.component';
@@ -37,8 +38,8 @@ export class " . $this->entity->getName("XxYy") . "AdminComponent extends AdminC
 
   readonly entity: string = \"" . $this->entity->getName() . "\";
 
-  constructor(protected fb: FormBuilder, protected route: ActivatedRoute, protected router: Router, protected dd: DataDefinitionService, protected message: MessageService)  {
-    super(fb, route, router, dd, message);
+  constructor(protected fb: FormBuilder, protected route: ActivatedRoute, protected router: Router, protected location: Location, protected dd: DataDefinitionService, protected message: MessageService)  {
+    super(fb, route, router, location, dd, message);
   }
 
 ";

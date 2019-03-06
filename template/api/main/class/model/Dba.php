@@ -91,9 +91,9 @@ class Dba { //Facilita el acceso a la base de datos
     $data = null;
 
     //data es utilizado debido a la facilidad de comunicacion entre el cliente y el servidor. Se coloca todo el json directamente en una variable data que es convertida en el servidor.
-    if(isset($params["display"])) {
-      $data = $params["display"];
-      unset($params["display"]);
+    if(isset($params[$key])) {
+      $data = $params[$key];
+      unset($params[$key]);
     }
 
     $f_ = json_decode($data);
