@@ -4,7 +4,17 @@ require_once("generate/GenerateEntity.php");
 
 class ClassSql_join extends GenerateEntity {
 
+  public function generate(){
+    if(!$this->getEntity()->hasRelationsFk()) return "";
 
+    $this->start();
+    $this->recursive($this->getEntity());
+    $this->end();
+
+    return $this->string;
+  }
+
+  
  protected function start(){
     $this->string .= "  public function join(){
     return ";
@@ -59,7 +69,7 @@ class ClassSql_join extends GenerateEntity {
   protected function recursive(Entity $entity, array $tablesVisited = NULL, $prefix = ""){
     if(is_null($tablesVisited)) $tablesVisited = array();
     $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
-    $u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
+    //$u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
 
 
 
@@ -74,19 +84,11 @@ class ClassSql_join extends GenerateEntity {
     }
 
     $this->fk($fk, $tablesVisited, $tableAux, $prefixAux);
-    $this->u_($u_, $tablesVisited, $tableAux, $prefixAux);
+    //$this->u_($u_, $tablesVisited, $tableAux, $prefixAux);
 
   }
 
 
 
-  public function generate(){
-    if(!$this->getEntity()->hasRelations()) return "";
 
-    $this->start();
-    $this->recursive($this->getEntity());
-    $this->end();
-
-    return $this->string;
-  }
 }

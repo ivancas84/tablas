@@ -188,7 +188,7 @@ abstract class EntitySql { //Definir SQL
 
   protected function conditionAdvancedMain($field, $option, $value){ //condicion avanzada principal
     if($c = $this->_conditionAdvanced($field, $option, $value)) return $c;
-  } 
+  }
   /**
    * Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
    * La restriccion de conditionAdvancedMain es que $value no puede ser un array, ya que definirá un conjunto de condiciones asociadas
@@ -284,14 +284,16 @@ abstract class EntitySql { //Definir SQL
   //Definir sql con cadena de relaciones fk y u_
   public function join(){ return ""; } //Sobrescribir si existen relaciones fk u_
 
-  //Por defecto define una relacion simple utilizando LEFT JOIN pero este metodo puede ser sobrescrito para definir relaciones mas complejas e incluso decidir la relacion a definir en funcion del prefijo
-  public function _join($field, $fromTable){
+
+  public function _join($field, $fromTable){ //definir relacion
+    /**
+     * Por defecto define una relacion simple utilizando LEFT JOIN
+     * Este método puede ser sobrescrito para dar soporte a campos derivados complejos
+     */
     $t = $this->prt();
     return "LEFT OUTER JOIN {$this->entity->sn_()} AS $t ON ($fromTable.$field = $t.{$this->entity->getPk()->getName()})
 ";
   }
-
-
 
   //inner join basico (este metodo esta pensado para armar consultas desde la entidad actual)
   public function innerJoin($field, $table){
