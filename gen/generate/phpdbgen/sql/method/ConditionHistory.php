@@ -3,7 +3,7 @@
 
 require_once("generate/GenerateEntityRecursive.php");
 
-class ClassSql_conditionHistory extends GenerateEntityRecursive{
+class ClassSql_conditionHistory extends GenerateEntityRecursiveFk{
 
 
   protected function start(){

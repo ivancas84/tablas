@@ -45,7 +45,7 @@ class ClassSql_conditionSearch extends GenerateEntity{
     }
 
     $this->fk($entity, $tablesVisited, $prefix);
-    $this->u_($entity, $tablesVisited, $prefix);
+    //$this->u_($entity, $tablesVisited, $prefix);
 
     unset ($prefix, $entity , $tablesVisited);
   }
