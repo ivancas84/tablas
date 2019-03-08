@@ -3,17 +3,6 @@
 require_once("generate/GenerateEntityRecursiveFk.php");
 
 class ClassSql_joinAux extends GenerateEntityRecursiveFk {
-  public $fields = [];
-
-  public function generate(){
-    if(!$this->getEntity()->hasRelations()) return "";
-
-    $this->start();
-    $this->recursive($this->getEntity());
-    $this->end();
-    return $this->string;
-  }
-
 
   protected function start(){
     $this->string .= "  public function joinAux(){

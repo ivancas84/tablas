@@ -14,7 +14,7 @@ class ClassSql_join extends GenerateEntity {
     return $this->string;
   }
 
-  
+
  protected function start(){
     $this->string .= "  public function join(){
     return ";
@@ -29,9 +29,6 @@ class ClassSql_join extends GenerateEntity {
 
 ";
   }
-
-
-
 
   protected function fk(array $fk, array $tablesVisited, $tableAux, $prefixAux){
     foreach ($fk as $field ) {
@@ -50,21 +47,6 @@ class ClassSql_join extends GenerateEntity {
     }
   }
 
-  protected function u_(array $u_, array $tablesVisited, $tableAux, $prefixAux){
-    foreach ($u_ as $field ) {
-      $fieldAlias = $field->getAlias("_");
-
-      $pk = $field->getEntityRef()->getPk();
-      $prefixTemp = $prefixAux . $fieldAlias ;
-
-      $this->string .= "EntitySql::getInstanceFromString('{$field->getEntity()->getName()}', '{$prefixTemp}')->_joinR('{$field->getName()}', '{$tableAux}') . '
-' . ";
-
-      //$this->string .= $this->recursive($field->getEntity(), $tablesVisited, $prefixTemp);
-
-    }
-    unset($u_, $field, $tablesVisited, $tableAux, $prefixAux, $pk, $prefixTemp, $fieldAlias);
-  }
 
   protected function recursive(Entity $entity, array $tablesVisited = NULL, $prefix = ""){
     if(is_null($tablesVisited)) $tablesVisited = array();
@@ -84,8 +66,6 @@ class ClassSql_join extends GenerateEntity {
     }
 
     $this->fk($fk, $tablesVisited, $tableAux, $prefixAux);
-    //$this->u_($u_, $tablesVisited, $tableAux, $prefixAux);
-
   }
 
 

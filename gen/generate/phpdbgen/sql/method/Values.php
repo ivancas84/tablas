@@ -6,7 +6,6 @@ class ClassSql_values extends GenerateEntity {
    public function generate(){
     if (!$this->entity->hasRelations()) return;
     $this->start();
-    $this->bodyMain();
     $this->recursive($this->getEntity());
     $this->end();
     return $this->string;
@@ -14,11 +13,6 @@ class ClassSql_values extends GenerateEntity {
 
   protected function start(){
     $this->string .= "  public function values(array \$json = NULL){
-";
-  }
-
-  protected function bodyMain(){
-    $this->string .= "
     \$row_['{$this->entity->getAlias()}'] = new {$this->entity->getName('XxYy')}(\$json);
 ";
   }

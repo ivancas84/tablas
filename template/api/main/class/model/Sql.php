@@ -82,13 +82,22 @@ abstract class EntitySql { //Definir SQL
     return $field_;
   }
   public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); } //traduccion local
+  public function _conditionSearch($search = ""){ throw new BadMethodCallException("Not Implemented"); } //traduccion local
 
   public function fieldsAll() { //todos los fields
     return (!empty($this->fieldsAux())) ? "{$this->fieldsFull()},
 {$this->fieldsAux()}" : $this->fieldsFull();
   }
 
-  public function conditionSearch($search = "") { return "";  } //Definir condicion de busqueda simple
+  public function conditionSearch($search = ""){ //Definir condicion de busqueda simple
+    /**
+     * Este metodo sera sobrescrito si existen relaciones fk
+     */
+    if(empty($search)) return '';
+    $condition = $this->_conditionSearch($search);
+    return "(" . $condition . ")";
+  }
+
   public function conditionAux(){ return $this->_conditionAux(); } //concatenacion de condicion auxiliar
   public function _conditionAux(){ return "";  } //Sobrescribir si existe condicion auxiliar obligatoria
   /**

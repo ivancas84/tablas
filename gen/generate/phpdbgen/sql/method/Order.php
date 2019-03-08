@@ -5,18 +5,12 @@ require_once("generate/GenerateEntityRecursiveFk.php");
 
 class ClassSql_order extends GenerateEntityRecursiveFk{
 
-  public function generate(){
-    $this->start();
-    $this->recursive($this->getEntity());
-    $this->end();
-
-    return $this->string;
-  }
-
   protected function start(){
-    $this->string .= "  //Existe un método genérico pero solo funciona para MySql, este metodo permite dar soporte a los dos motores MySql y Postgres
-  //Define ordenamiento, si el field ingresado no es mapeado, entonces no se define ordenamiento pero no genera error
-  public function orderBy(array \$order = null) {
+    $this->string .= "  public function orderBy(array \$order = null) { //Definir ordenamiento
+    /**
+     * Existe un método genérico pero solo funciona para MySql, este metodo permite dar soporte a los dos motores MySql y Postgres
+     * Define ordenamiento, si el field ingresado no es mapeado, entonces no se define ordenamiento pero no genera error
+     */
     if(empty(\$order)) return '';
 
     \$sql = '';

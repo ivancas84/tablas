@@ -4,8 +4,10 @@
 abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento comun recursivo
   //public $hasRelations = false;
 
+  protected function hasRelations(){ return ($this->getEntity()->hasRelations()) ? true : false; }
+
   public function generate(){
-    if(!$this->getEntity()->hasRelations()) return "";
+    if(!$this->hasRelations()) return "";
 
     $this->start();
     $this->recursive($this->getEntity());
