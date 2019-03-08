@@ -5,12 +5,27 @@ require_once("generate/GenerateEntity.php");
 
 class Sqlo_insert extends GenerateEntity {
 
-  public function __construct(Entity $entity) {
-    parent::__construct($entity);
+  public function generate(){
+    $this->start();
+    $this->fieldNames();
+    $this->deleteLastComma();
+    $this->sqlValues();
+    $this->fieldValues();
+    $this->deleteLastComma();
+    $this->end();
+
+    return $this->string;
   }
 
-    //***** generar nombres de fields *****
-  protected function fieldNames(){
+
+  protected function start(){
+      $this->string .= "  protected function _insert(array \$row){ //@override
+      \$sql = \"
+  INSERT INTO \" . \$this->entity->sn_() . \" (\";
+  ";
+    }
+
+  protected function fieldNames(){ //generar nombres de fields
     foreach ( $this->getEntity()->getFields() as $field) {
       if(!$field->isAdmin()) continue;
       $this->string .= "    \$sql .= \"" . $field->getName() . ", \" ;
@@ -18,15 +33,13 @@ class Sqlo_insert extends GenerateEntity {
     }
   }
 
-  //***** generar valores de fields *****
-  protected function fieldValues(){
+  protected function fieldValues(){   //generar valores de fields
     foreach($this->getEntity()->getFields() as $field){
       if(!$field->isAdmin()) continue;
       $this->string .= "    \$sql .= \$row['" . $field->getName() . "'] . \", \" ;
 " ;
     }
   }
-
 
   protected function deleteLastComma(){
     $this->string .= "    \$sql = substr(\$sql, 0, -2); //eliminar ultima coma
@@ -47,34 +60,8 @@ VALUES ( \";
 
     return \$sql;
   }
+
 ";
   }
-
-
-  protected function start(){
-    $this->string .= "
-  //@override
-  protected function _insert(array \$row){
-    \$sql = \"
-INSERT INTO \" . \$this->entity->sn_() . \" (\";
-";
-  }
-
-
-
-  public function generate(){
-
-    $this->start();
-    $this->fieldNames();
-    $this->deleteLastComma();
-    $this->sqlValues();
-    $this->fieldValues();
-    $this->deleteLastComma();
-    $this->end();
-
-    return $this->string;
-  }
-
-
 
 }

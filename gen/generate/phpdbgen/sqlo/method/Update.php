@@ -7,9 +7,7 @@ class Sqlo_update extends GenerateEntity{
 
 
   protected function start(){
-    $this->string .= "
-  //@override
-  protected function _update(array \$row){
+    $this->string .= "  protected function _update(array \$row){ //@override
     \$sql = \"
 UPDATE \" . \$this->entity->sn_() . \" SET
 \";
@@ -44,6 +42,7 @@ UPDATE \" . \$this->entity->sn_() . \" SET
 
     return \$sql;
   }
+
 " ;
   }
 

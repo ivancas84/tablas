@@ -36,13 +36,15 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
 
   protected function construct(){
     $this->string .= "
-  //Constructor
-  //Se definen todos los recursos de forma independiente, sin parametros en el constructor, para facilitar el polimorfismo de las subclases
   public function __construct(){
+    /**
+     * Se definen todos los recursos de forma independiente, sin parametros en el constructor, para facilitar el polimorfismo de las subclases
+     */
     \$this->db = Dba::dbInstance();
     \$this->entity = Entity::getInstanceFromString('{$this->getEntity()->getName()}');
     \$this->sql = EntitySql::getInstanceFromString('{$this->getEntity()->getName()}');
   }
+
 ";
   }
 

@@ -53,8 +53,6 @@ class Sqlo_json extends GenerateEntity {
   }
 
 
-
-
     protected function end(){
       $this->string .= "    return \$row_;
   }
