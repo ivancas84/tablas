@@ -35,10 +35,11 @@ class ClassSql_join extends GenerateEntity {
       $pk = $field->getEntityRef()->getPk();
       $prefixTemp = $prefixAux . $field->getAlias();
 
-      if(!in_array($field->getEntityRef()->getName(), $tablesVisited)) {
 
         $this->string .= "EntitySql::getInstanceFromString('{$field->getEntityRef()->getName()}', '{$prefixTemp}')->_join('{$field->getName()}', '{$tableAux}') . '
 ' . ";
+
+      if(!in_array($field->getEntityRef()->getName(), $tablesVisited)) {
 
         $this->recursive($field->getEntityRef(), $tablesVisited, $prefixTemp);
       }

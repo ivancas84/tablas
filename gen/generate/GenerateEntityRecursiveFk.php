@@ -12,7 +12,7 @@ abstract class GenerateEntityRecursiveFk extends GenerateEntityRecursive{
     if (is_null($tablesVisited)) $tablesVisited = array();
 
     if(in_array($entity->getName(), $tablesVisited)) return;
-
+    
     if (!empty($prefix))  {
       $this->string .= $this->body($entity, $prefix); //Genera codigo solo para las relaciones
     }
