@@ -239,7 +239,7 @@ class Dba { //Facilita el acceso a la base de datos
   public static function oneOrNull($entity, $render = null) { //un solo valor o null
     $rows = self::all($entity, $render);
     if(count($rows) > 1 ) throw new Exception("La consulta retorno mas de un resultado");
-    elseif(count($rows) == 1) return EntitySqlo::getInstanceFromString($entity)->json($rows[0]);
+    elseif(count($rows) == 1) return $rows[0];
     else return null;
   }
 

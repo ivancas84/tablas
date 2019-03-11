@@ -33,13 +33,6 @@ class DbSqlMy extends mysqli implements DbInterface {
   public function getDbms(){ return "mysql"; } //@override
 
   public function query($query, $resultmode = NULL){ //@override
-    
-    $tmp = "/tmp/consultas.sql";
-    $content = @file_get_contents($tmp);
-    if(!$content) $content = "";
-    $content .= "\n\n".date("Y-m-d H:i:s") . "\n\n".$query."\n"; 
-    file_put_contents($tmp, $content );
-
     $result = parent::query($query);
 
     if(!$result) throw new Exception($this->error);
