@@ -8,7 +8,11 @@ class Render {
   public $order;
   public $page;
   public $size;
-  public $history; //true (historicos), false (activos), null (todos)
+  public $history; //permite multiples valores historicos segun cadena de relaciones
+  /**
+   * para el valor de la primera entidad es history, para el de la segundao prefix_history, y asi sucesivamente
+   * true (historicos), false (activos), null (todos)
+   */
 
   public function __construct() {
     $this->advanced = array();
