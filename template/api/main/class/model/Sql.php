@@ -176,7 +176,7 @@ abstract class EntitySql { //Definir SQL
     return ["condition"=>"(".$condition.")", "mode"=>$modeReturn];
   }
 
-  private function conditionAdvancedValue($field, $option, $value){
+  protected function conditionAdvancedValue($field, $option, $value){
     if(!is_array($value)) {
       $cond = $this->conditionAdvancedMain($field, $option, $value);
       return $cond;
@@ -191,7 +191,7 @@ abstract class EntitySql { //Definir SQL
       $condition .= $this->conditionAdvancedMain($field, $option, $v);
     }
 
-    return $condition;
+    return "(".$condition.")";
   }
 
 

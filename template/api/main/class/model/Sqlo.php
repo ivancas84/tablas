@@ -114,7 +114,6 @@ WHERE {$this->entity->getPk()->getName()} IN ({$ids_});
     return ["id"=>$delete["ids"][0], "sql"=>$delete["sql"], "detail"=>$delete["detail"]];
   }
 
-
   public function deleteAll(array $ids) { //eliminar
     /**
      * Este metodo define codigo que modifica la base de datos, debe utilizarse cuidadosamente

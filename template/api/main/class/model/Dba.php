@@ -292,6 +292,15 @@ class Dba { //Facilita el acceso a la base de datos
     else { return $sqlo->insert($row); } //3
   }
 
+  public static function field($entity, $field, $render){ //devuelve un array correspondiente al field
+    /**
+     * No se aplica json del field devuelto
+     */
+    $sqlo = EntitySqlo::getInstanceFromString($entity);
+    $sql = $sqlo->all($render);
+    $rows = self::fetchAll($sql);
+    return array_column ($rows ,$field);
+  }
 
   //query and fetch result
   public static function fetchRow($sql){
