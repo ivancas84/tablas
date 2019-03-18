@@ -151,8 +151,12 @@ abstract class EntitySql { //Definir SQL
     $value = (empty($advanced[2])) ? null : $advanced[2]; //hay opciones de configuracion que pueden no definir valores
     $mode = (empty($advanced[3])) ? "AND" : $advanced[3];  //el modo indica la concatenacion con la opcion precedente, se usa en un mismo conjunto (array) de opciones
 
-    $condicion = $this->conditionAdvancedDefined($advanced[0], $option, $value);
+    $condicion = $this->conditionAdvancedAux($advanced[0], $option, $value);
     if(!$condicion) $condicion = $this->conditionAdvancedValue($advanced[0], $option, $value);
+    /**
+     * El campo de identificacion del array posicion 0 no debe repetirse en las condiciones no estructuradas y las condiciones estructuras
+     * Se recomienda utilizar un sufijo por ejemplo "_" para distinguirlas mas facilmente
+     */
     return ["condition" => $condicion, "mode" => $mode];
   }
 
@@ -183,11 +187,14 @@ abstract class EntitySql { //Definir SQL
     }
 
     $condition = "";
-    $or = false;
+    $cond = false;
 
     foreach($value as $v){
-      if($or) $condition .= " OR ";
-      else $or = true;
+      if($cond) {
+        if($option == "=") $condition .= " OR "; 
+        elseif($option == "!=") $condition .= " AND ";
+        else throw new Exception("Error al definir opción");
+      } else $cond = true;
       $condition .= $this->conditionAdvancedMain($field, $option, $v);
     }
 
@@ -204,11 +211,17 @@ abstract class EntitySql { //Definir SQL
    * Si existen relaciones, este metodo debe reimplementarse para contemplarlas
    */
 
-  protected function conditionAdvancedDefined($field, $option, $value){
+  protected function conditionAdvancedAux($field, $option, $value){ //condicion avanzada principal
+    if($c = $this->_conditionAdvancedAux($field, $option, $value)) return $c;
+  }
+
+  protected function _conditionAdvancedAux($field, $option, $value){
+    $p = $this->prf();
+
     switch($field){
-      case "compare_fields":
-        $f1 = $this->mappingField($value[0]);
-        $f2 = $this->mappingField($value[1]);
+      case "{$p}_compare":
+        $f1 = $this->_mappingField($value[0]);
+        $f2 = $this->_mappingField($value[1]);
         return "({$f1} {$option} {$f2})";
       break;
     }

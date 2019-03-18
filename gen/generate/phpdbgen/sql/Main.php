@@ -121,6 +121,10 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     require_once("generate/phpdbgen/sql/method/ConditionAdvancedMain.php");
     $gen = new ClassSql_conditionAdvancedMain($this->getEntity());
     $this->string .= $gen->generate();
+
+    require_once("generate/phpdbgen/sql/method/ConditionAdvancedAux.php");
+    $gen = new ClassSql_conditionAdvancedAux($this->getEntity());
+    $this->string .= $gen->generate();
   }
 
   protected function conditionAux(){
