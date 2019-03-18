@@ -169,6 +169,23 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     return $sql;
   }
 
+  public function ids($render = NULL) { //sql para obtener ids
+    /**
+     * No admite ordenamiento
+     */
+    $r = $this->render($render);
+
+    $sql = "SELECT DISTINCT {$this->sql->fieldId()}
+{$this->sql->from()}
+{$this->sql->join()}
+{$this->sql->joinAux()}
+{$this->sql->conditionAll($r)}
+{$this->sql->limit($r->getPage(), $r->getSize())}
+";
+
+    return $sql;
+  }
+
   public function getAll(array $ids, $render = NULL) {
     $r = $this->render($render);
     //Para dar soporte a distintos tipos de id, se define la condicion de ids a traves del metodo conditionAdvanced en vez de utilizar IN como se hacia habitualmente
