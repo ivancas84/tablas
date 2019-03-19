@@ -154,6 +154,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
   }
 
   public function all($render = NULL) {
+
     $r = $this->render($render);
 
     $sql = "SELECT DISTINCT

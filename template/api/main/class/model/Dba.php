@@ -299,7 +299,7 @@ class Dba { //Facilita el acceso a la base de datos
     $sqlo = EntitySqlo::getInstanceFromString($entity);
     $sql = $sqlo->all($render);
     $rows = self::fetchAll($sql);
-    return array_column ($rows ,$field);
+    return array_unique(array_column ($rows ,$field));
   }
 
   //query and fetch result

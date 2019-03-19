@@ -115,6 +115,7 @@ abstract class EntitySql { //Definir SQL
    */
 
   public function conditionAdvanced(array $advanced = null) { //busqueda avanzada
+
     /**
      * Array $advanced:
      *  [
@@ -136,6 +137,7 @@ abstract class EntitySql { //Definir SQL
 
 
   private function conditionAdvancedRecursive(array $advanced){
+
     /**
      * Para facilitar la definicion de condiciones, retorna un array con dos elementos:
      * "condition": SQL
@@ -148,7 +150,10 @@ abstract class EntitySql { //Definir SQL
      */
 
     $option = (empty($advanced[1])) ? "=" : $advanced[1]; //por defecto se define "="
-    $value = (empty($advanced[2])) ? null : $advanced[2]; //hay opciones de configuracion que pueden no definir valores
+    $value = (!isset($advanced[2])) ? null : $advanced[2]; //hay opciones de configuracion que pueden no definir valores
+    /**
+     * No usar empty, puede definirse el valor false
+     */
     $mode = (empty($advanced[3])) ? "AND" : $advanced[3];  //el modo indica la concatenacion con la opcion precedente, se usa en un mismo conjunto (array) de opciones
 
     $condicion = $this->conditionAdvancedAux($advanced[0], $option, $value);
@@ -191,7 +196,7 @@ abstract class EntitySql { //Definir SQL
 
     foreach($value as $v){
       if($cond) {
-        if($option == "=") $condition .= " OR "; 
+        if($option == "=") $condition .= " OR ";
         elseif($option == "!=") $condition .= " AND ";
         else throw new Exception("Error al definir opción");
       } else $cond = true;
@@ -248,6 +253,7 @@ abstract class EntitySql { //Definir SQL
 
 
   public function conditionAll(Render $render = null, $connect = "WHERE") { //definir todas las condiciones
+
     /**
      * $condition =
      *   "advanced": array de condiciones avanzadas
