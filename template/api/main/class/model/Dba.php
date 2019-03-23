@@ -55,10 +55,10 @@ class Dba { //Facilita el acceso a la base de datos
   }
 
   public static function uniqId(){ //identificador unico
-    //usleep(1); //con esto se evita que los procesadores generen el mismo id
-    //return hexdec(uniqid());
-    sleep(1);
-    return strtotime("now");
+    usleep(1); //con esto se evita que los procesadores generen el mismo id
+    return hexdec(uniqid());
+    //sleep(1);
+    //return strtotime("now");
   }
 
   public static function nextId($entity) { //siguiente identificador
@@ -292,14 +292,14 @@ class Dba { //Facilita el acceso a la base de datos
     else { return $sqlo->insert($row); } //3
   }
 
-  public static function field($entity, $field, $render){ //devuelve un array correspondiente al field
+  public static function field($entity, $field, $render = null){ //devuelve un array correspondiente al field
     /**
      * No se aplica json del field devuelto
      */
     $sqlo = EntitySqlo::getInstanceFromString($entity);
     $sql = $sqlo->all($render);
     $rows = self::fetchAll($sql);
-    return array_unique(array_column ($rows ,$field));
+    return array_values(array_unique(array_column ($rows ,$field)));
   }
 
   //query and fetch result
