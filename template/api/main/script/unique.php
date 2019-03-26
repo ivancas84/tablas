@@ -15,7 +15,6 @@ try{
   //se puede definir un parametro opcional "data" que posee un string en formato json para facilitar el uso de tipos basicos
 
   $row = Dba::unique(ENTITY, $params);
-  if(!$row) return null;
   echo json_encode($row);
 
 } catch (Exception $ex) {

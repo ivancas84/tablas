@@ -50,6 +50,7 @@ class TypescriptEntity_properties extends GenerateEntity {
     $this->string .= "  public " . $field->getName() . " : number";
 
     if($field->getDefault()) $this->string .= " = {$field->getDefault()}";
+    else $this->string .= " = null";
 
     $this->string .= ";
 ";
@@ -61,22 +62,24 @@ class TypescriptEntity_properties extends GenerateEntity {
     $default = (settypebool($field->getDefault())) ? "true" : "false";
 
     if($field->getDefault()) $this->string .= " = {$default}";
+    else $this->string .= " = null";
 
     $this->string .= ";
 ";
   }
 
   protected function string(Field $field){
-    $this->string .= "  public " . $field->getName() . " : string";
+    $this->string .= "  public " . $field->getName() . " : string ";
 
     if($field->getDefault()) $this->string .= " = '{$field->getDefault()}'";
+    else $this->string .= " = null";
 
     $this->string .= ";
 ";
   }
 
   protected function date(Field $field){
-    $this->string .= "  public " . $field->getName() . " : string;
+    $this->string .= "  public " . $field->getName() . " : string = null;
 ";
 
   }

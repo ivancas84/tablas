@@ -25,6 +25,7 @@ import { FormBuilder } from '@angular/forms';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
+import { Entity } from '../../main/class/entity';
 import { AdminComponent } from '../../main/component/admin/admin.component';
 import { MessageService } from '../../main/service/message/message.service';
 import { {$this->entity->getName("XxYy")} } from '../../class/entity/{$this->entity->getName("xx-yy")}/{$this->entity->getName("xx-yy")}';
@@ -45,8 +46,8 @@ export class " . $this->entity->getName("XxYy") . "AdminComponent extends AdminC
   }
 
   protected function initData(){
-    $this->string .= "  initData(): void{
-    this.data = {'{$this->entity->getName()}': new {$this->entity->getName("XxYy")} };
+    $this->string .= "  declareData(): { [index: string]: Entity } {
+    return {'{$this->entity->getName()}': new {$this->entity->getName("XxYy")} };
   }
 ";
   }

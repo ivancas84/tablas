@@ -202,12 +202,11 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     return $this->all($r);
   }
 
-
-
-  //Implementacion auxiliar de unique
-  //unique puede restringir el acceso a datos dependiendo del rol y la condicion auxiliar
-  //Ciertos metodos pueden llegar a requerir la busqueda a traves de campos unicos sin recurrir a la condicion auxiliar
-  public function _unique(array $row){
+  
+  public function _unique(array $row){ //busqueda auxiliar por campos unicos
+    /**
+     * Unique puede restringir el acceso a datos dependiendo del rol y la condicion auxiliar
+     */
     $conditionUniqueFields = $this->sql->conditionUniqueFields($row);
     if(empty($conditionUniqueFields)) return null;
 
@@ -221,10 +220,7 @@ WHERE
 ";
   }
 
-
-  //@override
-  //TODO: Falta incluir condicion auxiliar
-  public function unique(array $row, $render = NULL){
+  public function unique(array $row, $render = NULL){ //busqueda por campos unicos
     $r = $this->render($render);
 
     $conditionUniqueFields = $this->sql->conditionUniqueFields($row);
