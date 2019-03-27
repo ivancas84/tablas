@@ -38,7 +38,6 @@ protected function start(){
         case "boolean": $this->boolean($field); break;
       }
     }
-    unset ( $field );
   }
 
   protected function fk(Entity $entity){

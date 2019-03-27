@@ -10,21 +10,35 @@ class ComponentAdminTs extends GenerateFileEntity {
     parent::__construct($dir, $file, $entity);
   }
 
-
-    //***** @override *****
-    protected function generateCode() {
-      $this->start();
-      $this->initData();
-      $this->end();
+  protected function hasRelationsFkTypeahead(){
+    if(!$this->entity->hasRelationsFk()) return false;
+    foreach($this->getEntity()->getFieldsFk() as $field) {    
+      if($field->getSubtype() == "typeahead") return true;
     }
+    return false;
 
+  }
 
-  protected function start(){
+  protected function generateCode() {
+    $this->start();
+    $this->declareData();
+    if($this->hasRelationsFkTypeahead()) $this->postInitData();
+    $this->end();
+  }
+
+  protected function start() {
     $this->string .= "import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
+";
+    if($this->hasRelationsFkTypeahead()){
+      $this->string .= "import { forkJoin } from 'rxjs';
+import { first } from 'rxjs/operators';
+";
+    }
+
+    $this->string .= "import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { Entity } from '../../main/class/entity';
 import { AdminComponent } from '../../main/component/admin/admin.component';
 import { MessageService } from '../../main/service/message/message.service';
@@ -45,20 +59,24 @@ export class " . $this->entity->getName("XxYy") . "AdminComponent extends AdminC
 ";
   }
 
-  protected function initData(){
+  protected function declareData() {
     $this->string .= "  declareData(): { [index: string]: Entity } {
     return {'{$this->entity->getName()}': new {$this->entity->getName("XxYy")} };
   }
+
 ";
   }
 
+  protected function postInitData(){
+    require_once("generate/angulariogen/component/admin/method/PostInitData.php");
+    $gen = new AdminTs_PostInitData($this->getEntity());
+    $this->string .= $gen->generate();
+  }
 
-  protected function end(){
+  protected function end() {
     $this->string .= "}
 
 ";
   }
-
-
 
 }

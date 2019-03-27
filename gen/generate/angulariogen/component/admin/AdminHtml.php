@@ -20,7 +20,7 @@ class ComponentAdminHtml extends GenerateFileEntity {
   <button type=\"submit\" class=\"btn btn-primary\">Aceptar</button>&nbsp;
   <button type=\"button\" class=\"btn btn-secondary\" (click)=\"back()\"><span class=\"oi oi-arrow-thick-left\" title=\"Volver\"></span></button>
   <button type=\"button\" (click)=\"reset()\" class=\"btn btn-secondary\" ><span class=\"oi oi-reload\" title=\"Restablecer\"></span></button>
-  <button type=\"button\" (click)=\"initData()\" class=\"btn btn-secondary\" ><span title=\"Nuevo\" class=\"oi oi-plus\"></span></button
+  <button type=\"button\" (click)=\"clear()\" class=\"btn btn-secondary\" ><span title=\"Nuevo\" class=\"oi oi-plus\"></span></button>
   <button type=\"button\" class=\"btn btn-secondary\" [disabled]=\"deleteDisabled\" (click)=\"delete()\"><span class=\"oi oi-x\" title=\"Eliminar\"></span></button>
   
 
