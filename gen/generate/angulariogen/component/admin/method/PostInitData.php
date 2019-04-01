@@ -35,7 +35,7 @@ class AdminTs_PostInitData extends GenerateEntity {
 
   protected function end() {
     $this->string .= "    forkJoin(obs).subscribe(
-      response => { this.data = data; }
+      response => { this.setDataEntity(data); }
     )
   }
 
