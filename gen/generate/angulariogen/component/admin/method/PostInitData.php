@@ -2,7 +2,6 @@
 
 require_once("generate/GenerateEntity.php");
 
-
 class AdminTs_PostInitData extends GenerateEntity {  
 
   public function generate() {    
@@ -30,8 +29,6 @@ class AdminTs_PostInitData extends GenerateEntity {
       }
     }
   }
-
-
 
   protected function end() {
     $this->string .= "    forkJoin(obs).subscribe(
