@@ -21,7 +21,6 @@ class ComponentAdminTs extends GenerateFileEntity {
 
   protected function generateCode() {
     $this->start();
-    $this->declareData();
     if($this->hasRelationsFkTypeahead()) $this->setData();
     $this->end();
   }
@@ -59,13 +58,6 @@ export class " . $this->entity->getName("XxYy") . "AdminComponent extends AdminC
 ";
   }
 
-  protected function declareData() {
-    $this->string .= "  declareData(): { [index: string]: Entity } {
-    return {'{$this->entity->getName()}': new {$this->entity->getName("XxYy")} };
-  }
-
-";
-  }
 
   protected function setData(){
     require_once("generate/angulariogen/component/admin/method/SetData.php");

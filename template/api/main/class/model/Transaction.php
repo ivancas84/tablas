@@ -87,7 +87,7 @@ LIMIT 20;
       $rows = $db->fetchAll($result);
 
       $de = [];
-      foreach($rows as $row) array_push($de, $row["detalle"]);
+      foreach($rows as $row) $de = array_merge($de, explode(",",$row["detalle"]));
       return array_unique($de);
     }
   }
