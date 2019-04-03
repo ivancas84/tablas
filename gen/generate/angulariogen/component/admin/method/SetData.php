@@ -2,7 +2,7 @@
 
 require_once("generate/GenerateEntity.php");
 
-class AdminTs_PostInitData extends GenerateEntity {  
+class AdminTs_SetData extends GenerateEntity {  
 
   public function generate() {    
     $this->start();
@@ -13,7 +13,7 @@ class AdminTs_PostInitData extends GenerateEntity {
   }
 
   protected function start() {
-    $this->string .= "  postInitData(data: { [index: string]: Entity }): void {
+    $this->string .= "  setData(data: { [index: string]: Entity }): void {
     let obs = [];
 ";
   }
@@ -32,7 +32,7 @@ class AdminTs_PostInitData extends GenerateEntity {
 
   protected function end() {
     $this->string .= "    forkJoin(obs).subscribe(
-      response => { this.setDataEntity(data); }
+      response => { this.data = data; }
     )
   }
 
