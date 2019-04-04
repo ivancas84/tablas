@@ -54,6 +54,8 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
       if(!$field->isAdmin()) continue;
 
       switch ( $field->getSubtype() ) {
+        case "typeahead": $this->typeahead($field); break;
+
         default: $this->defectoFk($field); //name, email
       }
     }
@@ -147,5 +149,12 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
       $this->string .= "    if(this.isSync('{$field->getName()}')) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
 ";
   }
+
+  protected function typeahead(Field $field) {
+    $validator = ($field->isNotNull()) ?  ", [Validators.required, this.validators.typeaheadSelection('{$field->getEntityRef()}')]" : "this.validators.typeaheadSelection('{$field->getEntityRef()}')";
+
+    $this->string .= "    if(this.isSync('{$field->getName()}')) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
+";
+}
 
 }
