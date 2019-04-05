@@ -151,7 +151,7 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
   }
 
   protected function typeahead(Field $field) {
-    $validator = ($field->isNotNull()) ?  ", [Validators.required, this.validators.typeaheadSelection('{$field->getEntityRef()}')]" : "this.validators.typeaheadSelection('{$field->getEntityRef()}')";
+    $validator = ($field->isNotNull()) ?  ", [Validators.required, this.validators.typeaheadSelection('{$field->getEntityRef()->getName()}')]" : ", this.validators.typeaheadSelection('{$field->getEntityRef()->getName()}')";
 
     $this->string .= "    if(this.isSync('{$field->getName()}')) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
 ";

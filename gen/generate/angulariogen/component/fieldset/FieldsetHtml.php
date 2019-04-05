@@ -197,6 +197,8 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     switch($field->getSubtype()) {
       case "email": $this->templateErrorEmail($field); break;
       case "dni": $this->templateErrorDni($field); break;
+      case "typeahead": $this->templateErrorTypeahead($field); break;
+
     }
     $this->string .= "      </div>
 ";
@@ -204,6 +206,11 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
 
   protected function templateErrorEmail(Field $field) {
     $this->string .= "        <div *ngIf=\"{$field->getName("xxYy")}.errors.email\">Debe ser un email válido</div>
+";
+  }
+
+  protected function templateErrorTypeahead(Field $field) {
+    $this->string .= "        <div *ngIf=\"({$field->getName("xxYy")}.touched && {$field->getName("xxYy")}.errors.unselected)\">Valor no seleccionado</div>
 ";
   }
 
