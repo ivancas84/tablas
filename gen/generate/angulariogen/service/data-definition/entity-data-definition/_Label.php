@@ -82,7 +82,7 @@ class EntityDataDefinition_Label extends GenerateEntity {
   }
 
   protected function date(Field $field){
-    $this->string .= "    if (row[\"" . $field->getName() . "\"]) ret = ret.trim() + \" \" + this.dd.parser.dateString(row[\"" . $field->getName() . "\"]);
+    $this->string .= "    if (row[\"" . $field->getName() . "\"]) ret = ret.trim() + \" \" + this.dd.parser.dateFormat(this.dd.parser.date(row[\"" . $field->getName() . "\"]), 'd/m/Y');
 
 ";
   }
