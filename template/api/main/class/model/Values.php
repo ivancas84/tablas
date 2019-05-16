@@ -29,7 +29,8 @@ abstract class EntityValues { //manipulacion de valores de una entidad
       case "Xx yy": case "X y": return ucfirst(str_replace("_", " ", strtolower($value)));
       case "xxYy": return str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower($value)))));
       case "xx-yy": case "x-y": return strtolower(str_replace("_", "-", $value));
-      case "XX YY": case "X Y": return strtoupper(str_replace("_", " ", $value));
+      case "XX YY": case "X Y": case "X": return strtoupper(str_replace("_", " ", $value));
+      case "XY": case "XXYY": return strtoupper(str_replace("_", "", $value));
 
       default: return $value;
     }
