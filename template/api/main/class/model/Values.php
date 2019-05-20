@@ -23,14 +23,14 @@ abstract class EntityValues { //manipulacion de valores de una entidad
 
   protected function formatString($value, $format = null){
     switch($format){
-      case "XxYy": return str_replace(" ", "", ucwords(str_replace("_", " ", strtolower($value))));
-      case "xxyy": case "xy": return strtolower(str_replace("_", "", $value));
-      case "Xx Yy": return ucwords(str_replace("_", " ", strtolower($value)));
-      case "Xx yy": case "X y": return ucfirst(str_replace("_", " ", strtolower($value)));
-      case "xxYy": return str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower($value)))));
-      case "xx-yy": case "x-y": return strtolower(str_replace("_", "-", $value));
-      case "XX YY": case "X Y": case "X": return strtoupper(str_replace("_", " ", $value));
-      case "XY": case "XXYY": return strtoupper(str_replace("_", "", $value));
+      case "XxYy": return str_replace(" ", "", ucwords(str_replace("_", " ", mb_strtolower($value, "UTF-8"))));
+      case "xxyy": case "xy": case "x": return mb_strtolower(str_replace("_", "", $value), "UTF-8");
+      case "Xx Yy": return ucwords(str_replace("_", " ", mb_strtolower($value, "UTF-8")));
+      case "Xx yy": case "X y": return ucfirst(str_replace("_", " ", mb_strtolower($value, "UTF-8")));
+      case "xxYy": return str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", mb_strtolower($value, "UTF-8")))));
+      case "xx-yy": case "x-y": return mb_strtolower(str_replace("_", "-", $value), "UTF-8");
+      case "XX YY": case "X Y": case "X": return mb_strtoupper(str_replace("_", " ", $value), "UTF-8");
+      case "XY": case "XXYY": return mb_strtoupper(str_replace("_", "", $value), "UTF-8");
 
       default: return $value;
     }
