@@ -8,6 +8,12 @@ class PhpDbGen {
     $this->structure = $structure;
   }
 
+  protected function doc(Entity $entity){
+    require_once("generate/phpdbgen/doc/Main.php");
+    $gen = new Doc($entity);
+    $gen->generate();
+  }
+
   protected function sqlo(Entity $entity){
     require_once("generate/phpdbgen/sqlo/Main.php");
     $gen = new ClassSqloMain($entity);
@@ -59,6 +65,7 @@ class PhpDbGen {
     $this->includes();
 
     foreach($this->structure as $entity) {
+      $this->doc($entity);
       $this->sqlo($entity);
       $this->sql($entity);
       $this->values($entity);
