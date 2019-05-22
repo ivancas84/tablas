@@ -1,5 +1,6 @@
 <?php
 
+require_once("generate/GenerateEntity.php");
 
 abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento comun recursivo
   //public $hasRelations = false;
