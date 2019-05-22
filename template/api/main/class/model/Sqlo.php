@@ -272,4 +272,19 @@ WHERE
   }*/
 
 
+  public function select($select, $render = NULL) { //select definido por el usuario
+    $r = $this->render($render);
+
+    $sql = "SELECT {$select}
+{$this->sql->from()}
+{$this->sql->join()}
+{$this->sql->joinAux()}
+{$this->sql->conditionAll($r)}
+{$this->sql->orderBy($r->getOrder())}
+{$this->sql->limit($r->getPage(), $r->getSize())}
+";
+
+    return $sql;
+  }
+
 }
