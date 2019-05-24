@@ -85,8 +85,8 @@ abstract class EntitySql { //Definir SQL
   public function _conditionSearch($search = ""){ throw new BadMethodCallException("Not Implemented"); } //traduccion local
 
   public function fieldsAll() { //todos los fields
-    return (!empty($this->fieldsAux())) ? "{$this->fieldsFull()},
-{$this->fieldsAux()}" : $this->fieldsFull();
+    return  "{$this->fieldsFull()},
+{$this->fieldsAux()}";
   }
 
   public function conditionSearch($search = ""){ //Definir condicion de busqueda simple
@@ -134,6 +134,10 @@ abstract class EntitySql { //Definir SQL
     $conditionMode = $this->conditionAdvancedRecursive($advanced);
     return $conditionMode["condition"];
   }
+
+
+
+
 
 
   private function conditionAdvancedRecursive(array $advanced){
@@ -237,6 +241,22 @@ abstract class EntitySql { //Definir SQL
 
   public function fieldId(){ return $this->entity->getAlias() . "." . $this->entity->getPk()->getName(); } //Se define el identificador en un metodo independiente para facilitar la reimplementacion para aquellos casos en que el id tenga un nombre diferente al requerido, para el framework es obligatorio que todas las entidades tengan una pk con nombre "id"
 
+
+  public function mappingFieldsAdvanced($fields, $method = NULL){ //Conexion de fields
+    /**
+     * Este metodo se creo inicialmente para facilitar la implementacion de consultas avanzadas
+     */
+    $arr = [];
+    foreach($fields as $key => $value){
+      $field_ = $this->mappingField($value);
+      $alias_ = is_string($key) ? $key : $value; //si es un array asociativo, las llaves se definiran como alias
+      $field = empty($method) ? "{$field_} AS {$alias_}" : "{$method}({$field_}) AS {$alias_}";
+      array_push($arr, $field);    
+    }
+    return implode(",", $arr);
+  }
+
+  
   public function from(){
     return " FROM " . $this->entity->sna_() . "
 ";
@@ -439,5 +459,43 @@ abstract class EntitySql { //Definir SQL
       return $exception->getMessage();
     }
   }
+
+  public function having(array $having = null) { //busqueda avanzada
+
+    /**
+     * Array $advanced:
+     *  [
+     *    0 => "field"
+     *    1 => "=", "!=", ">=", "<=", "<", ">", "=="
+     *    2 => "value" array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array)
+     *    3 => "AND" | "OR" | null (opcional, por defecto AND)
+     *  ]
+     *  Array(
+     *    Array("field" => "field", "value" => array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array) [, "option" => "="|"=~"|"!="|"<"|"<="|">"|">="|true (no nulos)|false (nulos)][, "mode" => "and"|"or"]
+     *    ...
+     *  )
+     *  )
+     */
+    if(empty($having)) return "";
+    $conditionMode = $this->havingRecursive($having);
+    return $conditionMode["condition"];
+  }
+
+  private function havingRecursive(array $having){
+    if(is_string($having)) return ["condition" => $condicion, "mode" => $mode];
+
+    if(is_array($having[0])) return $this->havingIterable($advanced);
+    /**
+     * si en la posicion 0 es un string significa que es un campo a buscar, caso contrario es un nuevo conjunto (array) de campos que debe ser recorrido
+     */
+
+    $condicion = $this->conditionAdvancedValue($advanced[0], $option, $value);
+    /**
+     * El campo de identificacion del array posicion 0 no debe repetirse en las condiciones no estructuradas y las condiciones estructuras
+     * Se recomienda utilizar un sufijo por ejemplo "_" para distinguirlas mas facilmente
+     */
+    return ["condition" => $condicion, "mode" => $mode];
+  }
+
 
 }

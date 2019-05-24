@@ -5,6 +5,8 @@ require_once("class/model/Sql.php");
 require_once("class/db/Interface.php");
 require_once("function/settypebool.php");
 require_once("class/model/Render.php");
+require_once("class/model/RenderAux.php");
+
 
 abstract class EntitySqlo { //SQL object
   /**
@@ -282,6 +284,37 @@ WHERE
 {$this->sql->conditionAll($r)}
 {$this->sql->orderBy($r->getOrder())}
 {$this->sql->limit($r->getPage(), $r->getSize())}
+";
+
+    return $sql;
+  }
+
+
+  public function advanced(RenderAux $render) { //consulta avanzada
+    $fields_ = [];
+
+    if(!empty($f = $this->sql->mappingFieldsAdvanced($render->getGroup()))) array_push($fields_, $f);
+    if(!empty($f = $this->sql->mappingFieldsAdvanced($render->getSum(), 'SUM'))) array_push($fields_, $f);
+    if(!empty($f = $this->sql->mappingFieldsAdvanced($render->getCount(), 'COUNT'))) array_push($fields_, $f);
+    if(!empty($f = $this->sql->mappingFieldsAdvanced($render->getMin(), 'MIN'))) array_push($fields_, $f);
+    if(!empty($f = $this->sql->mappingFieldsAdvanced($render->getMax(), 'MAX'))) array_push($fields_, $f);
+
+    $fields = implode(', ', $fields_);
+
+    $group = empty($render->getGroup()) ? "" : "GROUP BY " . implode(", ", $render->getGroup());
+
+    $having = ""; //@todo en construccion
+
+    $sql = "SELECT DISTINCT
+{$fields} 
+{$this->sql->from()}
+{$this->sql->join()}
+{$this->sql->joinAux()}
+{$this->sql->conditionAll($render)}
+{$group} 
+{$having} 
+{$this->sql->orderBy($render->getOrder())}
+{$this->sql->limit($render->getPage(), $render->getSize())}
 ";
 
     return $sql;
