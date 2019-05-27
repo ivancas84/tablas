@@ -35,16 +35,13 @@ class ClassSql_fields extends GenerateEntity {
     $pk = $this->getEntity()->getPk();
     $nfFk = $this->getEntity()->getFieldsByType(["nf","fk"]);
 
-    $this->string .= "' . \$this->_mappingField(\$p.'{$this->getEntity()->getPk()->getName()}') . ' AS ' . \$p.'{$this->getEntity()->getPk()->getName()},
-";
+    $fields = ["' . \$this->_mappingField(\$p.'{$this->getEntity()->getPk()->getName()}') . ' AS ' . \$p.'{$this->getEntity()->getPk()->getName()}"];
     foreach ( $nfFk as $field ) {
-      $this->string .= "' . \$this->_mappingField(\$p.'{$field->getName()}') . ' AS ' . \$p.'{$field->getName()},
-";
-
+      if($field->isAggregate()) continue;
+      array_push($fields, "' . \$this->_mappingField(\$p.'{$field->getName()}') . ' AS ' . \$p.'{$field->getName()}");
     }
 
-    $pos = strrpos($this->string, ",");
-    $this->string = substr_replace($this->string , "" , $pos, 2);
+    $this->string .= implode(", ", $fields);
 
   }
 

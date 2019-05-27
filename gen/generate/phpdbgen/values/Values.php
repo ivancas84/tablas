@@ -19,7 +19,6 @@ class ClassValues extends GenerateFileEntity {
 
 require_once(\"class/model/values/" . $this->getEntity()->getName("xxYy") . "/Main.php\");
 
-//***** implementacion de Values para una determinada tabla *****
 class " . $this->getEntity()->getName("XxYy") . "Values extends " . $this->getEntity()->getName("XxYy") . "ValuesMain{
 
 }

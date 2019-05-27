@@ -56,16 +56,26 @@ abstract class Field {
      * se define conditionHistory para discriminar entre valores historicos
      */
 
+  public $aggregate = false;
+    /**
+     * Los campos de agregacion definen al admin como false y no se incluyen en la consulta (solo pueden ser definidos en consultas avanzadas) 
+     * No se incluyen en la busqueda simple
+     * Sí se definen en la búsqueda avanzada para ser utilizados en HAVING
+     */
+
   //public $typescriptType = null; //tipo de datos typescript
 
+   
 
   public function __construct() {
-    $this->defineDataType($this->type);
-    $this->defineSubtype($this->dataType, $this->fieldType);
-    $this->defineNotNull($this->subtype);
-    $this->defineLength($this->type, $this->subtype);
+    $this->defineDataType();
+    $this->defineSubtype();
+    $this->defineNotNull();
+    $this->defineLength();
+    $this->defineAdmin();
+    $this->defineHistory();
+    $this->defineMain();
   }
-
 
   //Retornar instancia de Entity correspondiente al field
   abstract function getEntity();
@@ -80,11 +90,13 @@ abstract class Field {
   public function getDataType(){ return $this->dataType; }
   public function getSelectValues(){ return $this->selectValues; }
   public function getType() { return $this->type; }
+  public function isAggregate(){ return $this->aggregate; }
   public function isMain(){ return $this->main; }
   public function isNotNull(){ return $this->notNull; }
   public function isUnique(){ return $this->unique; }
   public function isAdmin(){ return $this->admin; }
   public function isHistory(){ return $this->history; }
+
 
   public function getAlias($format = null) {
     switch($format){
@@ -95,7 +107,6 @@ abstract class Field {
 
       default: return $this->alias;
     }
-
   }
 
   public function getName($format = null) {
@@ -112,17 +123,24 @@ abstract class Field {
     }
   }
 
-
-
-  protected function defineNotNull($subtype){
+  protected function defineNotNull(){
     if ( is_null($this->notNull) ) {
-      $this->notNull = ( ( $subtype == "checkbox" ) ) ? true : false;
+      $this->notNull = ( ( $this->subtype == "checkbox" ) ) ? true : false;
     }
   }
 
-  protected function defineDataType($type){
+  protected function defineAdmin(){ if ( $this->isAggregate() ) { $this->admin = false; } }
+  protected function defineMain(){ if ( $this->isAggregate() ) { $this->main = false; } }
+
+  protected function defineFieldType(){ if ( $this->isAggregate() ) { $this->fieldType = "nf"; } }
+
+  protected function defineHistory(){
+    if ( $this->isAggregate() ) { $this->history = false; }
+  }
+
+  protected function defineDataType(){
     if (is_null($this->dataType)) {
-      switch ( $type ) {
+      switch ( $this->type ) {
         case "smallint":
         case "mediumint":
         case "int":
@@ -151,12 +169,12 @@ abstract class Field {
     }
   }
 
-  protected function defineSubtype($dataType, $fieldType){
+  protected function defineSubtype(){
     if(is_null($this->subtype)){
-      switch($fieldType){
+      switch($this->fieldType){
         case "pk":
         case "nf":
-          switch($dataType){
+          switch($this->dataType){
             case "string": $this->subtype = "text"; break;
             case "integer": $this->subtype = "integer"; break;
             case "float": $this->subtype = "float"; break;
@@ -178,9 +196,9 @@ abstract class Field {
     }
   }
 
-  protected function defineLength($type, $subtype){
+  protected function defineLength(){
     if (empty($this->length)){
-      switch ($type) {
+      switch ($this->type) {
         case "tinyint": $this->length = 3; break;
         case "smallint": $this->length = 5; break;
         case "mediumint": $this->length = 8; break;
@@ -196,7 +214,7 @@ abstract class Field {
     }
 
     if ($this->length === false || $this->length === null) {
-      switch($subtype){
+      switch($this->subtype){
         case "text": $this->length = 45; break;
         case "cuil": $this->length = 11; break;
         case "dni": $this->length = 8; break;

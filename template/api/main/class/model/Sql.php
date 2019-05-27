@@ -84,9 +84,9 @@ abstract class EntitySql { //Definir SQL
   public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); } //traduccion local
   public function _conditionSearch($search = ""){ throw new BadMethodCallException("Not Implemented"); } //traduccion local
 
-  public function fieldsAll() { //todos los fields
-    return  "{$this->fieldsFull()},
-{$this->fieldsAux()}";
+  public function fieldsAll() { //todos los fields de consulta (incluye derivados estructurales)    
+    return ($this->fieldsAux()) ? "{$this->fieldsFull()},
+{$this->fieldsAux()}" : "{$this->fieldsFull()}";
   }
 
   public function conditionSearch($search = ""){ //Definir condicion de busqueda simple
@@ -482,22 +482,7 @@ abstract class EntitySql { //Definir SQL
     return $conditionMode["condition"];
   }
 
-  private function havingRecursive(array $having){
 
-    foreach
-    if(is_string($having)) return ["condition" => $having];
-
-    if(is_array($having)) return $this->havingIterable($advanced);
-    /**
-     * si en la posicion 0 es un string significa que es un campo a buscar, caso contrario es un nuevo conjunto (array) de campos que debe ser recorrido
-     */
-
-    /**
-     * El campo de identificacion del array posicion 0 no debe repetirse en las condiciones no estructuradas y las condiciones estructuras
-     * Se recomienda utilizar un sufijo por ejemplo "_" para distinguirlas mas facilmente
-     */
-    return ["condition" => $condicion, "mode" => $mode];
-  }
 
   private function havingIterable(array $having) {
     $conditionModes = array();
