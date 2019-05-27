@@ -465,31 +465,33 @@ abstract class EntitySql { //Definir SQL
     /**
      * Array $advanced:
      *  [
-     *    0 => "field"
-     *    1 => "=", "!=", ">=", "<=", "<", ">", "=="
-     *    2 => "value" array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array)
-     *    3 => "AND" | "OR" | null (opcional, por defecto AND)
+     *    "connection" => "condition"
      *  ]
-     *  Array(
-     *    Array("field" => "field", "value" => array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array) [, "option" => "="|"=~"|"!="|"<"|"<="|">"|">="|true (no nulos)|false (nulos)][, "mode" => "and"|"or"]
-     *    ...
-     *  )
-     *  )
+     * 
+     *  La condicion puede ser otro array con el cual se iterara
      */
     if(empty($having)) return "";
+
+    foreach($having as $key => $value){
+      $v = (is_array($value)) ? $this->having($value) : $value;
+      if(!empty($condition)) $condition .= " {$key} ";
+      $condition .= $v; 
+    }
+
     $conditionMode = $this->havingRecursive($having);
     return $conditionMode["condition"];
   }
 
   private function havingRecursive(array $having){
-    if(is_string($having)) return ["condition" => $condicion, "mode" => $mode];
 
-    if(is_array($having[0])) return $this->havingIterable($advanced);
+    foreach
+    if(is_string($having)) return ["condition" => $having];
+
+    if(is_array($having)) return $this->havingIterable($advanced);
     /**
      * si en la posicion 0 es un string significa que es un campo a buscar, caso contrario es un nuevo conjunto (array) de campos que debe ser recorrido
      */
 
-    $condicion = $this->conditionAdvancedValue($advanced[0], $option, $value);
     /**
      * El campo de identificacion del array posicion 0 no debe repetirse en las condiciones no estructuradas y las condiciones estructuras
      * Se recomienda utilizar un sufijo por ejemplo "_" para distinguirlas mas facilmente
@@ -497,5 +499,23 @@ abstract class EntitySql { //Definir SQL
     return ["condition" => $condicion, "mode" => $mode];
   }
 
+  private function havingIterable(array $having) {
+    $conditionModes = array();
 
+    for($i = 0; $i < count($advanced); $i++){
+      $conditionMode = $this->conditionAdvancedRecursive($advanced[$i]);
+      array_push($conditionModes, $conditionMode);
+    }
+
+    $modeReturn = $conditionModes[0]["mode"];
+    $condition = "";
+
+    foreach($conditionModes as $cm){
+      $mode = $cm["mode"];
+      if(!empty($condition)) $condition .= $mode . " ";
+      $condition.= $cm["condition"];
+    }
+
+    return ["condition"=>"(".$condition.")", "mode"=>$modeReturn];
+  }
 }
