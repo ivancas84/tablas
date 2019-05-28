@@ -40,6 +40,7 @@ class ComponentTableHtml extends GenerateFileEntity {
     $fields = $this->getEntity()->getFieldsNf();
 
     foreach ($fields as $field) {
+      if($field->isAggregate()) continue; //se omiten los campos de agregacion
       $name = $field->getName("Xx Yy");
       $sort = $field->getName();
 
@@ -86,7 +87,8 @@ class ComponentTableHtml extends GenerateFileEntity {
 
 
       foreach ($this->getEntity()->getFieldsNf() as $field) {
-         $this->string .= "            <td>" ;
+        if($field->isAggregate()) continue; //se omiten los campos de agregacion
+        $this->string .= "            <td>" ;
         switch($field->getSubtype()){
           //case "checkbox": $this->checkbox($field); break;
           case "date": $this->date($field); break;
