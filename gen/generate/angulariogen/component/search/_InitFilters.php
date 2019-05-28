@@ -38,6 +38,8 @@ class ComponentSearchTs_initFilters extends GenerateEntity {
   protected function nf(){
     $fields = $this->getEntity()->getFieldsNf();
     foreach($fields as $field){
+      if($field->isAggregate()) continue;
+
       switch ( $field->getSubtype() ) {
         case "date": $this->date($field); break;
       }

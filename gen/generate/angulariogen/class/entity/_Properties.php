@@ -14,6 +14,7 @@ class TypescriptEntity_properties extends GenerateEntity {
     $fields = $this->getEntity()->getFields();
 
     foreach($fields as $field){
+      
       switch ( $field->getDataType() ) {
         /*case "date":
         case "year":

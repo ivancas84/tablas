@@ -34,6 +34,8 @@ abstract class Field {
     //select_text Conjunto de strings definido, los valores se definen en el atributo "selectValues"
     //cuil Texto para cuil
     //dni Texto para dni
+    //select Conjunto de opciones definidas mediante los valores de las claves foraneas
+
 
   public $main = null; //flag para indicar si es un campo principal.
     //Por defecto se define la clave primaria como campo principal. En versiones anteriores se hacia la siguiente logica:
@@ -58,14 +60,14 @@ abstract class Field {
 
   public $aggregate = false;
     /**
-     * Los campos de agregacion definen al admin como false y no se incluyen en la consulta (solo pueden ser definidos en consultas avanzadas) 
+     * Los campos de agregacion definen al admin como false y no se incluyen en la consulta (solo pueden ser definidos en consultas avanzadas)
      * No se incluyen en la busqueda simple
      * Sí se definen en la búsqueda avanzada para ser utilizados en HAVING
      */
 
   //public $typescriptType = null; //tipo de datos typescript
 
-   
+
 
   public function __construct() {
     $this->defineDataType();

@@ -63,8 +63,11 @@ class ComponentSearchHtml extends GenerateFileEntity {
 
   protected function selectOptionsNf(){
    $fields = $this->entity->getFieldsNf();
-   foreach($fields as $field) $this->string .= "                <option value=\"" . $field->getName() . "\">" . $field->getName("Xx Yy") . "</option>
+   foreach($fields as $field) {
+     if($field->isAggregate()) continue;
+      $this->string .= "                <option value=\"" . $field->getName() . "\">" . $field->getName("Xx Yy") . "</option>
 ";
+    }
   }
 
   protected function selectOptionsRecursive(Entity $entity, array $tablesVisited = NULL, $prefix = ""){
@@ -120,6 +123,8 @@ class ComponentSearchHtml extends GenerateFileEntity {
     $fieldsNf = $this->entity->getFieldsNf();
 
     foreach($fieldsNf as $field) {
+      if($field->isAggregate()) continue;
+
       switch($field->getSubtype()) {
         //case "date": $this->date($field); break;
         case "checkbox": $this->checkbox($field); break;
