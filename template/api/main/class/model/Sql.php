@@ -21,7 +21,6 @@ abstract class EntitySql { //Definir SQL
    * Ademas, ciertos metodos requieren determinar el motor de base de datos para definir la sintaxis SQL adecuada
    */
 
-
    public static function getInstanceFromString($entity, $prefix = NULL) { //crear instancias de sql
      /**
       * sql, a diferencia de sus pares entity y sqlo, no puede ser implementada como singleton porque utiliza prefijos de identificacion
@@ -84,7 +83,7 @@ abstract class EntitySql { //Definir SQL
   public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); } //traduccion local
   public function _conditionSearch($search = ""){ throw new BadMethodCallException("Not Implemented"); } //traduccion local
 
-  public function fieldsAll() { //todos los fields de consulta (incluye derivados estructurales)    
+  public function fieldsAll() { //todos los fields de consulta (incluye derivados estructurales)
     return ($this->fieldsAux()) ? "{$this->fieldsFull()},
 {$this->fieldsAux()}" : "{$this->fieldsFull()}";
   }
@@ -251,12 +250,12 @@ abstract class EntitySql { //Definir SQL
       $field_ = $this->mappingField($value);
       $alias_ = is_string($key) ? $key : $value; //si es un array asociativo, las llaves se definiran como alias
       $field = empty($method) ? "{$field_} AS {$alias_}" : "{$method}({$field_}) AS {$alias_}";
-      array_push($arr, $field);    
+      array_push($arr, $field);
     }
     return implode(",", $arr);
   }
 
-  
+
   public function from(){
     return " FROM " . $this->entity->sna_() . "
 ";
@@ -410,8 +409,10 @@ abstract class EntitySql { //Definir SQL
 
   public function orderBy(array $order = null){
     $order = $this->initOrder($order);
-    if(empty($order)) return "";
+    return $this->order($order);
+  }
 
+  public function order(array $order = null){
     $sql = '';
 
     if(strpos(DATA_DBMS, 'my') !== false) {
@@ -460,47 +461,90 @@ abstract class EntitySql { //Definir SQL
     }
   }
 
+
   public function having(array $having = null) { //busqueda avanzada
 
     /**
      * Array $advanced:
      *  [
-     *    "connection" => "condition"
+     *    0 => "field"
+     *    1 => "=", "!=", ">=", "<=", "<", ">", "=="
+     *    2 => "value" array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array)
+     *    3 => "AND" | "OR" | null (opcional, por defecto AND)
      *  ]
-     * 
-     *  La condicion puede ser otro array con el cual se iterara
+     *  Array(
+     *    Array("field" => "field", "value" => array|string|int|boolean|date (si es null no se define busqueda, si es un array se definen tantas busquedas como elementos tenga el array) [, "option" => "="|"=~"|"!="|"<"|"<="|">"|">="|true (no nulos)|false (nulos)][, "mode" => "and"|"or"]
+     *    ...
+     *  )
+     *  )
      */
     if(empty($having)) return "";
-
-    foreach($having as $key => $value){
-      $v = (is_array($value)) ? $this->having($value) : $value;
-      if(!empty($condition)) $condition .= " {$key} ";
-      $condition .= $v; 
-    }
-
     $conditionMode = $this->havingRecursive($having);
     return $conditionMode["condition"];
   }
 
 
+  private function havingRecursive(array $having){
+
+    /**
+     * Para facilitar la definicion de condiciones, retorna un array con dos elementos:
+     * "condition": SQL
+     * "mode": Concatenacion de condiciones "AND" | "OR"
+     */
+
+    if(is_array($having[0])) return $this->havingIterable($having);
+    /**
+     * si en la posicion 0 es un string significa que es un campo a buscar, caso contrario es un nuevo conjunto (array) de campos que debe ser recorrido
+     */
+
+    $option = (empty($having[1])) ? "=" : $having[1]; //por defecto se define "="
+    $value = (!isset($having[2])) ? null : $having[2]; //hay opciones de configuracion que pueden no definir valores
+    /**
+     * No usar empty, puede definirse el valor false
+     */
+    $mode = (empty($having[3])) ? "AND" : $having[3];  //el modo indica la concatenacion con la opcion precedente, se usa en un mismo conjunto (array) de opciones
+
+    $condicion = $this->_conditionAdvancedAux($having[0], $option, $value);
+    if(!$condicion) $condicion = $this->havingValue($having[0], $option, $value);
+    /**
+     * El campo de identificacion del array posicion 0 no debe repetirse en las condiciones no estructuradas y las condiciones estructuras
+     * Se recomienda utilizar un sufijo por ejemplo "_" para distinguirlas mas facilmente
+     */
+    return ["condition" => $condicion, "mode" => $mode];
+  }
+
 
   private function havingIterable(array $having) {
-    $conditionModes = array();
+    $hav = array();
 
-    for($i = 0; $i < count($advanced); $i++){
-      $conditionMode = $this->conditionAdvancedRecursive($advanced[$i]);
-      array_push($conditionModes, $conditionMode);
-    }
-
-    $modeReturn = $conditionModes[0]["mode"];
     $condition = "";
-
-    foreach($conditionModes as $cm){
-      $mode = $cm["mode"];
-      if(!empty($condition)) $condition .= $mode . " ";
-      $condition.= $cm["condition"];
+    for($i = 0; $i < count($having); $i++) {
+      $h = $this->havingRecursive($having[$i]);
+      if($i == 0) $mode = $h["mode"];
+      if(!empty($condition)) $condition .= $h["mode"] . " ";
+      $condition .= $h["condition"];
     }
 
-    return ["condition"=>"(".$condition.")", "mode"=>$modeReturn];
+    return ["condition" => "({$condition})", "mode" => $mode];
+  }
+
+  protected function havingValue($field, $option, $value){
+    if(!is_array($value)) {
+      return $this->_conditionAdvanced($field, $option, $value);
+    }
+
+    $condition = "";
+    $cond = false;
+
+    foreach($value as $v){
+      if($cond) {
+        if($option == "=") $condition .= " OR ";
+        elseif($option == "!=") $condition .= " AND ";
+        else throw new Exception("Error al definir opción");
+      } else $cond = true;
+      $condition .= $this->_conditionAdvanced($field, $option, $v);
+    }
+
+    return "(".$condition.")";
   }
 }

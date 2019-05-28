@@ -204,7 +204,7 @@ SELECT count(DISTINCT " . $this->sql->fieldId() . ") AS \"num_rows\"
     return $this->all($r);
   }
 
-  
+
   public function _unique(array $row){ //busqueda auxiliar por campos unicos
     /**
      * Unique puede restringir el acceso a datos dependiendo del rol y la condicion auxiliar
@@ -291,29 +291,33 @@ WHERE
 
 
   public function advanced(RenderAux $render) { //consulta avanzada
-    $fields_ = [];
+    $fields = array_merge($render->getGroup(), $render->getAggregate());
 
-    if(!empty($f = $this->sql->mappingFieldsAdvanced($render->getGroup()))) array_push($fields_, $f);
-    if(!empty($f = $this->sql->mappingFieldsAdvanced($render->getSum(), 'SUM'))) array_push($fields_, $f);
-    if(!empty($f = $this->sql->mappingFieldsAdvanced($render->getCount(), 'COUNT'))) array_push($fields_, $f);
-    if(!empty($f = $this->sql->mappingFieldsAdvanced($render->getMin(), 'MIN'))) array_push($fields_, $f);
-    if(!empty($f = $this->sql->mappingFieldsAdvanced($render->getMax(), 'MAX'))) array_push($fields_, $f);
+    $fieldsQuery_ = [];
+    foreach($fields as $field){
+      $f = $this->sql->mappingField($field);
+      array_push($fieldsQuery_, "{$f} AS {$field}");
+    }
 
-    $fields = implode(', ', $fields_);
+    $fieldsQuery = implode(', ', $fieldsQuery_);
 
-    $group = empty($render->getGroup()) ? "" : "GROUP BY " . implode(", ", $render->getGroup());
+    $group_ = $render->getGroup();
+    $group = empty($group_) ? "" : "GROUP BY " . implode(", ", $group_) . "
+";
 
-    $having = ""; //@todo en construccion
+    $having_ = $this->sql->having($render->getHaving());
+    $having = empty($having_) ? "" : "HAVING {$having_}
+";
 
     $sql = "SELECT DISTINCT
-{$fields} 
+{$fieldsQuery}
 {$this->sql->from()}
 {$this->sql->join()}
 {$this->sql->joinAux()}
 {$this->sql->conditionAll($render)}
-{$group} 
-{$having} 
-{$this->sql->orderBy($render->getOrder())}
+{$group}
+{$having}
+{$this->sql->order($render->getOrder())}
 {$this->sql->limit($render->getPage(), $render->getSize())}
 ";
 
