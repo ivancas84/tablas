@@ -156,7 +156,7 @@ class ComponentFieldsetHtml extends GenerateFileEntity {
     <div class=\"col-sm-10\">
       <select class=\"form-control\" formControlName=\"" . $field->getName() . "\" [ngClass]=\"{'is-invalid':({$field->getName("xxYy")}.invalid && ({$field->getName("xxYy")}.dirty || {$field->getName("xxYy")}.touched))}\">
         <option [ngValue]=\"null\">--" . $field->getName("Xx Yy") . "--</option>
-        <option *ngFor=\"let option of options." . $field->getEntityRef()->getName() . "\" [value]=\"option.id\" >{{option.id | label:\"{$field->getEntityRef()->getName()}\"}}</option>
+        <option *ngFor=\"let option of (options | async)?." . $field->getEntityRef()->getName() . "\" [value]=\"option.id\" >{{option.id | label:\"{$field->getEntityRef()->getName()}\"}}</option>
       </select>
 ";
     $this->templateError($field);
