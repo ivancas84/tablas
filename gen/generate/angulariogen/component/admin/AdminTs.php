@@ -21,7 +21,7 @@ class ComponentAdminTs extends GenerateFileEntity {
 
   protected function generateCode() {
     $this->start();
-    if($this->hasRelationsFkTypeahead()) $this->setData();
+    //if($this->hasRelationsFkTypeahead()) $this->setData();
     $this->end();
   }
 

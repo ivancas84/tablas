@@ -32,6 +32,7 @@ class ComponentFieldsetArrayTs extends GenerateFileEntity {
 ";
     }
     $this->string .= "
+
 ";
   }
 
@@ -53,6 +54,7 @@ export class " . $this->entity->getName("XxYy") . "FieldsetArrayComponent extend
     this.entity = '" . $this->entity->getName() . "';
     this.fieldset = '" . $this->entity->getName() . "';
   }
+
 ";
   }
 
