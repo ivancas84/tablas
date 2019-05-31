@@ -13,14 +13,14 @@ class LoaderService_entity extends Generate {
 
 
   protected function start(){
-    $this->string .= "  entity(name: string): Entity {
+    $this->string .= "  entity(name: string, params = null): Entity {
     switch(name) {
 ";
   }
 
   protected function body(){
     foreach($this->structure as $entity){
-      $this->string .= "        case \"" . $entity->getName() . "\": { return new " . $entity->getName("XxYy") . "; }
+      $this->string .= "        case \"" . $entity->getName() . "\": { return new " . $entity->getName("XxYy") . "(params); }
 ";
       }
   }

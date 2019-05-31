@@ -9,7 +9,7 @@ class TypescriptEntity_constructor extends GenerateEntity {
 
 
   public function generate() {
-    if(!$this->hasFields()) return;
+    //if(!$this->hasFields()) return;
     $this->start();
     $this->defecto();
     $this->end();
@@ -45,8 +45,9 @@ class TypescriptEntity_constructor extends GenerateEntity {
 
 
   protected function start(){
-    $this->string .= "  constructor(){
-    super()
+    $this->string .= "  constructor(params = null) {
+    super();
+    this.initialize(params);
 ";
   }
 
