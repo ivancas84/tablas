@@ -72,15 +72,29 @@ abstract class EntitySql { //Definir SQL
     return implode(', ', $ids_);
   }
 
+  public function _mappingFieldEntity($field) { //mapeo de fields de la entidad (todos los fields)
+    /**
+     * Recorre relaciones (si existen)
+     */
+    if($field_ = $this->_mappingField($field)) return $field_;
+    if($field_ = $this->_mappingFieldAggregate($field)) return $field_;
+    if($field_ = $this->_mappingFieldDefined($field)) return $field_;
+  }
+
   public function mappingField($field){ //Traducir campo para ser interpretado correctamente por el SQL
     /**
      * Recorre relaciones (si existen)
      */
-    $field_ = $this->_mappingField($field);
-    if(!$field_) throw new Exception("Campo no reconocido");
-    return $field_;
+    if($field_ = $this->_mappingFieldEntity($field)) return $field_;
+    throw new Exception("Campo no reconocido");
   }
-  public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); } //traduccion local
+  public function _mappingField($field){ throw new BadMethodCallException("Not Implemented"); } //traduccion local de campos
+  public function _mappingFieldAggregate($field){ return null; } //traduccion local de campos de agregacion
+  public function _mappingFieldDefined($field){ //traduccion local de campos generales
+    switch ($field) {
+      case '_cantidad': return "COUNT(*)";
+    } 
+  }
   public function _conditionSearch($search = ""){ throw new BadMethodCallException("Not Implemented"); } //traduccion local
 
   public function fieldsAll() { //todos los fields de consulta (incluye derivados estructurales)
@@ -159,7 +173,7 @@ abstract class EntitySql { //Definir SQL
      */
     $mode = (empty($advanced[3])) ? "AND" : $advanced[3];  //el modo indica la concatenacion con la opcion precedente, se usa en un mismo conjunto (array) de opciones
 
-    $condicion = $this->conditionAdvancedAux($advanced[0], $option, $value);
+    $condicion = $this->conditionFieldAux($advanced[0], $option, $value);
     if(!$condicion) $condicion = $this->conditionAdvancedValue($advanced[0], $option, $value);
     /**
      * El campo de identificacion del array posicion 0 no debe repetirse en las condiciones no estructuradas y las condiciones estructuras
@@ -219,18 +233,26 @@ abstract class EntitySql { //Definir SQL
    * Si existen relaciones, este metodo debe reimplementarse para contemplarlas
    */
 
-  protected function conditionAdvancedAux($field, $option, $value){ //condicion avanzada principal
-    if($c = $this->_conditionAdvancedAux($field, $option, $value)) return $c;
+  protected function conditionFieldAux($field, $option, $value){ //condicion de field auxiliar
+    /**
+     * Se sobrescribe si tiene relaciones
+     */
+    if($c = $this->_conditionFieldAux($field, $option, $value)) return $c;
   }
 
-  protected function _conditionAdvancedAux($field, $option, $value){
+  protected function _conditionFieldAux($field, $option, $value){
     $p = $this->prf();
 
     switch($field){
       case "{$p}_compare":
-        $f1 = $this->_mappingField($value[0]);
-        $f2 = $this->_mappingField($value[1]);
+        $f1 = $this->_mappingFieldEntity($value[0]);
+        $f2 = $this->_mappingFieldEntity($value[1]);
         return "({$f1} {$option} {$f2})";
+      break;
+
+      case "_cantidad": //campo de agregacion general: "_cantidad"
+        $f = $this->_mappingFieldEntity($field);
+        return $this->format->conditionNumber($field, $value, $option);
       break;
     }
   }
@@ -504,7 +526,7 @@ abstract class EntitySql { //Definir SQL
      */
     $mode = (empty($having[3])) ? "AND" : $having[3];  //el modo indica la concatenacion con la opcion precedente, se usa en un mismo conjunto (array) de opciones
 
-    $condicion = $this->_conditionAdvancedAux($having[0], $option, $value);
+    $condicion = $this->_conditionFieldAux($having[0], $option, $value);
     if(!$condicion) $condicion = $this->havingValue($having[0], $option, $value);
     /**
      * El campo de identificacion del array posicion 0 no debe repetirse en las condiciones no estructuradas y las condiciones estructuras

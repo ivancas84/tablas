@@ -3,19 +3,19 @@
 
 require_once("generate/GenerateEntityRecursiveFk.php");
 
-class ClassSql_conditionAdvancedAux extends GenerateEntityRecursiveFk{
+class ClassSql_conditionFieldAux extends GenerateEntityRecursiveFk{
 
 
 
   protected function start(){
-    $this->string .= "  protected function conditionAdvancedAux(\$field, \$option, \$value) {
-    if(\$c = \$this->_conditionAdvancedAux(\$field, \$option, \$value)) return \$c;
+    $this->string .= "  protected function conditionFieldAux(\$field, \$option, \$value) {
+    if(\$c = \$this->_conditionFieldAux(\$field, \$option, \$value)) return \$c;
 ";
   }
 
 
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    if(\$c = EntitySql::getInstanceFromString('{$entity->getName()}','{$prefix}')->_conditionAdvancedAux(\$field, \$option, \$value)) return \$c;
+    $this->string .= "    if(\$c = EntitySql::getInstanceFromString('{$entity->getName()}','{$prefix}')->_conditionFieldAux(\$field, \$option, \$value)) return \$c;
 ";
   }
 

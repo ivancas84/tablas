@@ -69,6 +69,10 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     $gen = new ClassSql__mappingField($this->getEntity());
     $this->string .= $gen->generate();
 
+    require_once("generate/phpdbgen/sql/method/_MappingFieldAggregate.php");
+    $gen = new ClassSql__mappingFieldAggregate($this->getEntity());
+    $this->string .= $gen->generate();
+
     require_once("generate/phpdbgen/sql/method/MappingField.php");
     $gen = new ClassSql_mappingField($this->getEntity());
     $this->string .= $gen->generate();
@@ -123,7 +127,7 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     $this->string .= $gen->generate();
 
     require_once("generate/phpdbgen/sql/method/ConditionAdvancedAux.php");
-    $gen = new ClassSql_conditionAdvancedAux($this->getEntity());
+    $gen = new ClassSql_conditionFieldAux($this->getEntity());
     $this->string .= $gen->generate();
   }
 

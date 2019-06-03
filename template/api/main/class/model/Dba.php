@@ -216,7 +216,8 @@ class Dba { //Facilita el acceso a la base de datos
     return $rows[0];
   }
 
-  public static function getOrNull($entity, array $id, $render = null){ //busqueda por id o null
+  public static function getOrNull($entity, $id, $render = null){ //busqueda por id o null
+    if(empty($id)) return null;
     $rows = self::getAll($entity, [$id], $render);
     return (!count($rows)) ? null : $rows[0];
   }

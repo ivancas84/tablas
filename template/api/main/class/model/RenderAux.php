@@ -12,7 +12,7 @@ class RenderAux extends Render {
   protected $aggregate = array(); //campos a los que se aplicara funciones de agregacion
   /**
    * Deben estar definidos en el método mapping field, se realizará la traducción correspondiente
-   * Ej ["suma_horas_catedra", "promedio_edad"]
+   * Ej ["sum_horas_catedra", "avg_edad"]
    */
 
   protected $group = array(); //campos de agrupacion
