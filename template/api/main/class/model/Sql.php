@@ -173,8 +173,7 @@ abstract class EntitySql { //Definir SQL
      */
     $mode = (empty($advanced[3])) ? "AND" : $advanced[3];  //el modo indica la concatenacion con la opcion precedente, se usa en un mismo conjunto (array) de opciones
 
-    $condicion = $this->conditionFieldAux($advanced[0], $option, $value);
-    if(!$condicion) $condicion = $this->conditionAdvancedValue($advanced[0], $option, $value);
+   $condicion = $this->conditionFieldValue($advanced[0], $option, $value);
     /**
      * El campo de identificacion del array posicion 0 no debe repetirse en las condiciones no estructuradas y las condiciones estructuras
      * Se recomienda utilizar un sufijo por ejemplo "_" para distinguirlas mas facilmente
@@ -202,10 +201,12 @@ abstract class EntitySql { //Definir SQL
     return ["condition"=>"(".$condition.")", "mode"=>$modeReturn];
   }
 
-  protected function conditionAdvancedValue($field, $option, $value){
+  protected function conditionFieldValue($field, $option, $value){
     if(!is_array($value)) {
-      $cond = $this->conditionAdvancedMain($field, $option, $value);
-      return $cond;
+      $condition = $this->conditionFieldAux($field, $option, $value);
+      if(!$condition) $condition = $this->conditionField($field, $option, $value);
+      if(!$condition) throw new Exception("No pudo definirse el SQL de la condicion del campo: {$field}");
+      return $condition;
     }
 
     $condition = "";
@@ -217,19 +218,23 @@ abstract class EntitySql { //Definir SQL
         elseif($option == "!=") $condition .= " AND ";
         else throw new Exception("Error al definir opción");
       } else $cond = true;
-      $condition .= $this->conditionAdvancedMain($field, $option, $v);
+
+      $condition_ = $this->conditionFieldAux($field, $option, $v);
+      if(!$condition_) $condition_ = $this->conditionField($field, $option, $v);
+      if(!$condition_) throw new Exception("No pudo definirse el SQL de la condicion del campo: {$field}");
+      $condition .= $condition_;
     }
 
     return "(".$condition.")";
   }
 
 
-  protected function conditionAdvancedMain($field, $option, $value){ //condicion avanzada principal
+  protected function conditionField($field, $option, $value){ //condicion avanzada principal
     if($c = $this->_conditionAdvanced($field, $option, $value)) return $c;
   }
   /**
    * Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
-   * La restriccion de conditionAdvancedMain es que $value no puede ser un array, ya que definirá un conjunto de condiciones asociadas
+   * La restriccion de conditionField es que $value no puede ser un array, ya que definirá un conjunto de condiciones asociadas
    * Si existen relaciones, este metodo debe reimplementarse para contemplarlas
    */
 

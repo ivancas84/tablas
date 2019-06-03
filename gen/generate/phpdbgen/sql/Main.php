@@ -122,11 +122,11 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     $gen = new ClassSql__conditionAdvanced($this->getEntity());
     $this->string .= $gen->generate();
 
-    require_once("generate/phpdbgen/sql/method/ConditionAdvancedMain.php");
-    $gen = new ClassSql_conditionAdvancedMain($this->getEntity());
+    require_once("generate/phpdbgen/sql/method/ConditionField.php");
+    $gen = new ClassSql_conditionField($this->getEntity());
     $this->string .= $gen->generate();
 
-    require_once("generate/phpdbgen/sql/method/ConditionAdvancedAux.php");
+    require_once("generate/phpdbgen/sql/method/ConditionFieldAux.php");
     $gen = new ClassSql_conditionFieldAux($this->getEntity());
     $this->string .= $gen->generate();
   }

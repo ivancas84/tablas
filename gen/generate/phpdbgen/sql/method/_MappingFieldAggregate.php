@@ -26,7 +26,7 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
 
   protected function start(){
     $this->string .= "  public function _mappingFieldAggregate(\$field){
-    \$t = \$this->getEntity()->getAlias();
+    \$t = \$this->entity->getAlias();
 
     switch (\$field) {
 ";
