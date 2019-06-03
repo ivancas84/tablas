@@ -252,7 +252,7 @@ abstract class EntitySql { //Definir SQL
 
       case "_cantidad": //campo de agregacion general: "_cantidad"
         $f = $this->_mappingFieldEntity($field);
-        return $this->format->conditionNumber($field, $value, $option);
+        return $this->format->conditionNumber($f, $value, $option);
       break;
     }
   }

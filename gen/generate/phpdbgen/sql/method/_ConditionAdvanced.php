@@ -16,7 +16,7 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
     $this->string .= "  public function _conditionAdvanced(\$field, \$option, \$value){
     \$p = \$this->prf();
 
-    \$f = \$this->_mappingField(\$field);
+    \$f = \$this->_mappingFieldEntity(\$field);
     switch (\$field){
 ";
   }
