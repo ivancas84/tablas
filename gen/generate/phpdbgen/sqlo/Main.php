@@ -20,7 +20,7 @@ class ClassSqloMain extends GenerateFileEntity {
     $this->json();
     //$this->uploadSql(); //@todo deprecated
     //$this->uploadSqlIndex(); //@todo deprecated
-    //$this->values(); //@todo deprecated
+    $this->values(); //@todo deprecated
     $this->end();
   }
 
@@ -86,8 +86,8 @@ class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
   }
 
   protected function values(){
-    require_once("generate/phpdbgen/sqlo/method/_Values.php");
-    $gen = new ClassSqlo__values($this->getEntity());
+    require_once("generate/phpdbgen/sqlo/method/Values.php");
+    $gen = new Sqlo_values($this->getEntity());
     $this->string .= $gen->generate();
 
   }

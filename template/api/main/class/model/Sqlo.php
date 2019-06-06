@@ -23,6 +23,22 @@ abstract class EntitySqlo { //SQL object
   protected function _update(array $row) { throw new BadMethodCallException ("Metodo abstracto no implementado"); } //sql de actualizacion
   public function json(array $row) { return $this->sql->_json($row); }
 
+  public function values(array $row){ //retornar instancias de EntityValues
+    /**
+     * Recorre la cadena de relaciones del resultado de una consulta y retorna instancias de EntityValues
+     * El resultado es almacenado en un array asociativo.
+     * Las claves del array son nombres representativo de la entidad que contiene
+     * Las claves se forman a partir del nombre de la clave foranea
+     * Se asigna un numero incremental a la clave en el caso de que se repita
+     * Este metodo debe sobrescribirse en el caso de que existan relaciones
+     */
+    $row_ = [];
+
+    $json = (!$row && !is_null($row['id'])) ? $this->sql->_json($row) : null;
+    $row_["toma"] = EntityValues::getInstanceFromString("toma", $json);
+  }
+
+
   public function jsonAll(array $rows){
     $rows_ = [];
 
