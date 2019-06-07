@@ -34,20 +34,19 @@ abstract class EntitySqlo { //SQL object
      */
     $row_ = [];
 
-    $json = (!$row && !is_null($row['id'])) ? $this->sql->_json($row) : null;
+    $json = ($row && !is_null($row['id'])) ? $this->sql->_json($row) : null;
     $row_["toma"] = EntityValues::getInstanceFromString("toma", $json);
   }
 
 
   public function jsonAll(array $rows){
-    $rows_ = [];
+    foreach($rows as &$row) $row = $this->json($row);
+    return $rows;
+  }
 
-    foreach($rows as $row){
-      $row_ = $this->json($row);
-      array_push($rows_, $row_);
-    }
-
-    return $rows_;
+  public function valuesAll(array $rows){
+    foreach($rows as &$row) $row = $this->values($row);
+    return $rows;
   }
 
   final public static function getInstance() {

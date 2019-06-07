@@ -222,8 +222,9 @@ class Dba { //Facilita el acceso a la base de datos
     return (!count($rows)) ? null : $rows[0];
   }
 
-  public static function getAll($entity, array $ids, $render = null){ //busqueda por ids
+  public static function getAll($entity, $ids, $render = null){ //busqueda por ids
     if(empty($ids)) return [];
+    if(!is_array($ids)) $ids = [$ids];
     $sqlo = EntitySqlo::getInstanceFromString($entity);
     $sql = $sqlo->getAll($ids, $render);
     $rows = self::fetchAll($sql);

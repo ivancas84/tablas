@@ -118,8 +118,8 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
 
   protected function filters(){
-    require_once("generate/phpdbgen/sql/method/_ConditionAdvanced.php");
-    $gen = new ClassSql__conditionAdvanced($this->getEntity());
+    require_once("generate/phpdbgen/sql/method/_ConditionField.php");
+    $gen = new ClassSql__conditionField($this->getEntity());
     $this->string .= $gen->generate();
 
     require_once("generate/phpdbgen/sql/method/ConditionField.php");

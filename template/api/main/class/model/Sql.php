@@ -230,7 +230,7 @@ abstract class EntitySql { //Definir SQL
 
 
   protected function conditionField($field, $option, $value){ //condicion avanzada principal
-    if($c = $this->_conditionAdvanced($field, $option, $value)) return $c;
+    if($c = $this->_conditionField($field, $option, $value)) return $c;
   }
   /**
    * Define una condicion avanzada que recorre todos los metodos independientes de condicion avanzadas de las tablas relacionadas
@@ -557,7 +557,7 @@ abstract class EntitySql { //Definir SQL
 
   protected function havingValue($field, $option, $value){
     if(!is_array($value)) {
-      return $this->_conditionAdvanced($field, $option, $value);
+      return $this->_conditionField($field, $option, $value);
     }
 
     $condition = "";
@@ -569,7 +569,7 @@ abstract class EntitySql { //Definir SQL
         elseif($option == "!=") $condition .= " AND ";
         else throw new Exception("Error al definir opción");
       } else $cond = true;
-      $condition .= $this->_conditionAdvanced($field, $option, $v);
+      $condition .= $this->_conditionField($field, $option, $v);
     }
 
     return "(".$condition.")";

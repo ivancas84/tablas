@@ -8,9 +8,9 @@ abstract class EntityValues { //manipulacion de valores de una entidad
     $this->setRow($row);
   }
 
-  public static function getInstaceFromString($entity, array $row = NULL) { //crear instancias de values
+  public static function getInstanceFromString($entity, array $row = NULL) { //crear instancias de values
     //TODO: Implementar metodo setRow fuera del constructor
-    $name = snake_case_to("XxYy", $entity);
+    $name = snake_case_to("XxYy", $entity) . "Values";
     $class = new $name;
     $class->setRow($row);
     return $class;

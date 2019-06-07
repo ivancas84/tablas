@@ -1,7 +1,7 @@
 <?php
 
 
-class ClassSql__conditionAdvanced extends GenerateEntity{
+class ClassSql__conditionField extends GenerateEntity{
 
 
   public function generate(){
@@ -13,7 +13,7 @@ class ClassSql__conditionAdvanced extends GenerateEntity{
   }
 
   protected function start(){
-    $this->string .= "  public function _conditionAdvanced(\$field, \$option, \$value){
+    $this->string .= "  public function _conditionField(\$field, \$option, \$value){
     \$p = \$this->prf();
 
     \$f = \$this->_mappingFieldEntity(\$field);

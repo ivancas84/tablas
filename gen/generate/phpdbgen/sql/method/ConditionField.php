@@ -9,13 +9,13 @@ class ClassSql_conditionField extends GenerateEntityRecursiveFk{
 
   protected function start(){
     $this->string .= "  protected function conditionField(\$field, \$option, \$value) {
-    if(\$c = \$this->_conditionAdvanced(\$field, \$option, \$value)) return \$c;
+    if(\$c = \$this->_conditionField(\$field, \$option, \$value)) return \$c;
 ";
   }
 
 
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    if(\$c = EntitySql::getInstanceFromString('{$entity->getName()}','{$prefix}')->_conditionAdvanced(\$field, \$option, \$value)) return \$c;
+    $this->string .= "    if(\$c = EntitySql::getInstanceFromString('{$entity->getName()}','{$prefix}')->_conditionField(\$field, \$option, \$value)) return \$c;
 ";
   }
 
