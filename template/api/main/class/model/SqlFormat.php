@@ -24,8 +24,9 @@ class SqlFormat { //Formato SQL
   }
 
 
-  public function _conditionTextApprox($field, $value) {
-    return "(lower(" . $field . ") LIKE lower('%" . $value . "%'))";
+  protected function _conditionTextApprox($field, $option, $value) {
+    $option = ($option == "=~") ? "LIKE" : "NOT LIKE";
+    return "(lower({$field}) {$option} lower('%{$value}%'))";
   }
 
   public function _conditionDateApprox($field, $value){
@@ -51,8 +52,9 @@ class SqlFormat { //Formato SQL
   public function conditionText($field, $value, $option = "="){
     if($value === false) return "(" . $field . " IS NULL) ";
     if($value === true) return "(" . $field . " IS NOT NULL) ";
-    if($option == "=~") return $this->format->_conditionTextApprox($field, $value);
-    return "(lower(" . $field . ") " . $option . " lower('" . $value . "')) ";
+    if($option == "=~") return "(lower({$field}) LIKE lower('%{$value}%'))";
+    if($option == "!=~") return "(lower({$field}) NOT LIKE lower('%{$value}%'))";
+    return "(lower({$field}) {$option} lower('{$value}')) ";
   }
 
   public function conditionDate($field, $value, $option = "="){

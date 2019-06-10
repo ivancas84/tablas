@@ -6,6 +6,7 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
   public function generate(){
     $this->start();
     $this->nf();
+    $this->fk();
     $this->end();
     return $this->string;
   }

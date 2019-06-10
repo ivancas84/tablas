@@ -202,9 +202,13 @@ abstract class EntitySql { //Definir SQL
   }
 
   protected function conditionFieldValue($field, $option, $value){
+    //se verifica inicialmente la condicion auxiliar.
+    //las condiciones auxiliares no siguen la estructura definida de condicion
+    $condition = $this->conditionFieldAux($field, $option, $value);
+    if($condition) return $condition;
+    
     if(!is_array($value)) {
-      $condition = $this->conditionFieldAux($field, $option, $value);
-      if(!$condition) $condition = $this->conditionField($field, $option, $value);
+      $condition = $this->conditionField($field, $option, $value);
       if(!$condition) throw new Exception("No pudo definirse el SQL de la condicion del campo: {$field}");
       return $condition;
     }
@@ -219,8 +223,7 @@ abstract class EntitySql { //Definir SQL
         else throw new Exception("Error al definir opción");
       } else $cond = true;
 
-      $condition_ = $this->conditionFieldAux($field, $option, $v);
-      if(!$condition_) $condition_ = $this->conditionField($field, $option, $v);
+      $condition_ = $this->conditionField($field, $option, $v);
       if(!$condition_) throw new Exception("No pudo definirse el SQL de la condicion del campo: {$field}");
       $condition .= $condition_;
     }
@@ -249,11 +252,12 @@ abstract class EntitySql { //Definir SQL
     $p = $this->prf();
 
     switch($field){
-      case "{$p}_compare":
+      case "_compare": //no define prefijo, los prefijos pueden definirse en los valores y comparar campos de diferentes entidades
         $f1 = $this->_mappingFieldEntity($value[0]);
         $f2 = $this->_mappingFieldEntity($value[1]);
         return "({$f1} {$option} {$f2})";
       break;
+
 
       case "_cantidad": //campo de agregacion general: "_cantidad"
         $f = $this->_mappingFieldEntity($field);
@@ -557,7 +561,7 @@ abstract class EntitySql { //Definir SQL
 
   protected function havingValue($field, $option, $value){
     if(!is_array($value)) {
-      return $this->_conditionField($field, $option, $value);
+      return $this->_conditionFieldAggregate($field, $option, $value);
     }
 
     $condition = "";
@@ -569,7 +573,7 @@ abstract class EntitySql { //Definir SQL
         elseif($option == "!=") $condition .= " AND ";
         else throw new Exception("Error al definir opción");
       } else $cond = true;
-      $condition .= $this->_conditionField($field, $option, $v);
+      $condition .= $this->_conditionFieldAggregate($field, $option, $v);
     }
 
     return "(".$condition.")";
