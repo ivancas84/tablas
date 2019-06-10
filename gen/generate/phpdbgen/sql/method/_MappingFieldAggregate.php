@@ -5,7 +5,7 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
 
   public function generate(){
     $this->start();
-    $this->main();
+    $this->nf();
     $this->end();
     return $this->string;
   }
@@ -23,7 +23,7 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
 ";
   }
 
-  protected function main(){
+  protected function nf(){
     foreach ($this->getEntity()->getFieldsNf() as $field){
       switch($field->getDataType()){
         case "float": case "integer":
@@ -44,6 +44,17 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
 ";
         break;
       }
+
+    }
+  }
+
+  protected function fk(){
+    foreach ($this->getEntity()->getFieldsFk() as $field){
+      $this->string .= "      case 'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
+      case 'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
+      case 'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
+
+";
 
     }
   }
