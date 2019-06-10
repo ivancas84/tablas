@@ -3,20 +3,7 @@
 
 class ClassSql__mappingFieldAggregate extends GenerateEntity{
 
-  protected function isFeasible(){
-    foreach ($this->getEntity()->getFieldsNf() as $field){
-      $d = $field->getDataType();
-      if(($d == "integer") 
-      || ($d == "float")
-      || ($d == "date")
-      || ($d == "timestamp")) return true;
-    }
-    return false;
-
-  }
-
   public function generate(){
-    if(!$this->isFeasible()) return null;
     $this->start();
     $this->main();
     $this->end();
@@ -29,6 +16,10 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
     \$t = \$this->entity->getAlias();
 
     switch (\$field) {
+      case 'min_id': return \"MIN({\$t}.id)\";
+      case 'max_id': return \"MAX({\$t}.id)\";
+      case 'count_id': return \"COUNT({\$t}.id)\";
+
 ";
   }
 
@@ -41,6 +32,7 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
       case 'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
       case 'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
       case 'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
+
 ";
         break;
         case "date": case "timestamp":
@@ -48,6 +40,7 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
       case 'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
       case 'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
       case 'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
+
 ";
         break;
       }
