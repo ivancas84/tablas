@@ -74,7 +74,6 @@ abstract class Field {
     $this->defineSubtype();
     $this->defineNotNull();
     $this->defineLength();
-    $this->defineAdmin();
     $this->defineHistory();
     $this->defineMain();
   }
@@ -133,10 +132,7 @@ abstract class Field {
 
   protected function defineMain(){ if ( $this->isHidden() ) { $this->main = false; } }
 
-
-  protected function defineHistory(){
-    if ( $this->isHidden() ) { $this->history = false; }
-  }
+  protected function defineHistory(){ if ( $this->isHidden() ) { $this->history = false; } }
 
   protected function defineDataType(){
     if (is_null($this->dataType)) {

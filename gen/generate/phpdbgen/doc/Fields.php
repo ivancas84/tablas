@@ -14,6 +14,7 @@ class Doc_fields extends GenerateEntity{
       if($field->isMain()) $this->string .= " MAIN.";
       if($field->isUnique()) $this->string .= " UNIQUE.";
       if(!$field->isAdmin()) $this->string .= " NOT ADMIN.";
+      if($field->isHidden()) $this->string .= " HIDDEN.";
       if($field->getDefault()) $this->string .= " DEFAULT: {$field->getDefault()}.";
       $this->string .= "
 ";
