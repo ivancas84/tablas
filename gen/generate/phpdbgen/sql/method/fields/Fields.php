@@ -37,7 +37,7 @@ class ClassSql_fields extends GenerateEntity {
 
     $fields = ["' . \$this->_mappingFieldEntity(\$p.'{$this->getEntity()->getPk()->getName()}') . ' AS ' . \$p.'{$this->getEntity()->getPk()->getName()}"];
     foreach ( $nfFk as $field ) {
-      if($field->isAggregate()) continue;
+      if($field->isHidden()) continue;
       array_push($fields, "' . \$this->_mappingFieldEntity(\$p.'{$field->getName()}') . ' AS ' . \$p.'{$field->getName()}");
     }
 

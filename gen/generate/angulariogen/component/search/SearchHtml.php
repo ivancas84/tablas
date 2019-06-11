@@ -64,7 +64,7 @@ class ComponentSearchHtml extends GenerateFileEntity {
   protected function selectOptionsNf(){
    $fields = $this->entity->getFieldsNf();
    foreach($fields as $field) {
-     if($field->isAggregate()) continue;
+     if($field->isHidden()) continue;
       $this->string .= "                <option value=\"" . $field->getName() . "\">" . $field->getName("Xx Yy") . "</option>
 ";
     }
@@ -123,7 +123,7 @@ class ComponentSearchHtml extends GenerateFileEntity {
     $fieldsNf = $this->entity->getFieldsNf();
 
     foreach($fieldsNf as $field) {
-      if($field->isAggregate()) continue;
+      if($field->isHidden()) continue;
 
       switch($field->getSubtype()) {
         //case "date": $this->date($field); break;

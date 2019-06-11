@@ -91,7 +91,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
     $fields = $entity->getFieldsByType(["pk", "nf"]);
 
     foreach ($fields as $field) {
-      if($field->isAggregate()) continue;
+      if($field->isHidden()) continue;
       switch ($field->getDataType()) {
         case "string": case "text": $this->text($field->getName(), $alias); break;
         case "integer": case "float": $this->number($field->getName(), $alias); break;

@@ -58,7 +58,7 @@ abstract class Field {
      * se define conditionHistory para discriminar entre valores historicos
      */
 
-  public $aggregate = false;
+  public $hidden = false;
     /**
      * Los campos de agregacion definen al admin como false y no se incluyen en la consulta (solo pueden ser definidos en consultas avanzadas)
      * No se incluyen en la busqueda simple
@@ -92,7 +92,7 @@ abstract class Field {
   public function getDataType(){ return $this->dataType; }
   public function getSelectValues(){ return $this->selectValues; }
   public function getType() { return $this->type; }
-  public function isAggregate(){ return $this->aggregate; }
+  public function isHidden(){ return $this->hidden; }
   public function isMain(){ return $this->main; }
   public function isNotNull(){ return $this->notNull; }
   public function isUnique(){ return $this->unique; }
@@ -131,13 +131,11 @@ abstract class Field {
     }
   }
 
-  protected function defineAdmin(){ if ( $this->isAggregate() ) { $this->admin = false; } }
-  protected function defineMain(){ if ( $this->isAggregate() ) { $this->main = false; } }
+  protected function defineMain(){ if ( $this->isHidden() ) { $this->main = false; } }
 
-  protected function defineFieldType(){ if ( $this->isAggregate() ) { $this->fieldType = "nf"; } }
 
   protected function defineHistory(){
-    if ( $this->isAggregate() ) { $this->history = false; }
+    if ( $this->isHidden() ) { $this->history = false; }
   }
 
   protected function defineDataType(){
