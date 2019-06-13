@@ -24,7 +24,7 @@ class SqlFormat { //Formato SQL
   }
 
 
-  protected function _conditionTextApprox($field, $option, $value) {
+  public function _conditionTextApprox($field, $option, $value) {
     $option = ($option == "=~") ? "LIKE" : "NOT LIKE";
     return "(lower({$field}) {$option} lower('%{$value}%'))";
   }

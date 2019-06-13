@@ -49,7 +49,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
     $or = ($this->defineOr()) ? " OR " : "";
 
     $this->string .= "    \$field = \$this->_mappingFieldEntity(\$p.'{$fieldName}');
-    \$condition .= \"". $or . "\" . \$this->format->_conditionTextApprox(\$field, \$search);
+    \$condition .= \"". $or . "\" . \$this->format->conditionText(\$field, \$search, '=~');
 " ;
 
   }
