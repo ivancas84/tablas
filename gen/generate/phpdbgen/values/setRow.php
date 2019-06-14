@@ -7,7 +7,8 @@ class ClassValues_setRow extends GenerateEntity {
    public function generate(){
     $this->start();
     $this->pk();
-    $this->body();
+    $this->nf();
+    $this->fk();
     $this->end();
     return $this->string;
   }
@@ -21,12 +22,12 @@ class ClassValues_setRow extends GenerateEntity {
 
   protected function pk(){
     $field = $this->getEntity()->getPk();
-    $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$this->{$field->getName('xxYy')} = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : (string)\$row[\"" . $field->getName() . "\"]; //la pk se trata como string debido a un comportamiento erratico en angular 2 que al tratarlo como integer resta 1 en el valor
+    $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$this->{$field->getName('xxYy')} = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : (string)\$row[\"" . $field->getName() . "\"]; //los id siempre deben tratarse como string para evitar problemas de manejo de numero enteros
 ";
   }
 
-  protected function body(){
-    $pkNfFk = $this->getEntity()->getFieldsByType(["nf", "fk"]);
+  protected function nf(){
+    $pkNfFk = $this->getEntity()->getFieldsNf();
     foreach ( $pkNfFk as $field ) {
 
 
@@ -61,6 +62,14 @@ class ClassValues_setRow extends GenerateEntity {
     }
   }
 
+  protected function fk(){
+        $pkNfFk = $this->getEntity()->getFieldsFk();
+        foreach ( $pkNfFk as $field ) {
+          $this->string .= "    if(isset(\$row[\"" . $field->getName() . "\"])) \$this->{$field->getName('xxYy')} = (is_null(\$row[\"" . $field->getName() . "\"])) ? null : (string)\$row[\"" . $field->getName() . "\"]; //los id siempre deben tratarse como string para evitar problemas de manejo de numero enteros
+";
+    
+        }
+  }
 
   protected function end(){
       $this->string .= "  }

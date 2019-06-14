@@ -31,15 +31,21 @@ class " . $this->getEntity()->getName("XxYy") . "ValuesMain extends EntityValues
   protected function body(){
     $this->properties();
     $this->setRow();
+    $this->toArray();
     $this->getters();
    }
 
 
   protected function properties(){
-    foreach($this->entity->getFieldsByType(["pk", "nf", "fk"]) as $field) $this->string .= "  public \${$field->getName('xxYy')};
+    foreach($this->entity->getFieldsByType(["pk", "nf", "fk"]) as $field) $this->string .= "  public \${$field->getName('xxYy')} = UNDEFINED;
 ";
   }
 
+  protected function toArray(){
+    require_once("generate/phpdbgen/values/toArray.php");
+    $g = new Values_toArray($this->getEntity());
+    $this->string .=  $g->generate();
+  }
 
   protected function setRow(){
     require_once("generate/phpdbgen/values/setRow.php");
