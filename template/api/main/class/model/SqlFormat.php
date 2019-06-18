@@ -132,6 +132,7 @@ class SqlFormat { //Formato SQL
       $datetime = $value;
     } else {
       $datetime = DateTime::createFromFormat('H:i', $value);
+      if(!$datetime) $datetime = DateTime::createFromFormat('H:i:s', $value);
     }
 
     if ( !$datetime ) throw new Exception('Valor fecha incorrecto: ' . $value);
