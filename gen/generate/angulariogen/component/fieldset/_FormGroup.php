@@ -3,7 +3,7 @@
 require_once("generate/GenerateEntity.php");
 
 
-class ComponentFieldsetTs_formGroup extends GenerateEntity {
+class FieldsetTs_formGroup extends GenerateEntity {
 
 
   public function generate() {
@@ -146,14 +146,14 @@ class ComponentFieldsetTs_formGroup extends GenerateEntity {
   protected function defectoFk(Field $field) {
       $validator = ($field->isNotNull()) ?  ", Validators.required" : "";
 
-      $this->string .= "    if(this.isSync('{$field->getName()}')) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
+      $this->string .= "    if(this.dd.isSync('{$field->getName()}', this.sync)) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
 ";
   }
 
   protected function typeahead(Field $field) {
     $validator = ($field->isNotNull()) ?  ", [Validators.required, this.validators.typeaheadSelection('{$field->getEntityRef()->getName()}')]" : ", this.validators.typeaheadSelection('{$field->getEntityRef()->getName()}')";
 
-    $this->string .= "    if(this.isSync('{$field->getName()}')) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
+    $this->string .= "    if(this.dd.isSync('{$field->getName()}', this.sync)) fg.addControl('{$field->getName()}', new FormControl(''{$validator}));
 ";
 }
 

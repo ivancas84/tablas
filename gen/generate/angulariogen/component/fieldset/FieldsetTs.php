@@ -21,11 +21,12 @@ class ComponentFieldsetTs extends GenerateFileEntity {
 
 
 
+
+
   protected function start(){
     $this->string .= "import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { ValidatorsService } from '../../main/service/validators/validators.service';
 import { FieldsetComponent } from '../../main/component/fieldset/fieldset.component';
 import { {$this->entity->getName("XxYy")} } from '../../class/entity/{$this->entity->getName("xx-yy")}/{$this->entity->getName("xx-yy")}';
 
@@ -35,10 +36,11 @@ import { {$this->entity->getName("XxYy")} } from '../../class/entity/{$this->ent
   templateUrl: './" . $this->entity->getName("xx-yy") . "-fieldset.component.html',
 })
 export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends FieldsetComponent {
+  this.entityName: string = '" . $this->entity->getName() . "';
+  this.fieldsetName: string = '" . $this->entity->getName() . "';
+
   constructor(protected fb: FormBuilder, protected dd: DataDefinitionService, protected validators: ValidatorsService) {
-    super(fb, dd, validators);
-    this.entity = '" . $this->entity->getName() . "';
-    this.fieldset = '" . $this->entity->getName() . "';
+    super(fb, dd, validators);    
   }
 
 ";
@@ -47,7 +49,7 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
   protected function getters(){
     foreach($this->entity->getFieldsByType(["pk","nf","fk"]) as $field){
       if(!$field->isAdmin()) continue;
-      $this->string .= "  get {$field->getName('xxYy')}() { return this.fieldsetForm.get('{$field->getName()}')}
+      $this->string .= "  get {$field->getName('xxYy')}() { return this.fieldset.get('{$field->getName()}')}
 ";
     }
     $this->string .= "
@@ -57,9 +59,12 @@ export class " . $this->entity->getName("XxYy") . "FieldsetComponent extends Fie
 
   protected function formGroup(){
     require_once("generate/angulariogen/component/fieldset/_FormGroup.php");
-    $gen = new ComponentFieldsetTs_formGroup($this->entity);
+    $gen = new FieldsetTs_formGroup($this->entity);
     $this->string .= $gen->generate();
   }
+
+
+
 
   protected function server(){
     require_once("generate/angulariogen/component/fieldset/_Server.php");

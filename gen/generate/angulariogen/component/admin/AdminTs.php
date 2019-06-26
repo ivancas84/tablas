@@ -21,13 +21,12 @@ class ComponentAdminTs extends GenerateFileEntity {
 
   protected function generateCode() {
     $this->start();
-    //if($this->hasRelationsFkTypeahead()) $this->setData();
     $this->end();
   }
 
   protected function start() {
     $this->string .= "import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 ";
@@ -41,6 +40,7 @@ import { first } from 'rxjs/operators';
 import { Entity } from '../../main/class/entity';
 import { AdminComponent } from '../../main/component/admin/admin.component';
 import { MessageService } from '../../main/service/message/message.service';
+import { ValidatorsService } from '../../main/service/validators/validators.service';
 import { {$this->entity->getName("XxYy")} } from '../../class/entity/{$this->entity->getName("xx-yy")}/{$this->entity->getName("xx-yy")}';
 
 @Component({
@@ -59,11 +59,6 @@ export class " . $this->entity->getName("XxYy") . "AdminComponent extends AdminC
   }
 
 
-  protected function setData(){
-    require_once("generate/angulariogen/component/admin/method/SetData.php");
-    $gen = new AdminTs_SetData($this->getEntity());
-    $this->string .= $gen->generate();
-  }
 
   protected function end() {
     $this->string .= "}

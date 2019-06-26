@@ -3,7 +3,7 @@
 require_once("generate/GenerateEntity.php");
 
 
-class ComponentFieldsetArrayTs_formGroup extends ComponentFieldsetTs_formGroup {
+class ComponentFieldsetArrayTs_formGroup extends FieldsetTs_formGroup {
 
 
   protected function start() {
