@@ -143,7 +143,7 @@ class GenerateService {
 
 
   protected function sqlo(){
-    require_once("generate/phpdbgen/sqlo/Main.php");
+    require_once("generate/phpdbgen/sqlo/core.php");
     $gen = new ClassSqloMain($this->entity);
     $gen->generate();
 
@@ -157,14 +157,14 @@ class GenerateService {
     $gen = new GenerateClassSql($this->entity);
     $gen->generate();
 
-    require_once("generate/phpdbgen/sql/Main.php");
+    require_once("generate/phpdbgen/sql/core.php");
     $gen = new GenerateClassSqlMain($this->entity);
     $gen->generate();
 
   }
 
   protected function values(){
-    require_once("generate/phpdbgen/values/Main.php");
+    require_once("generate/phpdbgen/values/core.php");
     $gen = new ClassValuesMain($this->entity);
     $gen->generate();
 

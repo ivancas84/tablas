@@ -15,8 +15,8 @@ class LoaderService extends GenerateFile {
   protected function importsStart(){
     $this->string .= "import { Injectable } from '@angular/core';
 
-import { Entity } from '../main/class/entity';
-import { DataDefinition } from '../main/service/data-definition/data-definition';
+import { Entity } from '../core/class/entity';
+import { DataDefinition } from '../core/service/data-definition/data-definition';
 import { DataDefinitionService } from './data-definition/data-definition.service';
 
 ";

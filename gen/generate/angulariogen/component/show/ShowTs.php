@@ -14,7 +14,7 @@ class ComponentShowTs extends GenerateFileEntity {
     $this->string .= "import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { ShowComponent } from '../../main/component/show/show.component';
+import { ShowComponent } from '../../core/component/show/show.component';
 
 @Component({
   selector: 'app-" . $this->entity->getName("xx-yy") . "-show',

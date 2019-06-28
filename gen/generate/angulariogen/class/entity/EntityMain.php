@@ -22,7 +22,7 @@ class TypescriptEntityMain extends GenerateFileEntity {
 
 
   protected function start(){
-    $this->string .= "import { Entity } from '../../../main/class/entity';
+    $this->string .= "import { Entity } from '../../../core/class/entity';
 
 export class " . $this->entity->getName("XxYy") . "Main extends Entity {
 ";
