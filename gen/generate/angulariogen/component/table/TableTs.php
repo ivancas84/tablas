@@ -16,7 +16,7 @@ class ComponentTableTs extends GenerateFileEntity {
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { TableComponent } from '../../main/component/table/table.component';
+import { TableComponent } from '../../core/component/table/table.component';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 
 @Component({

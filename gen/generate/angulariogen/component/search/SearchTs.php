@@ -26,7 +26,7 @@ class ComponentSearchTs extends GenerateFileEntity {
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { SearchComponent } from '../../main/component/search/search.component';
+import { SearchComponent } from '../../core/component/search/search.component';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 
 @Component({

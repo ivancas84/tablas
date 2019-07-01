@@ -26,7 +26,7 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { forkJoin } from 'rxjs';
 
-import { DataDefinition } from '../../../main/service/data-definition/data-definition';
+import { DataDefinition } from '../../../core/service/data-definition/data-definition';
 
 
 export class " . $this->entity->getName("XxYy") . "DataDefinitionMain extends DataDefinition {

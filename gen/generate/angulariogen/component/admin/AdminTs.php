@@ -37,10 +37,10 @@ import { first } from 'rxjs/operators';
     }
 
     $this->string .= "import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { Entity } from '../../main/class/entity';
-import { AdminComponent } from '../../main/component/admin/admin.component';
-import { MessageService } from '../../main/service/message/message.service';
-import { ValidatorsService } from '../../main/service/validators/validators.service';
+import { Entity } from '../../core/class/entity';
+import { AdminComponent } from '../../core/component/admin/admin.component';
+import { MessageService } from '../../core/service/message/message.service';
+import { ValidatorsService } from '../../core/service/validators/validators.service';
 import { {$this->entity->getName("XxYy")} } from '../../class/entity/{$this->entity->getName("xx-yy")}/{$this->entity->getName("xx-yy")}';
 
 @Component({

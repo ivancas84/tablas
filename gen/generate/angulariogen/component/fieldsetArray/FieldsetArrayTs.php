@@ -39,9 +39,9 @@ class ComponentFieldsetArrayTs extends GenerateFileEntity {
   protected function start(){
     $this->string .= "import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { FieldsetArrayComponent } from 'src/app/main/component/fieldset-array/fieldset-array.component';
+import { FieldsetArrayComponent } from 'src/app/core/component/fieldset-array/fieldset-array.component';
 import { DataDefinitionService } from 'src/app/service/data-definition/data-definition.service';
-import { ValidatorsService } from 'src/app/main/service/validators/validators.service';
+import { ValidatorsService } from 'src/app/core/service/validators/validators.service';
 import { {$this->entity->getName('XxYy')} } from 'src/app/class/entity/{$this->entity->getName('xx-yy')}/{$this->entity->getName('xx-yy')}';
 
 @Component({
