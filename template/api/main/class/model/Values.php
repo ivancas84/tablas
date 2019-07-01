@@ -16,6 +16,10 @@ abstract class EntityValues { //manipulacion de valores de una entidad
     return $class;
   }
 
+  public function isEmpty($value) { //esta vacio
+    return ($value === UNDEFINED || empty($value)) ? true : false;
+  }
+
   protected function formatDate($value, $format = 'd/m/Y'){
     if(gettype($value) === "string") $value = SpanishDateTime::createFromFormat("Y-m-d", $value);
     return ($value) ? $value->format($format) : null;
