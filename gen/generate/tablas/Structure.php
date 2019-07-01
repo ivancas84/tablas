@@ -12,7 +12,7 @@ class GenerateConfigStructure extends GenerateFile {
 
   public function __construct(array $tablesInfo) {
     $this->tablesInfo = $tablesInfo;
-    parent::__construct(PATH_ROOT."api/config/","structure.php");
+    parent::__construct(PATH_ROOT."src/config/","structure.php");
   }
 
   protected function generateCode() {

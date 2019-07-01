@@ -7,7 +7,7 @@ class IncludeEntityClasses extends GenerateFile{
   protected $tablesInfo; //array. Nombres de tabla
   public function __construct($tablesInfo){
     $this->tablesInfo = $tablesInfo;
-    parent::__construct(PATH_ROOT."api/config/", "entityClasses.php");
+    parent::__construct(PATH_ROOT."src/config/", "entityClasses.php");
 
   }
 

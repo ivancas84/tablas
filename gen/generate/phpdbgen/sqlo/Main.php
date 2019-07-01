@@ -7,7 +7,7 @@ require_once("generate/GenerateFileEntity.php");
 class ClassSqloMain extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
-    $directorio = PATH_ROOT."api/class/model/sqlo/" . $entity->getName("xxYy") . "/";
+    $directorio = PATH_ROOT."src/class/model/sqlo/" . $entity->getName("xxYy") . "/";
     $nombreArchivo = "Main.php";
     parent::__construct($directorio, $nombreArchivo, $entity);
   }

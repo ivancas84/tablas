@@ -15,7 +15,7 @@ class ClassEntityMain extends GenerateFile{
     $this->tableName = $tableName;
     $this->tableAlias = $tableAlias;
     $this->fieldsInfo =  $fieldsInfo;
-    parent::__construct(PATH_ROOT."api/class/model/entity/" . snake_case_to("xxYy", $this->tableName) . "/", "Main.php");
+    parent::__construct(PATH_ROOT."src/class/model/entity/" . snake_case_to("xxYy", $this->tableName) . "/", "Main.php");
 
 
   }

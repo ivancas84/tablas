@@ -6,7 +6,7 @@ require_once("class/model/Entity.php");
 class GenerateClassSql extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
-    $dir = PATH_ROOT."api/class/model/sql/" . $entity->getName("xxYy") . "/";
+    $dir = PATH_ROOT."src/class/model/sql/" . $entity->getName("xxYy") . "/";
     $file = $entity->getName("XxYy").".php";
     parent::__construct($dir, $file, $entity);
   }

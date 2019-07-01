@@ -27,7 +27,7 @@ class GenerateClassField extends GenerateFile{
     $this->tableName = $tableName;
     $this->fieldInfo = $fieldInfo;
     
-    $dirName = PATH_ROOT."api/class/model/field/" . snake_case_to("xxYy", $this->tableName) . "/" . snake_case_to("xxYy", $this->fieldInfo["field_name"]) . "/";
+    $dirName = PATH_ROOT."src/class/model/field/" . snake_case_to("xxYy", $this->tableName) . "/" . snake_case_to("xxYy", $this->fieldInfo["field_name"]) . "/";
     $fileName = snake_case_to("XxYy", $this->fieldInfo["field_name"]).".php";
     parent::__construct($dirName, $fileName);
   }

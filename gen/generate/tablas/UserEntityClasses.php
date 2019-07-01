@@ -5,7 +5,7 @@ require_once("generate/Generate.php");
 class UserEntityClasses extends GenerateFile{
 
   public function __construct(){
-    parent::__construct(PATH_ROOT."api/config/", "userEntityClasses.php");
+    parent::__construct(PATH_ROOT."src/config/", "userEntityClasses.php");
   }
 
   protected function generateCode(){

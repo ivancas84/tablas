@@ -7,7 +7,7 @@ class IncludeValuesClasses extends GenerateFile{
   protected $structure; //estructura de tablas
   public function __construct(array $structure){
     $this->structure = $structure;
-    parent::__construct(PATH_ROOT."api/config/", "valuesClasses.php");
+    parent::__construct(PATH_ROOT."src/config/", "valuesClasses.php");
   }
 
   protected function generateCode(){

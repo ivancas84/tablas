@@ -26,7 +26,7 @@ class GenerateClassFieldMain extends GenerateFile {
     $this->tableName = $tableName;
     $this->fieldInfo = $fieldInfo;
 
-    $dirName = PATH_ROOT."api/class/model/field/" . str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower($this->tableName))))) . "/" . str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower($this->fieldInfo["field_name"]))))) . "/";
+    $dirName = PATH_ROOT."src/class/model/field/" . str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower($this->tableName))))) . "/" . str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower($this->fieldInfo["field_name"]))))) . "/";
     $fileName = "Main.php";
 
     parent::__construct($dirName, $fileName);
