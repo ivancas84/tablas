@@ -112,7 +112,7 @@ class Dba { //Facilita el acceso a la base de datos
         case "size": case "page": case "search": case "history"://pueden redefinirse ciertos parametros la prioridad la tiene los que estan fuera del elemento data (parametros definidos directamente)
           $display[$key] = $value;
         break;
-        case "order": //ejemplo http://localhost/programacion/api/curso/all?order={%22horario%22:%22asc%22}
+        case "order": //ejemplo http://localhost/programacion/curso/all?order={%22horario%22:%22asc%22}
           $f_ = json_decode($value);
           $display["order"] = stdclass_to_array($f_); //ordenamiento ascendente (se puede definir ordenamiento ascendente de un solo campo indicandolo en el parametro order, ejemplo order=campo)
         break;
