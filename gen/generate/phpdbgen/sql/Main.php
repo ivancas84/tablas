@@ -18,8 +18,6 @@ class GenerateClassSqlMain extends GenerateFileEntity{
     $this->methodJoin();
     $this->conditionSearch();
     $this->filters();
-    $this->();
-    $this->conditionHistory();
     $this->initializeInsert();
     $this->initializeUpdate();
     $this->format();
@@ -128,15 +126,7 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
   }
 
 
-  protected function conditionHistory(){
-    require_once("generate/phpdbgen/sql/method/ConditionHistory.php");
-    $gen = new ClassSql_conditionHistory($this->getEntity());
-    $this->string .= $gen->generate();
 
-    require_once("generate/phpdbgen/sql/method/_ConditionHistory.php");
-    $gen = new ClassSql__conditionHistory($this->getEntity());
-    $this->string .= $gen->generate();
-  }
 
   //Este metodo funciona pero actualmente no se genera, se utiliza un método más sencillo que resuelve el problema del ordemiento
   protected function order(){
