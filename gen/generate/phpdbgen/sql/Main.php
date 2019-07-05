@@ -18,7 +18,7 @@ class GenerateClassSqlMain extends GenerateFileEntity{
     $this->methodJoin();
     $this->conditionSearch();
     $this->filters();
-    $this->conditionAux();
+    $this->();
     $this->conditionHistory();
     $this->initializeInsert();
     $this->initializeUpdate();
@@ -127,11 +127,6 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     $this->string .= $gen->generate();
   }
 
-  protected function conditionAux(){
-    require_once("generate/phpdbgen/sql/method/ConditionAux.php");
-    $gen = new ClassSql_conditionAux($this->getEntity());
-    $this->string .= $gen->generate();
-  }
 
   protected function conditionHistory(){
     require_once("generate/phpdbgen/sql/method/ConditionHistory.php");
