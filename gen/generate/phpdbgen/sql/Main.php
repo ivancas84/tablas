@@ -88,10 +88,6 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     require_once("generate/phpdbgen/sql/method/fields/Full.php");
     $gen = new ClassSql_fieldsFull($this->getEntity());
     $this->string .= $gen->generate();
-
-    require_once("generate/phpdbgen/sql/method/fields/Aux2.php");
-    $gen = new ClassSql_fieldsAux($this->getEntity());
-    $this->string .= $gen->generate();
   }
 
   protected function methodJoin(){
