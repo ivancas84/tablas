@@ -1,29 +1,25 @@
 <?php
 
+require_once("generate/GenerateEntityRecursiveFk.php");
 
-class ClassSql_fields extends GenerateEntity {
-  public function generate(){
+class Sql_fields extends GenerateEntityRecursiveFk {
+  public $fields = [];
+
+  /*public function generate(){
+    if(!$this->getEntity()->hasRelations()) return "";
+
     $this->start();
-    $this->fields();
+    $this->recursive($this->getEntity());
     $this->end();
     return $this->string;
-  }
-
-
-
-
-
-
+  }*/
 
 
   protected function start(){
-    $this->string .= "  public function fields(){
-    //No todos los campos se extraen de la entidad, por eso es necesario mapearlos
-    \$p = \$this->prf();
-    return '
-";
+    $this->string .= "  public function fieldsFull(){
+    return \$this->fields() . ',
+' . ";
   }
-
 
   /**
   * Generar sql distinct fields
@@ -31,27 +27,24 @@ class ClassSql_fields extends GenerateEntity {
   * @param string $string Codigo generado hasta el momento
   * @return string Codigo generado
   */
-  protected function fields(){
-    $pk = $this->getEntity()->getPk();
-    $nfFk = $this->getEntity()->getFieldsByType(["nf","fk"]);
-
-    $fields = ["' . \$this->_mappingFieldEntity(\$p.'{$this->getEntity()->getPk()->getName()}') . ' AS ' . \$p.'{$this->getEntity()->getPk()->getName()}"];
-    foreach ( $nfFk as $field ) {
-      if($field->isHidden()) continue;
-      array_push($fields, "' . \$this->_mappingFieldEntity(\$p.'{$field->getName()}') . ' AS ' . \$p.'{$field->getName()}");
-    }
-
-    $this->string .= implode(", ", $fields);
+  protected function body(Entity $entity, $prefix){
+    $this->string .= "EntitySql::getInstanceFromString('{$entity->getName()}', '{$prefix}')->fields() . ',
+' . ";
 
   }
 
-
   protected function end(){
-    $this->string .= "';
+    $pos = strrpos($this->string, ",");
+    $this->string = substr_replace($this->string , "" , $pos, 6);
+    $this->string .= "
+';
   }
 
 ";
   }
+
+
+
 
 
 
