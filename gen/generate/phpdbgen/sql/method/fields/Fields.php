@@ -16,7 +16,7 @@ class Sql_fields extends GenerateEntityRecursiveFk {
 
 
   protected function start(){
-    $this->string .= "  public function fieldsFull(){
+    $this->string .= "  public function fields(){
     return \$this->fields() . ',
 ' . ";
   }

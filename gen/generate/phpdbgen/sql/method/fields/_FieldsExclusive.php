@@ -35,11 +35,11 @@ class Sql__fieldsExclusive extends GenerateEntity {
     $pk = $this->getEntity()->getPk();
     $nfFk = $this->getEntity()->getFieldsByType(["nf","fk"]);
 
-    $fields = ["' . \$this->_mappingFieldEntity(\$p.'{$this->getEntity()->getPk()->getName()}') . "];
+    $fields = ["' . \$this->_mappingFieldEntity(\$p.'{$this->getEntity()->getPk()->getName()}') . '"];
     foreach ( $nfFk as $field ) {
       if(!$field->isExclusive()) continue;
       if($field->isHidden()) continue;
-      array_push($fields, "' . \$this->_mappingFieldEntity(\$p.'{$field->getName()}') . ");
+      array_push($fields, "' . \$this->_mappingFieldEntity(\$p.'{$field->getName()}') . '");
     }
 
     $this->string .= implode(", ", $fields);
