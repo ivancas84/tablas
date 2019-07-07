@@ -1,7 +1,7 @@
 <?php
 
 
-class ClassSql_fields extends GenerateEntity {
+class Sql__fields extends GenerateEntity {
   public function generate(){
     $this->start();
     $this->fields();
