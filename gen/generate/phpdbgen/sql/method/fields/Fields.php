@@ -17,7 +17,7 @@ class Sql_fields extends GenerateEntityRecursiveFk {
 
   protected function start(){
     $this->string .= "  public function fields(){
-    return \$this->fields() . ',
+    return \$this->_fields() . ',
 ' . ";
   }
 
@@ -28,7 +28,7 @@ class Sql_fields extends GenerateEntityRecursiveFk {
   * @return string Codigo generado
   */
   protected function body(Entity $entity, $prefix){
-    $this->string .= "EntitySql::getInstanceFromString('{$entity->getName()}', '{$prefix}')->fields() . ',
+    $this->string .= "EntitySql::getInstanceFromString('{$entity->getName()}', '{$prefix}')->_fields() . ',
 ' . ";
 
   }

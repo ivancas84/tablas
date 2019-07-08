@@ -17,7 +17,7 @@ class Sql__fields extends GenerateEntity {
 
 
   protected function start(){
-    $this->string .= "  public function fields(){
+    $this->string .= "  public function _fields(){
     //No todos los campos se extraen de la entidad, por eso es necesario mapearlos
     \$p = \$this->prf();
     return '
