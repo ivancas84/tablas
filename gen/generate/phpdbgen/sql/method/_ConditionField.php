@@ -35,6 +35,7 @@ class ClassSql__conditionField extends GenerateEntity{
         case "boolean": $this->boolean($field->getName()); break;
 
         case "date": $this->date($field->getName()); break;
+        case "time": $this->time($field->getName()); break;
 
         case "timestamp": $this->timestamp($field->getName()); break;
 
@@ -62,6 +63,10 @@ class ClassSql__conditionField extends GenerateEntity{
 " ;
   }
 
+  protected function time($fieldName) {
+    $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->format->conditionTime(\$f, \$value, \$option);
+" ;
+  }
   protected function boolean($fieldName) {
     $this->string .= "      case \"{\$p}" . $fieldName . "\": return \$this->format->conditionBoolean(\$f, \$value);
 " ;
