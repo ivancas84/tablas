@@ -52,6 +52,10 @@ class Values_toArray extends GenerateEntity {
 ";
         break;
 
+        case "boolean": $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = (\$this->{$field->getName('xxYy')}) ? \"true\" : \"false\";        
+";
+        break;
+
         default: $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')};
 ";
       }
