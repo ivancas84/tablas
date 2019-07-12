@@ -1,7 +1,7 @@
 <?php
 
 
-class Sql__fieldsExclusive extends GenerateEntity {
+class Sql__fieldsDb extends GenerateEntity {
   public function generate(){
     $this->start();
     $this->fields();
@@ -17,7 +17,7 @@ class Sql__fieldsExclusive extends GenerateEntity {
 
 
   protected function start(){
-    $this->string .= "  public function _fieldsExclusive(){
+    $this->string .= "  public function _fieldsDb(){
     //No todos los campos se extraen de la entidad, por eso es necesario mapearlos
     \$p = \$this->prf();
     return '
@@ -37,7 +37,7 @@ class Sql__fieldsExclusive extends GenerateEntity {
 
     $fields = ["' . \$this->_mappingFieldEntity(\$p.'{$this->getEntity()->getPk()->getName()}') . '"];
     foreach ( $nfFk as $field ) {
-      if(!$field->isExclusive()) continue;
+      if(!$field->isDb()) continue;
       if($field->isHidden()) continue;
       array_push($fields, "' . \$this->_mappingFieldEntity(\$p.'{$field->getName()}') . '");
     }
