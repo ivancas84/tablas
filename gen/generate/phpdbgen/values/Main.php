@@ -30,9 +30,11 @@ class " . $this->getEntity()->getName("XxYy") . "ValuesMain extends EntityValues
 
   protected function body(){
     $this->properties();
-    $this->setRow();
+    $this->fromArray();
     $this->toArray();
     $this->getters();
+    $this->setters();
+
    }
 
 
@@ -47,9 +49,9 @@ class " . $this->getEntity()->getName("XxYy") . "ValuesMain extends EntityValues
     $this->string .=  $g->generate();
   }
 
-  protected function setRow(){
-    require_once("generate/phpdbgen/values/setRow.php");
-    $g = new ClassValues_setRow($this->getEntity());
+  protected function fromArray(){
+    require_once("generate/phpdbgen/values/fromArray.php");
+    $g = new ClassValues_fromArray($this->getEntity());
     $this->string .=  $g->generate();
   }
 
@@ -58,6 +60,13 @@ class " . $this->getEntity()->getName("XxYy") . "ValuesMain extends EntityValues
     $g = new ClassValues_getters($this->getEntity());
     $this->string .=  $g->generate();
   }
+
+  protected function setters(){
+    require_once("generate/phpdbgen/values/setters.php");
+    $g = new ClassValues_setters($this->getEntity());
+    $this->string .=  $g->generate();
+  }
+
 
 
   protected function end(){
