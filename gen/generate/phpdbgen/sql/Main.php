@@ -16,7 +16,7 @@ class GenerateClassSqlMain extends GenerateFileEntity{
     $this->mappingField();
     $this->methodFields();
     $this->methodJoin();
-    $this->conditionSearch();
+    //$this->conditionSearch();
     $this->filters();
     $this->initializeInsert();
     $this->initializeUpdate();
@@ -98,6 +98,7 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     $this->string .= $gen->generate();
   }
 
+  /*
   protected function conditionSearch(){
     require_once("generate/phpdbgen/sql/method/ConditionSearch.php");
     $gen = new ClassSql_conditionSearch($this->getEntity());
@@ -107,17 +108,17 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     $gen = new ClassSql__conditionSearch($this->getEntity());
     $this->string .= $gen->generate();
 
-  }
+  }*/
 
 
 
   protected function filters(){
-    require_once("generate/phpdbgen/sql/method/_ConditionField.php");
-    $gen = new ClassSql__conditionField($this->getEntity());
+    require_once("generate/phpdbgen/sql/method/_conditionFieldStruct.php");
+    $gen = new ClassSql__conditionFieldStruct($this->getEntity());
     $this->string .= $gen->generate();
 
-    require_once("generate/phpdbgen/sql/method/ConditionField.php");
-    $gen = new ClassSql_conditionField($this->getEntity());
+    require_once("generate/phpdbgen/sql/method/ConditionFieldStruct.php");
+    $gen = new ClassSql_conditionFieldStruct($this->getEntity());
     $this->string .= $gen->generate();
 
     require_once("generate/phpdbgen/sql/method/ConditionFieldAux.php");
