@@ -31,8 +31,6 @@ abstract class GenerateFile extends Generate{
 	}
 
 	public function generateFile(){
-    echo "<br><b>" . $this->getPath() . "</b><br>";
-    
 		$length = strpos($this->directorio,"/");
 
 		while ($length!==false) {
@@ -76,19 +74,21 @@ abstract class GenerateFile extends Generate{
 	 * Generar codigo y archivo
 	 */
 	public function generate(){
+		echo "<br><b>" . $this->getPath() . "</b><br>";
+
 		$this->generateCode();
 		$this->generateFile();
 	}
 	
 	public function generateIfNotExists(){
-    echo "<br><b>" . $this->getPath() . "</b><br>";
+		echo "<br><b>" . $this->getPath() . "</b><br>";
 
 		if ( file_exists($this->getPath())) {
 			echo "---- El archivo ya existe. No sera generado" ;
 			return ;
 		}
 		
-		$this->generate();
-	}
+		$this->generateCode();
+		$this->generateFile();	}
 	
 }
