@@ -16,7 +16,7 @@ class ClassSql__conditionFieldStruct extends GenerateEntity{
     $this->string .= "  public function _conditionFieldStruct(\$field, \$option, \$value){
     \$p = \$this->prf();
 
-    \$f = \$this->_mappingFieldEntity(\$field);
+    \$f = \$this->_mappingField(\$field);
     switch (\$field){
 ";
   }

@@ -11,10 +11,9 @@ class Values_toArray extends GenerateEntity {
     $this->end();
     return $this->string;
   }
-
+  
   protected function start(){
-    $this->string .= "
-  public function toArray(){
+    $this->string .= "  public function toArray(){
     \$row = [];
 ";
   }

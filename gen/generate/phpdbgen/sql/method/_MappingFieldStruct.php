@@ -1,7 +1,7 @@
 <?php
 
 
-class ClassSql__mappingField extends GenerateEntity{
+class GenSql__mappingFieldStruct extends GenerateEntity{
 
   public function generate(){
     $this->start();
@@ -12,7 +12,7 @@ class ClassSql__mappingField extends GenerateEntity{
 
 
   protected function start(){
-    $this->string .= "  public function _mappingField(\$field){
+    $this->string .= "  public function _mappingFieldStruct(\$field){
     \$p = \$this->prf();
     \$t = \$this->prt();
 

@@ -48,7 +48,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
   protected function text($fieldName, $alias){
     $or = ($this->defineOr()) ? " OR " : "";
 
-    $this->string .= "    \$field = \$this->_mappingFieldEntity(\$p.'{$fieldName}');
+    $this->string .= "    \$field = \$this->_mappingField(\$p.'{$fieldName}');
     \$condition .= \"". $or . "\" . \$this->format->conditionText(\$field, \$search, '=~');
 " ;
 
@@ -57,7 +57,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
   protected function number($fieldName, $alias){
     $or = ($this->defineOr()) ? " OR " : "";
 
-    $this->string .= "    \$field = \$this->_mappingFieldEntity(\$p.'{$fieldName}');
+    $this->string .= "    \$field = \$this->_mappingField(\$p.'{$fieldName}');
     \$condition .= \"". $or . "\" . \$this->format->_conditionNumberApprox(\$field, \$search);
 " ;
   }
@@ -65,7 +65,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
   protected function date($fieldName, $alias){
     $or = ($this->defineOr()) ? " OR " : "";
 
-    $this->string .= "    \$field = \$this->_mappingFieldEntity(\$p.'{$fieldName}');
+    $this->string .= "    \$field = \$this->_mappingField(\$p.'{$fieldName}');
     \$condition .= \"". $or . "\" . \$this->format->_conditionDateApprox(\$field, \$search);
 " ;
   }
@@ -73,7 +73,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
   protected function year($fieldName, $alias){
     $or = ($this->defineOr()) ? " OR " : "";
 
-    $this->string .= "    \$field = \$this->_mappingFieldEntity(\$p.'{$fieldName}');
+    $this->string .= "    \$field = \$this->_mappingField(\$p.'{$fieldName}');
     \$condition .= \"". $or . "\" . \$this->format->_conditionYearApprox(\$field, \$search);
 " ;
   }
@@ -82,7 +82,7 @@ class ClassSql__conditionSearch extends GenerateEntity{
     $or = ($this->defineOr()) ? " OR " : "";
 
 
-    $this->string .= "    \$field = \$this->_mappingFieldEntity(\$p.'{$fieldName}');
+    $this->string .= "    \$field = \$this->_mappingField(\$p.'{$fieldName}');
     \$condition .= \"". $or . "\" . \$this->format->_conditionTimestampApprox(\$field, \$search);
 " ;
   }

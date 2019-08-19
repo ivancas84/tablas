@@ -27,7 +27,7 @@ class ClassValues_setters extends GenerateEntity {
   protected function integer(Field $field){
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     if(empty(\$p) && \$p !== 0) return;
-    \$this->{$field->getName('xxYy')} = intval(\$p);
+    \$this->{$field->getName('xxYy')} = intval(trim(\$p));
   }
 
 ";
@@ -36,7 +36,7 @@ class ClassValues_setters extends GenerateEntity {
   protected function float(Field $field){
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     if(empty(\$p) && \$p !== 0) return;
-    \$this->{$field->getName('xxYy')} = floatval(\$p);
+    \$this->{$field->getName('xxYy')} = floatval(trim(\$p));
   }
 
 ";
@@ -44,7 +44,7 @@ class ClassValues_setters extends GenerateEntity {
 
   protected function boolean(Field $field){
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
-    \$this->{$field->getName('xxYy')} = settypebool(\$p);
+    \$this->{$field->getName('xxYy')} = settypebool(trim(\$p));
   }
 
 ";
@@ -54,11 +54,10 @@ class ClassValues_setters extends GenerateEntity {
   protected function defecto(Field $field){
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     if(empty(\$p)) return;
-    \$this->{$field->getName('xxYy')} = \$p;
+    \$this->{$field->getName('xxYy')} = trim(\$p);
   }
 
 ";
   }
-
 
 }

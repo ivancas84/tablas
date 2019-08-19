@@ -30,17 +30,22 @@ class " . $this->getEntity()->getName("XxYy") . "ValuesMain extends EntityValues
 
   protected function body(){
     $this->properties();
+    $this->setDefault();
     $this->fromArray();
     $this->toArray();
     $this->getters();
     $this->setters();
-
-   }
-
+  }
 
   protected function properties(){
     foreach($this->entity->getFieldsByType(["pk", "nf", "fk"]) as $field) $this->string .= "  public \${$field->getName('xxYy')} = UNDEFINED;
 ";
+  }
+
+  protected function setDefault(){
+    require_once("generate/phpdbgen/values/setDefault.php");
+    $g = new GenValues_setDefault($this->getEntity());
+    $this->string .=  $g->generate();
   }
 
   protected function toArray(){
@@ -66,8 +71,6 @@ class " . $this->getEntity()->getName("XxYy") . "ValuesMain extends EntityValues
     $g = new ClassValues_setters($this->getEntity());
     $this->string .=  $g->generate();
   }
-
-
 
   protected function end(){
     $this->string .= "

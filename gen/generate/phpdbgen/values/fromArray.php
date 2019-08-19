@@ -14,8 +14,7 @@ class ClassValues_fromArray extends GenerateEntity {
   }
 
   protected function start(){
-    $this->string .= "
-  public function fromArray(array \$row = NULL){
+    $this->string .= "  public function fromArray(array \$row = NULL){
     if(empty(\$row)) return;
 ";
   }
