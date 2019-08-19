@@ -63,8 +63,8 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
 
 
   protected function mappingField(){
-    require_once("generate/phpdbgen/sql/method/_MappingField.php");
-    $gen = new ClassSql__mappingField($this->getEntity());
+    require_once("generate/phpdbgen/sql/method/_MappingFieldStruct.php");
+    $gen = new GenSql__mappingFieldStruct($this->getEntity());
     $this->string .= $gen->generate();
 
     require_once("generate/phpdbgen/sql/method/_MappingFieldAggregate.php");
