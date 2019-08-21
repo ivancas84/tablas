@@ -112,7 +112,7 @@ class Tablas {
     $this->entities();
     $this->fields();
     $this->structure();
-    $this->includes();
+    //$this->includes();
   }
 
 

@@ -34,7 +34,7 @@ class ClassEntity_getFields{
 ";
     
     foreach($this->fieldsInfo as $fieldInfo){
-      $this->string .= "      new Field" . snake_case_to("XxYy", $this->tableName) . snake_case_to("XxYy", $fieldInfo["field_name"]) . ",
+      $this->string .= "      Field::getInstanceRequire(\"" .$this->tableName . "\", \"" . $fieldInfo["field_name"] . "\"),
 ";      
     }
 

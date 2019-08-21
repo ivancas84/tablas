@@ -7,7 +7,7 @@ class IncludeModelClasses extends GenerateFile{
   protected $structure; //estructura de tablas
   public function __construct(array $structure){
     $this->structure = $structure;
-    parent::__construct(PATH_ROOT."src/config/", "modelClasses.php");
+    parent::__construct(PATH_ROOT."config/", "modelClasses.php");
   }
 
   protected function generateCode(){

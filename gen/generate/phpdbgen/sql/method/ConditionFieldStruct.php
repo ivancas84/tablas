@@ -15,7 +15,7 @@ class ClassSql_conditionFieldStruct extends GenerateEntityRecursiveFk{
 
 
   protected function body(Entity $entity, $prefix){
-    $this->string .= "    if(\$c = EntitySql::getInstanceFromString('{$entity->getName()}','{$prefix}')->_conditionFieldStruct(\$field, \$option, \$value)) return \$c;
+    $this->string .= "    if(\$c = EntitySql::getInstanceRequire('{$entity->getName()}','{$prefix}')->_conditionFieldStruct(\$field, \$option, \$value)) return \$c;
 ";
   }
 

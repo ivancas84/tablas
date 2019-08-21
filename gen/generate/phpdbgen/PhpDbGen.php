@@ -62,7 +62,7 @@ class PhpDbGen {
   }
 
   public function generate(){
-    $this->includes();
+    //$this->includes();
 
     foreach($this->structure as $entity) {
       $this->doc($entity);

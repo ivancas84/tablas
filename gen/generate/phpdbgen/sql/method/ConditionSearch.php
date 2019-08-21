@@ -24,7 +24,7 @@ class ClassSql_conditionSearch extends GenerateEntityRecursiveFk{
 
 
   protected function body(Entity $entity, $prefix){
-    $this->string .= " OR \" . EntitySql::getInstanceFromString('{$entity->getName()}', '{$prefix}')->_conditionSearch(\$search) . \"
+    $this->string .= " OR \" . EntitySql::getInstanceRequire('{$entity->getName()}', '{$prefix}')->_conditionSearch(\$search) . \"
 ";
   }
 

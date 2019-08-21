@@ -1,11 +1,10 @@
 <?php
 
 //controlador para generar el proyecto PhpDbGen
-require($_SERVER["DOCUMENT_ROOT"] . "/fines2-estructura/src/config/config.php"); //configuracion del modulo de administracion
+require($_SERVER["DOCUMENT_ROOT"] . "/dea-organizacion/config/config.php"); //configuracion del modulo de administracion
 
-require_once("config/structure.php");
-
+require_once("class/model/Entity.php");
 
 require("generate/phpdbgen/PhpDbGen.php");
-$php = new PhpDbGen($structure);
+$php = new PhpDbGen(Entity::getStructure());
 $php->generate();

@@ -12,20 +12,19 @@ class GenerateConfigStructure extends GenerateFile {
 
   public function __construct(array $tablesInfo) {
     $this->tablesInfo = $tablesInfo;
-    parent::__construct(PATH_ROOT."src/config/","structure.php");
+    parent::__construct(PATH_ROOT."src/class/model/entity/","structure.php");
   }
 
   protected function generateCode() {
     $this->string .= "<?php
 
-require_once(\"config/entityClasses.php\");
-require_once(\"config/userEntityClasses.php\");
+require_once(\"class/model/Entity.php\");
 
 \$structure = array (
 " ;
 
     foreach ( $this->tablesInfo as $tableInfo ) {
-      $this->string .= "  new " . snake_case_to("XxYy", $tableInfo["name"]) . "Entity,
+      $this->string .= "  Entity::getInstanceRequire(\"" . $tableInfo["name"] . "\"),
 " ;
     }
 

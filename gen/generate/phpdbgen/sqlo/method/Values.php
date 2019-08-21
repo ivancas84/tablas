@@ -38,15 +38,15 @@ class Sqlo_values extends GenerateEntity { //deberia extender de GenerateEntityR
     \$row_ = [];
 
     \$json = (\$row && !is_null(\$row['id'])) ? \$this->sql->_json(\$row) : null;
-    \$row_[\"{$e}\"] = EntityValues::getInstanceFromString(\"{$this->getEntity()->getName()}\", \$json);
+    \$row_[\"{$e}\"] = EntityValues::getInstanceRequires(\"{$this->getEntity()->getName()}\", \$json);
 
 ";
   }
 
 
   protected function body(Entity $entity, $prefix, $name){
-    $this->string .= "    \$json = (\$row && !is_null(\$row['{$prefix}_id'])) ? EntitySql::getInstanceFromString('{$entity->getName()}', '{$prefix}')->_json(\$row) : null;
-    \$row_[\"{$name}\"] = EntityValues::getInstanceFromString('{$entity->getName()}', \$json);
+    $this->string .= "    \$json = (\$row && !is_null(\$row['{$prefix}_id'])) ? EntitySql::getInstanceRequire('{$entity->getName()}', '{$prefix}')->_json(\$row) : null;
+    \$row_[\"{$name}\"] = EntityValues::getInstanceRequire('{$entity->getName()}', \$json);
 
 ";
   }

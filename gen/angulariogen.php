@@ -3,7 +3,7 @@
 //controlador para generar el proyecto AngularIoGen
 
 //configuracion general
-require($_SERVER["DOCUMENT_ROOT"] . "/dea-organizacion/src/config/config.php"); //configuracion del modulo de administracion
+require($_SERVER["DOCUMENT_ROOT"] . "/dea-organizacion/config/config.php"); //configuracion del modulo de administracion
 
 //constante de destino de archivos generados
 define("PATH_GEN" ,  $_SERVER["DOCUMENT_ROOT"] . "/fines2/comisiones/");

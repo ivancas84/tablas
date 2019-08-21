@@ -11,7 +11,7 @@ class ClassSql_mappingField extends GenerateEntityRecursiveFk {
 }
 
   protected function body(Entity $entity, $prefix) {
-    $this->string .= "    if(\$f = EntitySql::getInstanceFromString('{$entity->getName()}', '" . $prefix . "')->_mappingField(\$field)) return \$f;
+    $this->string .= "    if(\$f = EntitySql::getInstanceRequire('{$entity->getName()}', '" . $prefix . "')->_mappingField(\$field)) return \$f;
 ";
   }
 

@@ -9,9 +9,9 @@ class ClassValues_setters extends GenerateEntity {
     foreach ( $pkNfFk as $field ) {
 
       switch($field->getDataType()){
-        //case "date": $this->dateTime($field, 'd/m/Y'); break;
-        //case "time": $this->dateTime($field, 'H:i'); break;
-        //case "timestamp": $this->dateTime($field, 'd/m/Y H:i'); break;
+        case "time": $this->dateTime($field, 'H:i'); break;
+        case "date": $this->dateTime($field, 'Y-m-d'); break;
+        case "timestamp": $this->dateTime($field, 'Y-m-d H:i:s'); break;
         case "integer": $this->integer($field); break;
         case "float": $this->float($field); break;
         case "boolean": $this->boolean($field); break;
@@ -60,4 +60,18 @@ class ClassValues_setters extends GenerateEntity {
 ";
   }
 
+  protected function dateTime(Field $field, $format){
+    $this->string .= "  public function set{$field->getName('XxYy')}(DateTime \$p) {
+    if(empty(\$p)) return;
+    \$this->{$field->getName('xxYy')} = \$p;
+  }
+
+  public function set{$field->getName('XxYy')}Str(\$p, \$format = \"{$format}\") {
+    \$p = SpanishDateTime::createFromFormat(\$format, trim(\$p));
+    if(empty(\$p)) return;
+    \$this->{$field->getName('xxYy')} = \$p;
+  }
+
+";
+  }
 }

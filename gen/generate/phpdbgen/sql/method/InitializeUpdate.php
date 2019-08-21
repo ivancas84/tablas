@@ -14,7 +14,7 @@ protected function start(){
 
   public function generate(){
     $this->start();
-    $this->nf($this->getEntity());
+    $this->pkNf($this->getEntity());
     $this->fk($this->getEntity());
     $this->end();
 
@@ -24,9 +24,9 @@ protected function start(){
 
 
 
-  protected function nf(Entity $entity){
+  protected function pkNf(Entity $entity){
     //redefinir valores de timestamp y date. Los valores timestamp y date se dividen en diferentes partes correspondientes a dia mes anio hora minutos y segundos. Dichas partes deben unirse en una sola variable
-    foreach ( $entity->getFieldsNf() as $field ) {
+    foreach ( $entity->getFieldsByType(["pk","nf"]) as $field ) {
       if(!$field->isAdmin()) continue;
       switch ( $field->getDataType()) {
         case "timestamp": $this->fecha($field, "date(\"Y-m-d H:i:s\")"); break;

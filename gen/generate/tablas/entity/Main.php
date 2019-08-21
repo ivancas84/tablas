@@ -33,7 +33,7 @@ class ClassEntityMain extends GenerateFile{
     $this->string .= "<?php
 
 require_once(\"class/model/Entity.php\");
-require_once(\"config/entityClasses.php\");
+require_once(\"class/model/Field.php\");
 
 class " . snake_case_to("XxYy", $this->tableName) . "EntityMain extends Entity {
   public \$name = \"" . $this->tableName . "\";
@@ -53,7 +53,7 @@ class " . snake_case_to("XxYy", $this->tableName) . "EntityMain extends Entity {
     foreach($fieldsInfo as $fieldInfo){
       if($fieldInfo["primary_key"]){
         $this->string .= "  public function getPk(){
-    return new Field" . snake_case_to("XxYy", $tableName) . snake_case_to("XxYy", $fieldInfo["field_name"]) . ";
+    return Field::getInstanceRequire(\"" . $tableName . "\", \"" . $fieldInfo["field_name"] . "\");
   }
 ";
       }
