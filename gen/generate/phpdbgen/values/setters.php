@@ -9,7 +9,8 @@ class ClassValues_setters extends GenerateEntity {
     foreach ( $pkNfFk as $field ) {
 
       switch($field->getDataType()){
-        case "time": $this->dateTime($field, 'H:i'); break;
+        case "year": $this->dateTime($field, 'Y'); break;
+        case "time": $this->dateTime($field, 'H:i:s'); break;
         case "date": $this->dateTime($field, 'Y-m-d'); break;
         case "timestamp": $this->dateTime($field, 'Y-m-d H:i:s'); break;
         case "integer": $this->integer($field); break;
@@ -23,20 +24,18 @@ class ClassValues_setters extends GenerateEntity {
     return $this->string;
   }
 
-
   protected function integer(Field $field){
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
-    if(empty(\$p) && \$p !== 0) return;
-    \$this->{$field->getName('xxYy')} = intval(trim(\$p));
+    \$p = trim(\$p);
+    \$this->{$field->getName('xxYy')} = (is_null(\$p) && \$p !== 0) ? null : intval(\$p);
   }
-
 ";
   }
 
   protected function float(Field $field){
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
-    if(empty(\$p) && \$p !== 0) return;
-    \$this->{$field->getName('xxYy')} = floatval(trim(\$p));
+      \$p = trim(\$p);
+      \$this->{$field->getName('xxYy')} = (is_null(\$p) && \$p !== 0) ? null : floatval(\$p);
   }
 
 ";
@@ -44,32 +43,30 @@ class ClassValues_setters extends GenerateEntity {
 
   protected function boolean(Field $field){
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
-    \$this->{$field->getName('xxYy')} = settypebool(trim(\$p));
+    \$p = trim(\$p);
+    \$this->{$field->getName('XxYy')} = (is_null(\$p)) ? null : settypebool(\$p);
   }
-
 ";
   }
 
 
   protected function defecto(Field $field){
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
-    if(empty(\$p)) return;
-    \$this->{$field->getName('xxYy')} = trim(\$p);
+    \$p = trim(\$p);
+    \$this->{$field->getName('xxYy')} = (is_null(\$p)) ? null : (string)\$p;
   }
 
 ";
   }
 
   protected function dateTime(Field $field, $format){
-    $this->string .= "  public function set{$field->getName('XxYy')}(DateTime \$p) {
-    if(empty(\$p)) return;
+    $this->string .= "  public function set{$field->getName('XxYy')}(DateTime \$p = null) {
     \$this->{$field->getName('xxYy')} = \$p;
   }
 
   public function set{$field->getName('XxYy')}Str(\$p, \$format = \"{$format}\") {
     \$p = SpanishDateTime::createFromFormat(\$format, trim(\$p));
-    if(empty(\$p)) return;
-    \$this->{$field->getName('xxYy')} = \$p;
+    \$this->{$field->getName('xxYy')} = (empty(\$p)) ? null : \$p;
   }
 
 ";

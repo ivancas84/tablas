@@ -38,7 +38,7 @@ class Sqlo_values extends GenerateEntity { //deberia extender de GenerateEntityR
     \$row_ = [];
 
     \$json = (\$row && !is_null(\$row['id'])) ? \$this->sql->_json(\$row) : null;
-    \$row_[\"{$e}\"] = EntityValues::getInstanceRequires(\"{$this->getEntity()->getName()}\", \$json);
+    \$row_[\"{$e}\"] = EntityValues::getInstanceRequire(\"{$this->getEntity()->getName()}\", \$json);
 
 ";
   }
