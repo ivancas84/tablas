@@ -30,33 +30,12 @@ class Values_toArray extends GenerateEntity {
 
 
       switch($field->getDataType()){
-        case "date": $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) {
-      if(empty(\$this->{$field->getName('xxYy')})) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')};
-      else \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}->format('Y-m-d');
-    }
-";
-        break;
-
-        case "time": $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) {
-      if(empty(\$this->{$field->getName('xxYy')})) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')};
-      else \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}->format('H:i:s');
-    }
-";
-        break;
-
-        case "timestamp": $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) {
-      if(empty(\$this->{$field->getName('xxYy')})) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')};
-      else \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}->format('Y-m-d H:i:s');
-    }
-";
-        break;
-
-        case "boolean": $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = (\$this->{$field->getName('xxYy')}) ? \"true\" : \"false\";        
-";
-        break;
-
-        default: $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')};
-";
+        case "date": $this->datetime($field, "Y-m-d"); break;
+        case "time": $this->datetime($field, "H:i"); break;
+        case "timestamp": $this->datetime($field, "Y-m-d H:i"); break;
+        case "year": $this->datetime($field, "Y"); break;
+        case "boolean": $this->boolean($field); break;
+        default: $this->defecto($field);
       }
     }
   }
@@ -69,6 +48,24 @@ class Values_toArray extends GenerateEntity {
 ";
     }
 
+
+    protected function datetime($field, $format){
+      $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) {
+        if(empty(\$this->{$field->getName('xxYy')})) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')};
+        else \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}->format('{$format}');
+      }
+";
+    }
+
+    protected function boolean($field){
+      $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = (\$this->{$field->getName('xxYy')}) ? true : false;        
+";
+    }
+
+    protected function defecto($field){
+      $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')};
+";
+    }
 
 
 }

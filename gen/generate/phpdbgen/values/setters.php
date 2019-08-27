@@ -3,8 +3,18 @@
 class ClassValues_setters extends GenerateEntity {
 
   public function generate(){
+    $this->pk();
+    $this->nf();
+    $this->fk();
+    return $this->string;
+  }
+
+  public function pk() {
     $this->defecto($this->getEntity()->getPk());
-    $pkNfFk = $this->getEntity()->getFieldsByType(["nf", "fk"]);
+  }
+  
+  public function nf(){
+    $pkNfFk = $this->getEntity()->getFieldsNf();
 
     foreach ( $pkNfFk as $field ) {
 
@@ -21,7 +31,14 @@ class ClassValues_setters extends GenerateEntity {
 
       }
     }
-    return $this->string;
+  }
+
+  public function fk(){
+    $pkNfFk = $this->getEntity()->getFieldsFk();
+
+    foreach ( $pkNfFk as $field ) {
+      $this->defecto($field);
+    }
   }
 
   protected function integer(Field $field){
@@ -44,7 +61,7 @@ class ClassValues_setters extends GenerateEntity {
   protected function boolean(Field $field){
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     \$p = trim(\$p);
-    \$this->{$field->getName('XxYy')} = (is_null(\$p)) ? null : settypebool(\$p);
+    \$this->{$field->getName('xxYy')} = (is_null(\$p)) ? null : settypebool(\$p);
   }
 ";
   }

@@ -22,7 +22,7 @@ class ClassValues_fromArray extends GenerateEntity {
     $pkNfFk = $this->getEntity()->getFields();
     foreach ( $pkNfFk as $field ) {
       switch($field->getDataType()) {
-        case "date": case "time": case "timestamp":
+        case "date": case "time": case "timestamp": case "year":
           $this->string .= "    if(isset(\$row[\$p.\"" . $field->getName() . "\"])) \$this->set{$field->getName('XxYy')}Str(\$row[\$p.\"" . $field->getName() . "\"]);
 ";      
         break;
