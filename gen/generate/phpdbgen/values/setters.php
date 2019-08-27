@@ -70,7 +70,7 @@ class ClassValues_setters extends GenerateEntity {
   protected function defecto(Field $field){
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     \$p = trim(\$p);
-    \$this->{$field->getName('xxYy')} = (is_null(\$p)) ? null : (string)\$p;
+    \$this->{$field->getName('xxYy')} = (empty(\$p)) ? null : (string)\$p;
   }
 
 ";
