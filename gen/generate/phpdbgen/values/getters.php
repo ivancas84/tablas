@@ -14,7 +14,7 @@ class ClassValues_getters extends GenerateEntity {
          case "date": $this->dateTime($field, 'd/m/Y'); break;
          case "time": $this->dateTime($field, 'H:i'); break;
          case "year": $this->dateTime($field, 'Y'); break;
-         case "timestamp": $this->dateTime($field, 'd/m/Y H:i'); break;
+         case "timestamp": $this->dateTime($field, 'd/m/Y H:i:s'); break;
          case "boolean": $this->boolean($field); break;
          case "string": case "text": $this->text($field); break;
          default: $this->defecto($field);

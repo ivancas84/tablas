@@ -32,7 +32,7 @@ class Values_toArray extends GenerateEntity {
       switch($field->getDataType()){
         case "date": $this->datetime($field, "Y-m-d"); break;
         case "time": $this->datetime($field, "H:i"); break;
-        case "timestamp": $this->datetime($field, "Y-m-d H:i"); break;
+        case "timestamp": $this->datetime($field, "Y-m-d H:i:s"); break;
         case "year": $this->datetime($field, "Y"); break;
         case "boolean": $this->boolean($field); break;
         default: $this->defecto($field);
