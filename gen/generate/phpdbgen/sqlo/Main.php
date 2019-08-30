@@ -30,8 +30,8 @@ class ClassSqloMain extends GenerateFileEntity {
 require_once(\"class/model/Sqlo.php\");
 require_once(\"class/model/Sql.php\");
 require_once(\"class/model/Entity.php\");
+require_once(\"class/model/Values.php\");
 
-//Implementacion principal de Sqlo para una entidad especifica
 class " . $this->getEntity()->getName("XxYy") . "SqloMain extends EntitySqlo {
 ";
   }
