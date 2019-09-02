@@ -38,14 +38,12 @@ class Sqlo_values extends GenerateEntity { //deberia extender de GenerateEntityR
     \$row_ = [];
 
     \$row_[\"{$e}\"] = EntityValues::getInstanceRequire(\"{$this->getEntity()->getName()}\", \$row);
-
 ";
   }
 
 
   protected function body(Entity $entity, $prefix, $name){
     $this->string .= "    \$row_[\"{$name}\"] = EntityValues::getInstanceRequire('{$entity->getName()}', \$row, '{$prefix}_');
-
 ";
   }
 
