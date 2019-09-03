@@ -3,12 +3,11 @@
 require_once("class/model/Entity.php");
 require_once("generate/GenerateFileEntity.php");
 
-//Generar codigo de clase
-class ClassValuesMain extends GenerateFileEntity {
+class _ClassValues extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
     $directorio = PATH_ROOT."src/class/model/values/" . $entity->getName("xxYy") . "/";
-    $nombreArchivo = "Main.php";
+    $nombreArchivo = "_" . $entity->getName("XxYy") . ".php";
     parent::__construct($directorio, $nombreArchivo, $entity);
   }
 
@@ -23,8 +22,7 @@ class ClassValuesMain extends GenerateFileEntity {
 
 require_once(\"class/model/Values.php\");
 
-//Implementacion principal de Values para una entidad especifica
-class " . $this->getEntity()->getName("XxYy") . "ValuesMain extends EntityValues {
+class _" . $this->getEntity()->getName("XxYy") . " extends EntityValues {
 ";
   }
 

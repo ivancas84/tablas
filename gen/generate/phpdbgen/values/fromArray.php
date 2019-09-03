@@ -12,7 +12,7 @@ class ClassValues_fromArray extends GenerateEntity {
   }
 
   protected function start(){
-    $this->string .= "  public function fromArray(array \$row = NULL, \$p = \"\"){
+    $this->string .= "  public function _fromArray(array \$row = NULL, \$p = \"\"){
     if(empty(\$row)) return;
 ";
   }
@@ -23,7 +23,7 @@ class ClassValues_fromArray extends GenerateEntity {
     foreach ( $pkNfFk as $field ) {
       switch($field->getDataType()) {
         case "date": case "time": case "timestamp": case "year":
-          $this->string .= "    if(isset(\$row[\$p.\"" . $field->getName() . "\"])) \$this->set{$field->getName('XxYy')}Str(\$row[\$p.\"" . $field->getName() . "\"]);
+          $this->string .= "    if(isset(\$row[\$p.\"" . $field->getName() . "\"])) \$this->set{$field->getName('XxYy')}(\$row[\$p.\"" . $field->getName() . "\"]);
 ";      
         break;
         default: 

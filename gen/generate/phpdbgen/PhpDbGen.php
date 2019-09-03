@@ -41,8 +41,8 @@ class PhpDbGen {
   }
 
   protected function values(Entity $entity){
-    require_once("generate/phpdbgen/values/Main.php");
-    $gen = new ClassValuesMain($entity);
+    require_once("generate/phpdbgen/values/_Values.php");
+    $gen = new _ClassValues($entity);
     $gen->generate();
 
     require_once("generate/phpdbgen/values/Values.php");

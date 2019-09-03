@@ -17,11 +17,9 @@ class ClassValues extends GenerateFileEntity {
   protected function generateCode() {
     $this->string .= "<?php
 
-require_once(\"class/model/values/" . $this->getEntity()->getName("xxYy") . "/Main.php\");
+require_once(\"class/model/values/" . $this->getEntity()->getName("xxYy") . "/_" . $this->getEntity()->getName("XxYy") . ".php\");
 
-class " . $this->getEntity()->getName("XxYy") . "Values extends " . $this->getEntity()->getName("XxYy") . "ValuesMain{
-
-}
+class " . $this->getEntity()->getName("XxYy") . " extends _" . $this->getEntity()->getName("XxYy") . "{}
 
 ";
   }

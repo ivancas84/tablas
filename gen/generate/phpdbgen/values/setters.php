@@ -42,34 +42,44 @@ class ClassValues_setters extends GenerateEntity {
   }
 
   protected function integer(Field $field){
+    $default = ($field->getDefault()) ? $field->getDefault() : "null";
+    
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
-    \$p = trim(\$p);
-    \$this->{$field->getName('xxYy')} = (is_null(\$p) && \$p !== 0) ? null : intval(\$p);
+    if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
+    \$this->{$field->getName('xxYy')} = (is_null(\$p)) ? null : intval(trim(\$p));
   }
+
 ";
   }
 
   protected function float(Field $field){
+    $default = ($field->getDefault()) ? $field->getDefault() : "null";
+
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
-      \$p = trim(\$p);
-      \$this->{$field->getName('xxYy')} = (is_null(\$p) && \$p !== 0) ? null : floatval(\$p);
+      if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
+      \$this->{$field->getName('xxYy')} = (is_null(\$p)) ? null : floatval(trim(\$p));
   }
 
 ";
   }
 
   protected function boolean(Field $field){
+    $default = ($field->getDefault()) ? $field->getDefault() : "null";
+
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
-    \$p = trim(\$p);
-    \$this->{$field->getName('xxYy')} = (is_null(\$p)) ? null : settypebool(\$p);
+    if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
+    \$this->{$field->getName('xxYy')} = (is_null(\$p)) ? null : settypebool(trim(\$p));
   }
+
 ";
   }
 
 
   protected function defecto(Field $field){
+    $default = ($field->getDefault()) ? "'" . $field->getDefault() . "'" : "null";
+
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
-    \$p = trim(\$p);
+    \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
     \$this->{$field->getName('xxYy')} = (empty(\$p)) ? null : (string)\$p;
   }
 
@@ -77,12 +87,19 @@ class ClassValues_setters extends GenerateEntity {
   }
 
   protected function dateTime(Field $field, $format){
-    $this->string .= "  public function set{$field->getName('XxYy')}(DateTime \$p = null) {
+    if(($field->getDefault() == "CURRENT_DATE") || ($field->getDefault() == "CURRENT_TIMESTAMP")){
+      $default = "date('{$format}')";
+    } else {
+      $default = "'".$field->getDefault()."'";
+    }
+
+    $this->string .= "  public function _set{$field->getName('XxYy')}(DateTime \$p = null) {
     \$this->{$field->getName('xxYy')} = \$p;
   }
 
-  public function set{$field->getName('XxYy')}Str(\$p, \$format = \"{$format}\") {
-    \$p = SpanishDateTime::createFromFormat(\$format, trim(\$p));
+  public function set{$field->getName('XxYy')}(\$p, \$format = \"{$format}\") {
+    \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
+    \$p = SpanishDateTime::createFromFormat(\$format, \$p);
     \$this->{$field->getName('xxYy')} = (empty(\$p)) ? null : \$p;
   }
 
