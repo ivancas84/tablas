@@ -14,12 +14,13 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
 
   protected function start(){
     $this->string .= "  public function _mappingFieldAggregate(\$field){
-    \$t = \$this->entity->getAlias();
+    \$p = \$this->prf();
+    \$t = \$this->prt();
 
     switch (\$field) {
-      case 'min_id': return \"MIN({\$t}.id)\";
-      case 'max_id': return \"MAX({\$t}.id)\";
-      case 'count_id': return \"COUNT({\$t}.id)\";
+      case \$p.'min_id': return \"MIN({\$t}.id)\";
+      case \$p.'max_id': return \"MAX({\$t}.id)\";
+      case \$p.'count_id': return \"COUNT({\$t}.id)\";
 
 ";
   }
@@ -28,19 +29,19 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
     foreach ($this->getEntity()->getFieldsNf() as $field){
       switch($field->getDataType()){
         case "float": case "integer":
-          $this->string .= "      case 'sum_" . $field->getName() . "': return \"SUM({\$t}.{$field->getName()})\";
-      case 'avg_" . $field->getName() . "': return \"AVG({\$t}.{$field->getName()})\";
-      case 'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
-      case 'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
-      case 'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
+          $this->string .= "      case \$p.'sum_" . $field->getName() . "': return \"SUM({\$t}.{$field->getName()})\";
+      case \$p.'avg_" . $field->getName() . "': return \"AVG({\$t}.{$field->getName()})\";
+      case \$p.'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
+      case \$p.'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
+      case \$p.'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
 
 ";
         break;
         case "date": case "timestamp":
-        $this->string .= "      case 'avg_" . $field->getName() . "': return \"AVG({\$t}.{$field->getName()})\";
-      case 'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
-      case 'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
-      case 'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
+        $this->string .= "      case \$p.'avg_" . $field->getName() . "': return \"AVG({\$t}.{$field->getName()})\";
+      case \$p.'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
+      case \$p.'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
+      case \$p.'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
 
 ";
         break;
@@ -51,9 +52,9 @@ class ClassSql__mappingFieldAggregate extends GenerateEntity{
 
   protected function fk(){
     foreach ($this->getEntity()->getFieldsFk() as $field){
-      $this->string .= "      case 'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
-      case 'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
-      case 'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
+      $this->string .= "      case \$p.'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
+      case \$p.'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
+      case \$p.'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
 
 ";
 
