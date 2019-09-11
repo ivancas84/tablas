@@ -32,7 +32,7 @@ class ClassValues_getters extends GenerateEntity {
   }
 
   protected function boolean(Field $field){
-    $this->string .= "  public function {$field->getName('xxYy')}(\$format = null) { return \$this->formatBoolean(\$this->{$field->getName('xxYy')}, \$format); }
+    $this->string .= "  public function {$field->getName('xxYy')}(\$format = null) { return \$this->_formatBoolean(\$this->{$field->getName('xxYy')}, \$format); }
 ";
   }
 
