@@ -48,15 +48,11 @@ class ClassSql_join extends GenerateEntity {
     }
   }
 
-
   protected function recursive(Entity $entity, array $tablesVisited = NULL, $prefix = ""){
     if(is_null($tablesVisited)) $tablesVisited = array();
+    array_push ($tablesVisited, $entity->getName());
     $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
     //$u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
-
-
-
-    array_push ($tablesVisited, $entity->getName());
 
     if (empty ($prefix)){
       $prefixAux = "";
