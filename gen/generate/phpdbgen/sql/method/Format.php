@@ -9,7 +9,6 @@ class Sql_FormatSql extends GenerateEntity{
 
 protected function start(){
     $this->string .= "
-  //Formato SQL
   public function format(array \$row){
     \$row_ = array();
 ";
