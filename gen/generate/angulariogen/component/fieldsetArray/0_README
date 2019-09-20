@@ -1,4 +1,0 @@
-Utiliza las mismas clases de generacion de fieldset para definir los metodos:
-Ejemplo: _FormGroup
-
-Se define independientemente para facilitar la reimplementacion ya que los componentes no utilizan clase principal / clase implementacion (solo utilizan clase abstracta general)
