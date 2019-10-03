@@ -31,6 +31,8 @@ class _" . $this->getEntity()->getName("XxYy") . " extends EntityValues {
     $this->setDefault();
     $this->fromArray();
     $this->toArray();
+    $this->isEmpty();
+
     $this->getters();
     $this->setters();
   }
@@ -49,6 +51,12 @@ class _" . $this->getEntity()->getName("XxYy") . " extends EntityValues {
   protected function toArray(){
     require_once("generate/phpdbgen/values/toArray.php");
     $g = new Values_toArray($this->getEntity());
+    $this->string .=  $g->generate();
+  }
+
+  protected function isEmpty(){
+    require_once("generate/phpdbgen/values/isEmpty.php");
+    $g = new Values_isEmpty($this->getEntity());
     $this->string .=  $g->generate();
   }
 
