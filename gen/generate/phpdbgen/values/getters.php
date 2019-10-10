@@ -42,7 +42,7 @@ class ClassValues_getters extends GenerateEntity {
   }
 
   protected function text(Field $field){
-    $this->string .= "  public function {$field->getName('xxYy')}(\$format = null) { return \$this->_formatString(\$this->{$field->getName('xxYy')}, \$format); }
+    $this->string .= "  public function {$field->getName('xxYy')}(\$format = null) { return Format::convertCase(\$this->{$field->getName('xxYy')}, \$format); }
 ";
   }
 

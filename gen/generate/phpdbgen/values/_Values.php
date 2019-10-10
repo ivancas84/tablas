@@ -20,6 +20,7 @@ class _ClassValues extends GenerateFileEntity {
   protected function start(){
     $this->string .= "<?php
 
+require_once(\"class/Format.php\");
 require_once(\"class/model/Values.php\");
 
 class _" . $this->getEntity()->getName("XxYy") . " extends EntityValues {
@@ -35,6 +36,7 @@ class _" . $this->getEntity()->getName("XxYy") . " extends EntityValues {
 
     $this->getters();
     $this->setters();
+    $this->validators();
   }
 
   protected function properties(){
@@ -75,6 +77,12 @@ class _" . $this->getEntity()->getName("XxYy") . " extends EntityValues {
   protected function setters(){
     require_once("generate/phpdbgen/values/setters.php");
     $g = new ClassValues_setters($this->getEntity());
+    $this->string .=  $g->generate();
+  }
+
+  protected function validators(){
+    require_once("generate/phpdbgen/values/validators.php");
+    $g = new ClassValues_validators($this->getEntity());
     $this->string .=  $g->generate();
   }
 
