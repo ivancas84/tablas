@@ -22,8 +22,13 @@ class Values_toArray extends GenerateEntity {
   protected function body(){
     $pkNfFk = $this->getEntity()->getFields();
     foreach ( $pkNfFk as $field ) {
-      $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}();
-";
+      switch($field->getDataType()){
+        case "date": $this->method("Y-m-d"); break;
+        case "timestamp": $this->method("Y-m-d h:i:s"); break;
+        case "time": $this->method("h:i:s"); break;
+        case "year": $this->method("Y"); break;      
+        default: $this->method(); break;
+      }
     }
   }
 
@@ -35,7 +40,10 @@ class Values_toArray extends GenerateEntity {
 ";
     }
 
-
+  protected function method($field, $format){
+    $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}(\"{$format}\");
+"; 
+  }
     protected function datetime($field, $format){
       $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) {
         if(empty(\$this->{$field->getName('xxYy')})) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')};

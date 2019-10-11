@@ -27,7 +27,7 @@ class ClassValues_getters extends GenerateEntity {
 
 
   protected function dateTime(Field $field, $format){
-    $this->string .= "  public function {$field->getName('xxYy')}(\$format = '{$format}') { return \$this->_formatDate(\$this->{$field->getName('xxYy')}, \$format); }
+    $this->string .= "  public function {$field->getName('xxYy')}(\$format = '{$format}') { return Format::date(\$this->{$field->getName('xxYy')}, \$format); }
 ";
   }
 

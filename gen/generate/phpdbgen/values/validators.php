@@ -24,7 +24,10 @@ class ClassValues_validators extends GenerateEntity {
 
   protected function checkMethod($field, $method){
     $r = ($field->isNotNull()) ? "->required()" : "";
-    $this->string .= "  public function check{$field->getName('XxYy')}(\$value) { \$this->_validation->name(\"{$field->getName()}\")->value(\$value)->{$method}(){$r}; }
+    $this->string .= "  public function check{$field->getName('XxYy')}(\$value) { 
+    \$v = Validation::getInstanceValue(\$value)->{$method}(){$r};
+    return \$this->_setLogsValidation(\"{$field->getName()}\", \$v);
+  }
 ";
   }
 
@@ -33,12 +36,17 @@ class ClassValues_validators extends GenerateEntity {
   }
 
   protected function success(Field $field){
-    $this->string .= "  public function check{$field->getName('XxYy')}(\$value) { return; }
+    $this->string .= "  public function check{$field->getName('XxYy')}(\$value) { 
+      return true; 
+  }
 ";
   }
 
   protected function notNull(Field $field){
-    $this->string .= "  public function check{$field->getName('XxYy')}(\$value) { \$this->_validation->name(\"{$field->getName()}\")->value(\$value)->required(); }
+    $this->string .= "  public function check{$field->getName('XxYy')}(\$value) { 
+    \$v = Validation::getInstanceValue(\$value)->required();
+    return \$this->_setLogsValidation(\"{$field->getName()}\", \$v);
+  }
 ";
   }
 

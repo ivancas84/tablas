@@ -47,8 +47,7 @@ class ClassValues_setters extends GenerateEntity {
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
     (is_null(\$p)) ? null : intval(trim(\$p));
-    if(\$this->check{$field->getName('XxYy')}(\$p) != \"error\")
-      \$this->{$field->getName('xxYy')} = \$p;
+    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
   }
 
 ";
@@ -58,8 +57,9 @@ class ClassValues_setters extends GenerateEntity {
     $default = ($field->getDefault()) ? $field->getDefault() : "null";
 
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
-      if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
-      \$this->{$field->getName('xxYy')} = (is_null(\$p)) ? null : floatval(trim(\$p));
+    if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
+    \$p = (is_null(\$p)) ? null : floatval(trim(\$p));
+    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
   }
 
 ";
@@ -70,7 +70,8 @@ class ClassValues_setters extends GenerateEntity {
 
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
-    \$this->{$field->getName('xxYy')} = (is_null(\$p)) ? null : settypebool(trim(\$p));
+    \$p = (is_null(\$p)) ? null : settypebool(trim(\$p));
+    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
   }
 
 ";
@@ -82,7 +83,8 @@ class ClassValues_setters extends GenerateEntity {
 
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
-    \$this->{$field->getName('xxYy')} = (empty(\$p)) ? null : (string)\$p;
+    \$p = (empty(\$p)) ? null : (string)\$p;
+    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
   }
 
 ";
@@ -96,13 +98,14 @@ class ClassValues_setters extends GenerateEntity {
     }
 
     $this->string .= "  public function _set{$field->getName('XxYy')}(DateTime \$p = null) {
-    \$this->{$field->getName('xxYy')} = \$p;
+      if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;  
   }
 
   public function set{$field->getName('XxYy')}(\$p, \$format = \"{$format}\") {
     \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
     \$p = SpanishDateTime::createFromFormat(\$format, \$p);
-    \$this->{$field->getName('xxYy')} = (empty(\$p)) ? null : \$p;
+    \$p = (empty(\$p)) ? null : \$p;
+    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
   }
 
 ";

@@ -21,7 +21,7 @@ class Values_isEmpty extends GenerateEntity {
   protected function body(){
     $pkNfFk = $this->getEntity()->getFields();
     foreach ( $pkNfFk as $field ) {
-      $this->string .= "    if(!\$this->_isEmptyValue(\$this->{$field->getName('xxYy')})) return false;
+      $this->string .= "    if(!Validation::is_empty(\$this->{$field->getName('xxYy')})) return false;
 ";
     }
   }
