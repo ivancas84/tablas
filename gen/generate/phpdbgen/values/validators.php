@@ -28,6 +28,7 @@ class ClassValues_validators extends GenerateEntity {
     \$v = Validation::getInstanceValue(\$value)->{$method}(){$r};
     return \$this->_setLogsValidation(\"{$field->getName()}\", \$v);
   }
+
 ";
   }
 
@@ -39,6 +40,7 @@ class ClassValues_validators extends GenerateEntity {
     $this->string .= "  public function check{$field->getName('XxYy')}(\$value) { 
       return true; 
   }
+
 ";
   }
 
@@ -47,6 +49,7 @@ class ClassValues_validators extends GenerateEntity {
     \$v = Validation::getInstanceValue(\$value)->required();
     return \$this->_setLogsValidation(\"{$field->getName()}\", \$v);
   }
+
 ";
   }
 

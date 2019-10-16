@@ -83,7 +83,7 @@ class ClassValues_setters extends GenerateEntity {
 
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
-    \$p = (empty(\$p)) ? null : (string)\$p;
+    \$p = (is_null(\$p)) ? null : (string)\$p;
     if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
   }
 
@@ -94,7 +94,7 @@ class ClassValues_setters extends GenerateEntity {
     if(($field->getDefault() == "CURRENT_DATE") || ($field->getDefault() == "CURRENT_TIMESTAMP")){
       $default = "date('{$format}')";
     } else {
-      $default = "'".$field->getDefault()."'";
+      $default = ($field->getDefault()) ? "'" . $field->getDefault() . "'" : "null";
     }
 
     $this->string .= "  public function _set{$field->getName('XxYy')}(DateTime \$p = null) {
@@ -103,8 +103,7 @@ class ClassValues_setters extends GenerateEntity {
 
   public function set{$field->getName('XxYy')}(\$p, \$format = \"{$format}\") {
     \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
-    \$p = SpanishDateTime::createFromFormat(\$format, \$p);
-    \$p = (empty(\$p)) ? null : \$p;
+    \$p = (is_null(\$p)) ? null : SpanishDateTime::createFromFormat(\$format, \$p);
     if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
   }
 

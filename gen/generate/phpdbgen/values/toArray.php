@@ -23,11 +23,11 @@ class Values_toArray extends GenerateEntity {
     $pkNfFk = $this->getEntity()->getFields();
     foreach ( $pkNfFk as $field ) {
       switch($field->getDataType()){
-        case "date": $this->method("Y-m-d"); break;
-        case "timestamp": $this->method("Y-m-d h:i:s"); break;
-        case "time": $this->method("h:i:s"); break;
-        case "year": $this->method("Y"); break;      
-        default: $this->method(); break;
+        case "date": $this->method($field, "Y-m-d"); break;
+        case "timestamp": $this->method($field, "Y-m-d h:i:s"); break;
+        case "time": $this->method($field, "h:i:s"); break;
+        case "year": $this->method($field, "Y"); break;      
+        default: $this->method($field); break;
       }
     }
   }
@@ -40,7 +40,7 @@ class Values_toArray extends GenerateEntity {
 ";
     }
 
-  protected function method($field, $format){
+  protected function method($field, $format = ""){
     $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}(\"{$format}\");
 "; 
   }

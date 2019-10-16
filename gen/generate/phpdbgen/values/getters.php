@@ -11,10 +11,10 @@ class ClassValues_getters extends GenerateEntity {
      foreach ( $pkNfFk as $field ) {
 
        switch($field->getDataType()){
-         case "date": $this->dateTime($field, 'Y-m-d'); break;
-         case "time": $this->dateTime($field, 'H:i'); break;
-         case "year": $this->dateTime($field, 'Y'); break;
-         case "timestamp": $this->dateTime($field, 'Y-m-d H:i:s'); break;
+         case "date": $this->dateTime($field); break;
+         case "time": $this->dateTime($field); break;
+         case "year": $this->dateTime($field); break;
+         case "timestamp": $this->dateTime($field); break;
          case "boolean": $this->boolean($field); break;
          case "string": case "text": $this->text($field); break;
          default: $this->defecto($field);
@@ -26,13 +26,13 @@ class ClassValues_getters extends GenerateEntity {
     }
 
 
-  protected function dateTime(Field $field, $format){
-    $this->string .= "  public function {$field->getName('xxYy')}(\$format = '{$format}') { return Format::date(\$this->{$field->getName('xxYy')}, \$format); }
+  protected function dateTime(Field $field){
+    $this->string .= "  public function {$field->getName('xxYy')}(\$format = null) { return Format::date(\$this->{$field->getName('xxYy')}, \$format); }
 ";
   }
 
   protected function boolean(Field $field){
-    $this->string .= "  public function {$field->getName('xxYy')}(\$format = null) { return \$this->_formatBoolean(\$this->{$field->getName('xxYy')}, \$format); }
+    $this->string .= "  public function {$field->getName('xxYy')}(\$format = null) { return Format->boolean(\$this->{$field->getName('xxYy')}, \$format); }
 ";
   }
 

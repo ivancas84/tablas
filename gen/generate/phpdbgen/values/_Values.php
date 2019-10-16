@@ -40,7 +40,7 @@ class _" . $this->getEntity()->getName("XxYy") . " extends EntityValues {
   }
 
   protected function properties(){
-    foreach($this->entity->getFieldsByType(["pk", "nf", "fk"]) as $field) $this->string .= "  public \${$field->getName('xxYy')} = UNDEFINED;
+    foreach($this->entity->getFieldsByType(["pk", "nf", "fk"]) as $field) $this->string .= "  protected \${$field->getName('xxYy')} = UNDEFINED;
 ";
   }
 
