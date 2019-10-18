@@ -103,7 +103,10 @@ class ClassValues_setters extends GenerateEntity {
 
   public function set{$field->getName('XxYy')}(\$p, \$format = \"{$format}\") {
     \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
-    \$p = (is_null(\$p)) ? null : SpanishDateTime::createFromFormat(\$format, \$p);
+    if(is_null(\$p)) \$p = null;
+    else {
+      \$p = (\$format == UNDEFINED) ? SpanishDateTime::createFromDate(\$p) : SpanishDateTime::createFromFormat(\$format, \$p);
+    }
     if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
   }
 
