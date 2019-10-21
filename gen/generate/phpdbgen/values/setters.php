@@ -21,7 +21,7 @@ class ClassValues_setters extends GenerateEntity {
       switch($field->getDataType()){
         case "year": $this->dateTime($field, 'Y'); break;
         case "time": $this->dateTime($field, 'H:i:s'); break;
-        case "date": $this->dateTime($field, 'Y-m-d'); break;
+        case "date": $this->date($field); break;
         case "timestamp": $this->dateTime($field, 'Y-m-d H:i:s'); break;
         case "integer": $this->integer($field); break;
         case "float": $this->float($field); break;
@@ -102,6 +102,27 @@ class ClassValues_setters extends GenerateEntity {
   }
 
   public function set{$field->getName('XxYy')}(\$p, \$format = \"{$format}\") {
+    \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
+    if(is_null(\$p)) \$p = null;
+    else \$p = SpanishDateTime::createFromFormat(\$format, \$p);
+    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
+  }
+
+";
+  }
+
+  protected function date(Field $field){
+    if(($field->getDefault() == "CURRENT_DATE") || ($field->getDefault() == "CURRENT_TIMESTAMP")){
+      $default = "date('{$format}')";
+    } else {
+      $default = ($field->getDefault()) ? "'" . $field->getDefault() . "'" : "null";
+    }
+
+    $this->string .= "  public function _set{$field->getName('XxYy')}(DateTime \$p = null) {
+      if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;  
+  }
+
+  public function set{$field->getName('XxYy')}(\$p, \$format = UNDEFINED) {
     \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
     if(is_null(\$p)) \$p = null;
     else {
