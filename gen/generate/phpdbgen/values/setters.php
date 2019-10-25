@@ -46,7 +46,7 @@ class ClassValues_setters extends GenerateEntity {
     
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
-    (is_null(\$p)) ? null : intval(trim(\$p));
+    \$p = (is_null(\$p)) ? null : intval(trim(\$p));
     if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
   }
 
