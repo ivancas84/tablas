@@ -20,7 +20,7 @@ class _ClassValues extends GenerateFileEntity {
   protected function start(){
     $this->string .= "<?php
 
-require_once(\"class/Format.php\");
+require_once(\"class/tools/Format.php\");
 require_once(\"class/model/Values.php\");
 
 class _" . $this->getEntity()->getName("XxYy") . " extends EntityValues {

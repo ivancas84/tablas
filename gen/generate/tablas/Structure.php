@@ -1,7 +1,7 @@
 <?php
 
 require_once("generate/GenerateFile.php");
-require_once("class/db/My.php");
+require_once("class/model/db/My.php");
 
 /**
  * Generar estructura

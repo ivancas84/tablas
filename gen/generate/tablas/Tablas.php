@@ -1,6 +1,6 @@
 <?php
 
-require_once("class/db/My.php");
+require_once("class/model/db/My.php");
 require_once("class/Aliases.php");
 
 class Tablas {
