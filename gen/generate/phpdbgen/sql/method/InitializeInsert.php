@@ -4,9 +4,7 @@
 class Sql_initializeInsert extends GenerateEntity{
 
 protected function start(){
-    $this->string .= "
-  //@override
-  public function initializeInsert(array \$data){
+    $this->string .= "  public function initializeInsert(array \$data){
 ";
 
   }
@@ -24,7 +22,7 @@ protected function start(){
 
   protected function pk(){
     $pk = $this->getEntity()->getPk();
-    $this->string .= "    \$data['" . $pk->getName() . "'] = (!empty(\$data['id'])) ? \$data['" . $pk->getName() . "'] : Dba::nextId('{$this->entity->getName()}');
+    $this->string .= "    \$data['" . $pk->getName() . "'] = (!empty(\$data['id'])) ? \$data['" . $pk->getName() . "'] : Ma::nextId('{$this->entity->getName()}');
 ";
 
   }
