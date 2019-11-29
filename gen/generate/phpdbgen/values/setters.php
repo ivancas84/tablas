@@ -37,7 +37,10 @@ class ClassValues_setters extends GenerateEntity {
     $pkNfFk = $this->getEntity()->getFieldsFk();
 
     foreach ( $pkNfFk as $field ) {
-      $this->defecto($field);
+      switch($field->getDataType()){
+        case "integer": $this->integer($field); break;
+        default: $this->defecto($field); break;
+      }
     }
   }
 
