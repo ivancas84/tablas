@@ -61,10 +61,35 @@ class PhpDbGen {
     $gen->generate();
   }
 
+  protected function api(Entity $entity){
+    require_once("generate/phpdbgen/api/All.php");
+    $gen = new Gen_AllApi($entity);
+    $gen->generateIfNotExists();
+
+    require_once("generate/phpdbgen/api/Count.php");
+    $gen = new Gen_CountApi($entity);
+    $gen->generateIfNotExists();
+
+    require_once("generate/phpdbgen/api/GetAll.php");
+    $gen = new Gen_GetAllApi($entity);
+    $gen->generateIfNotExists();
+
+    require_once("generate/phpdbgen/api/Ids.php");
+    $gen = new Gen_IdsApi($entity);
+    $gen->generateIfNotExists();
+
+
+    require_once("generate/phpdbgen/api/Unique.php");
+    $gen = new Gen_UniqueApi($entity);
+    $gen->generateIfNotExists();
+    
+  }
+
   public function generate(){
     //$this->includes();
 
     foreach($this->structure as $entity) {
+      $this->api($entity);
       $this->doc($entity);
       $this->sqlo($entity);
       $this->sql($entity);
