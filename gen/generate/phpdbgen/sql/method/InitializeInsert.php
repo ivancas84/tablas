@@ -55,10 +55,10 @@ protected function start(){
       $this->string .= "    if(empty(\$data['" . $field->getName() . "'])) ";
       if($field->isNotNull() && !$field->getDefault()){
         $this->string .= "throw new Exception('dato obligatorio sin valor: " . $field->getName() . "');
-  ";
+";
       } else {
         $this->string .= "\$data['" . $field->getName() . "'] = " . $default . ";
-  ";
+";
       }
     }
   }
@@ -102,7 +102,7 @@ protected function start(){
   protected function string(Field $field){
     $default = ($field->getDefault()) ? "\"" . $field->getDefault() . "\"": "\"null\"";
 
-    $this->string .= "    if(empty(\$data['" . $field->getName() . "'])) ";
+    $this->string .= "    if(!isset(\$data['" . $field->getName() . "']) || is_null(\$data['" . $field->getName() . "']) || \$data['" . $field->getName() . "'] == \"\") ";
 
     if($field->isNotNull() && !$field->getDefault()){
       $this->string .= "throw new Exception('dato obligatorio sin valor: " . $field->getName() . "');
@@ -143,6 +143,7 @@ protected function start(){
     $this->string .= "
     return \$data;
   }
+
 ";
   }
 
