@@ -16,7 +16,7 @@ class ClassSql_mappingField extends GenerateEntityRecursiveFk {
   }
 
   protected function end(){
-  $this->string .= "    throw new Exception(\"Campo no reconocido \" . \$field);
+  $this->string .= "    throw new Exception(\"Campo no reconocido para {\$this->entity->getName()}: {\$field}\");
   }
 
 ";
