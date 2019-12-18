@@ -89,7 +89,7 @@ class PhpDbGen {
     //$this->includes();
 
     foreach($this->structure as $entity) {
-      $this->api($entity);
+      //$this->api($entity);
       $this->doc($entity);
       $this->sqlo($entity);
       $this->sql($entity);
