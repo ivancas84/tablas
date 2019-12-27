@@ -61,26 +61,26 @@ class PhpDbGen {
     $gen->generate();
   }
 
-  protected function api(Entity $entity){
-    require_once("generate/phpdbgen/api/All.php");
-    $gen = new Gen_AllApi($entity);
+  protected function controller(Entity $entity){
+    require_once("generate/phpdbgen/controller/All.php");
+    $gen = new Gen_All($entity);
     $gen->generateIfNotExists();
 
-    require_once("generate/phpdbgen/api/Count.php");
-    $gen = new Gen_CountApi($entity);
+    require_once("generate/phpdbgen/controller/Count.php");
+    $gen = new Gen_Count($entity);
     $gen->generateIfNotExists();
 
-    require_once("generate/phpdbgen/api/GetAll.php");
-    $gen = new Gen_GetAllApi($entity);
+    require_once("generate/phpdbgen/controller/GetAll.php");
+    $gen = new Gen_GetAll($entity);
     $gen->generateIfNotExists();
 
-    require_once("generate/phpdbgen/api/Ids.php");
-    $gen = new Gen_IdsApi($entity);
+    require_once("generate/phpdbgen/controller/Ids.php");
+    $gen = new Gen_Ids($entity);
     $gen->generateIfNotExists();
 
 
-    require_once("generate/phpdbgen/api/Unique.php");
-    $gen = new Gen_UniqueApi($entity);
+    require_once("generate/phpdbgen/controller/Unique.php");
+    $gen = new Gen_Unique($entity);
     $gen->generateIfNotExists();
     
   }
@@ -89,7 +89,7 @@ class PhpDbGen {
     //$this->includes();
 
     foreach($this->structure as $entity) {
-      //$this->api($entity);
+      $this->controller($entity);
       $this->doc($entity);
       $this->sqlo($entity);
       $this->sql($entity);
