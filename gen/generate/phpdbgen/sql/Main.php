@@ -118,10 +118,6 @@ class " .  $this->getEntity()->getName("XxYy") . "SqlMain extends EntitySql{
     require_once("generate/phpdbgen/sql/method/ConditionFieldAux.php");
     $gen = new ClassSql_conditionFieldAux($this->getEntity());
     $this->string .= $gen->generate();
-
-    require_once("generate/phpdbgen/sql/method/ConditionFieldHaving.php");
-    $gen = new Sql_conditionFieldHaving($this->getEntity());
-    $this->string .= $gen->generate();
   }
 
 

@@ -6,7 +6,9 @@ class ClassSql__conditionFieldStruct extends GenerateEntity{
 
   public function generate(){
     $this->start();
-    $this->condition($this->getEntity(), $this->getEntity()->getAlias(), "");
+    $this->condition();
+    $this->conditionAggregatePkNf();
+    $this->conditionAggregateFk();
     $this->end();
 
     return $this->string;
@@ -21,8 +23,8 @@ class ClassSql__conditionFieldStruct extends GenerateEntity{
 ";
   }
 
-  protected function condition(Entity $entity){
-    foreach ( $entity->getFields() as $field) {
+  protected function condition(){
+    foreach ( $this->getEntity()->getFields() as $field) {
       switch ( $field->getDataType() ) {
 
         case "string":
@@ -41,6 +43,51 @@ class ClassSql__conditionFieldStruct extends GenerateEntity{
 
       }
     }
+    $this->string .= "
+";
+  }
+
+  public function conditionAggregatePkNf(){
+    foreach ($this->getEntity()->getFieldsByType(["pk","nf"]) as $field){
+      switch($field->getDataType()){
+        case "float": case "integer":
+          $this->number("sum_" . $field->getName());
+          $this->number("avg_" . $field->getName());
+          $this->number("max_" . $field->getName());
+          $this->number("min_" . $field->getName());
+          $this->number("count_" . $field->getName());
+          $this->string .= "
+";
+        break;
+        case "date": case "timestamp":
+          $this->number("avg_" . $field->getName());
+          $this->number("max_" . $field->getName());
+          $this->number("min_" . $field->getName());
+          $this->number("count_" . $field->getName());
+          $this->string .= "
+";
+        break;
+        default:
+          $this->number("max_" . $field->getName());
+          $this->number("min_" . $field->getName());
+          $this->number("count_" . $field->getName());
+          $this->string .= "
+";
+        break;
+      }
+    }
+    
+  }
+
+  public function conditionAggregateFk(){
+    foreach ($this->getEntity()->getFieldsFk() as $field){
+      $this->number("max_" . $field->getName());
+      $this->number("min_" . $field->getName());
+      $this->number("count_" . $field->getName());    
+      $this->string .= "
+";  
+    }
+  
   }
 
   protected function string($fieldName) {
@@ -73,7 +120,7 @@ class ClassSql__conditionFieldStruct extends GenerateEntity{
   }
 
   protected function end() {
-    $this->string .= "      default: return parent::_conditionFieldStruct(\$field, \$option, \$value);
+    $this->string .= "      default: return \$this->_conditionFieldStructMain(\$field, \$option, \$value);
     }
   }
 

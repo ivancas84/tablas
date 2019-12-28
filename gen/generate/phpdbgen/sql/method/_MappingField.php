@@ -53,8 +53,15 @@ class GenSql__mappingField extends GenerateEntity{
 ";
         break;
         case "date": case "timestamp":
-        $this->string .= "      case \$p.'avg_" . $field->getName() . "': return \"AVG({\$t}.{$field->getName()})\";
+          $this->string .= "      case \$p.'avg_" . $field->getName() . "': return \"AVG({\$t}.{$field->getName()})\";
       case \$p.'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
+      case \$p.'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
+      case \$p.'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
+
+";
+        break;
+        default:
+        $this->string .= "      case \$p.'min_" . $field->getName() . "': return \"MIN({\$t}.{$field->getName()})\";
       case \$p.'max_" . $field->getName() . "': return \"MAX({\$t}.{$field->getName()})\";
       case \$p.'count_" . $field->getName() . "': return \"COUNT({\$t}.{$field->getName()})\";
 
