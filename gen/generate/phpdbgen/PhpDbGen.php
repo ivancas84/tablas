@@ -82,6 +82,10 @@ class PhpDbGen {
     require_once("generate/phpdbgen/controller/Unique.php");
     $gen = new Gen_Unique($entity);
     $gen->generateIfNotExists();
+
+    require_once("generate/phpdbgen/controller/DisplayRender.php");
+    $gen = new Gen_DisplayRender($entity);
+    $gen->generateIfNotExists();
     
   }
 
