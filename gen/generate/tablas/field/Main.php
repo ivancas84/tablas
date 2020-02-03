@@ -26,8 +26,8 @@ class GenerateClassFieldMain extends GenerateFile {
     $this->tableName = $tableName;
     $this->fieldInfo = $fieldInfo;
 
-    $dirName = PATH_ROOT."src/class/model/field/" . str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower($this->tableName))))) . "/" . str_replace(" ", "", lcfirst(ucwords(str_replace("_", " ", strtolower($this->fieldInfo["field_name"]))))) . "/";
-    $fileName = "Main.php";
+    $dirName = PATH_ROOT."src/class/model/field/" . snake_case_to("xxYy", $this->tableName) . "/";
+    $fileName = "_" . snake_case_to("XxYy", $this->fieldInfo["field_name"]) . ".php";
 
     parent::__construct($dirName, $fileName);
   }
@@ -40,7 +40,7 @@ class GenerateClassFieldMain extends GenerateFile {
 
 require_once(\"class/model/Field.php\");
 
-class Field" . snake_case_to("XxYy", $this->tableName) . snake_case_to("XxYy", $this->fieldInfo["field_name"]) . "Main extends Field {
+class _Field" . snake_case_to("XxYy", $this->tableName) . snake_case_to("XxYy", $this->fieldInfo["field_name"]) . " extends Field {
 ";
   }
 
