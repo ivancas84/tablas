@@ -50,7 +50,9 @@ class ClassValues_setters extends GenerateEntity {
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
     \$p = (is_null(\$p)) ? null : intval(trim(\$p));
-    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
+    \$check = \$this->check{$field->getName('XxYy')}(\$p); 
+    if(\$check) \$this->{$field->getName('xxYy')} = \$p;
+    return \$check;
   }
 
 ";
@@ -62,7 +64,9 @@ class ClassValues_setters extends GenerateEntity {
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
     \$p = (is_null(\$p)) ? null : floatval(trim(\$p));
-    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
+    \$check = \$this->check{$field->getName('XxYy')}(\$p); 
+    if(\$check) \$this->{$field->getName('xxYy')} = \$p;
+    return \$check;
   }
 
 ";
@@ -74,7 +78,9 @@ class ClassValues_setters extends GenerateEntity {
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     if (\$p == DEFAULT_VALUE) \$p = " . $default . ";
     \$p = (is_null(\$p)) ? null : settypebool(trim(\$p));
-    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
+    \$check = \$this->check{$field->getName('XxYy')}(\$p); 
+    if(\$check) \$this->{$field->getName('xxYy')} = \$p;
+    return \$check;
   }
 
 ";
@@ -87,7 +93,9 @@ class ClassValues_setters extends GenerateEntity {
     $this->string .= "  public function set{$field->getName('XxYy')}(\$p) {
     \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
     \$p = (is_null(\$p)) ? null : (string)\$p;
-    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
+    \$check = \$this->check{$field->getName('XxYy')}(\$p); 
+    if(\$check) \$this->{$field->getName('xxYy')} = \$p;
+    return \$check;
   }
 
 ";
@@ -101,15 +109,17 @@ class ClassValues_setters extends GenerateEntity {
     }
 
     $this->string .= "  public function _set{$field->getName('XxYy')}(DateTime \$p = null) {
-      if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;  
+      \$check = \$this->check{$field->getName('XxYy')}(\$p); 
+      if(\$check) \$this->{$field->getName('xxYy')} = \$p;  
+      return \$check;
   }
 
   public function set{$field->getName('XxYy')}(\$p, \$format = \"{$format}\") {
     \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
-    if(!is_null(\$p)) {
-      \$p = SpanishDateTime::createFromFormat(\$format, \$p);
-    }
-    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
+    if(!is_null(\$p)) \$p = SpanishDateTime::createFromFormat(\$format, \$p);    
+    \$check = \$this->check{$field->getName('XxYy')}(\$p); 
+    if(\$check) \$this->{$field->getName('xxYy')} = \$p;  
+    return \$check;
   }
 
 ";
@@ -123,15 +133,17 @@ class ClassValues_setters extends GenerateEntity {
     }
 
     $this->string .= "  public function _set{$field->getName('XxYy')}(DateTime \$p = null) {
-      if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;  
+      \$check = \$this->check{$field->getName('XxYy')}(\$p); 
+      if(\$check) \$this->{$field->getName('xxYy')} = \$p;  
+      return \$check;      
   }
 
   public function set{$field->getName('XxYy')}(\$p, \$format = UNDEFINED) {
     \$p = (\$p == DEFAULT_VALUE) ? " . $default . " : trim(\$p);
-    if(!is_null(\$p)) {
-      \$p = (\$format == UNDEFINED) ? SpanishDateTime::createFromDate(\$p) : SpanishDateTime::createFromFormat(\$format, \$p);
-    }
-    if(\$this->check{$field->getName('XxYy')}(\$p)) \$this->{$field->getName('xxYy')} = \$p;
+    if(!is_null(\$p)) \$p = (\$format == UNDEFINED) ? SpanishDateTime::createFromDate(\$p) : SpanishDateTime::createFromFormat(\$format, \$p);    
+    \$check = \$this->check{$field->getName('XxYy')}(\$p); 
+    if(\$check) \$this->{$field->getName('xxYy')} = \$p;  
+    return \$check;
   }
 
 ";
