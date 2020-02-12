@@ -40,14 +40,16 @@ class Values_toArray extends GenerateEntity {
 ";
     }
 
-  protected function method($field, $format = ""){
-    $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}(\"{$format}\");
+  protected function method($field, $format = null){
+    $f = empty($format) ? "" : "\"{$format}\"";
+    $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}({$f});
 "; 
   }
     protected function datetime($field, $format){
+      $f = empty($format) ? "" : "\"{$format}\"";
       $this->string .= "    if(\$this->{$field->getName('xxYy')} !== UNDEFINED) {
         if(empty(\$this->{$field->getName('xxYy')})) \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')};
-        else \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}->format('{$format}');
+        else \$row[\"" . $field->getName() . "\"] = \$this->{$field->getName('xxYy')}->format({$f});
       }
 ";
     }
