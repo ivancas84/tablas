@@ -16,7 +16,7 @@ class Aliases{
       $this->aliases = array();
     }
     $this->length = $length;
-    $this->reserved = array("not", "as", "div", "mod");
+    $this->reserved = array("not", "as", "div", "mod", "sum", "avg", "count", "max", "min");
   }
 
 
