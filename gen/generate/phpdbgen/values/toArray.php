@@ -24,8 +24,8 @@ class Values_toArray extends GenerateEntity {
     foreach ( $pkNfFk as $field ) {
       switch($field->getDataType()){
         case "date": $this->method($field, "Y-m-d"); break;
-        case "timestamp": $this->method($field, "Y-m-d h:i:s"); break;
-        case "time": $this->method($field, "h:i:s"); break;
+        case "timestamp": $this->method($field, "Y-m-d H:i:s"); break;
+        case "time": $this->method($field, "H:i:s"); break;
         case "year": $this->method($field, "Y"); break;      
         default: $this->method($field); break;
       }
