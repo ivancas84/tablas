@@ -13,7 +13,7 @@ class Sqlo_json extends GenerateEntity {
   }
 
   protected function start(){
-    $this->string .= "  public function json(array \$row){
+    $this->string .= "  public function json(array \$row = null){
     if(empty(\$row)) return null;
     \$row_ = \$this->sql->_json(\$row);
 ";
