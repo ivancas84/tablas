@@ -19,7 +19,7 @@ define("DATA_DBMS", "mysql");
 define("DISABLE_ENTITIES", "");
 
 //raiz del modulo de administración
-define("PATH_HTTP" , "http://" . $_SERVER["SERVER_NAME"] . "/" . PATH_SYS . "/");
+define("URL" , "http://" . $_SERVER["SERVER_NAME"] . "/" . PATH_SYS . "/");
 define("PATH_ROOT" ,  $_SERVER["DOCUMENT_ROOT"] . "/" . PATH_SYS . "/");
 //define("PATH_LOGIN", "http://" . $_SERVER["SERVER_NAME"] . "/" . PATH_SYS . "/login/"); //path correspondiente al módulo de login
 
