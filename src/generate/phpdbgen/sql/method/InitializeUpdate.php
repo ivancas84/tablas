@@ -65,9 +65,9 @@ protected function start(){
 
 
   protected function fecha(Field $field, $current_default){
-    switch($field->getDefault()){
-      case null: case false: $default =  "\"null\"";   break;
-      case "CURRENT_TIMESTAMP": case "CURRENT_DATE": case "CURRENT_TIME": case "CURRENT_YEAR": $default = $current_default; break;
+    switch(true){
+      case (empty($field->getDefault())): $default =  "\"null\"";   break;
+      case (strpos(strtolower($field->getDefault()), "current") !== false): $default = $current_default; break;
       default: $default =  "\"" .  $field->getDefault() . "\"";
     }
 

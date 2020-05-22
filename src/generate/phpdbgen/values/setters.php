@@ -102,7 +102,7 @@ class ClassValues_setters extends GenerateEntity {
   }
 
   protected function dateTime(Field $field, $format){
-    if(($field->getDefault() == "CURRENT_DATE") || ($field->getDefault() == "CURRENT_TIMESTAMP")){
+    if(strpos(strtolower($field->getDefault()), "current") !== false){
       $default = "date('{$format}')";
     } else {
       $default = ($field->getDefault()) ? "'" . $field->getDefault() . "'" : "null";
@@ -126,7 +126,7 @@ class ClassValues_setters extends GenerateEntity {
   }
 
   protected function date(Field $field){
-    if(($field->getDefault() == "CURRENT_DATE") || ($field->getDefault() == "CURRENT_TIMESTAMP")){
+    if(strpos(strtolower($field->getDefault()), "current")  !== false){
       $default = "date('{$format}')";
     } else {
       $default = ($field->getDefault()) ? "'" . $field->getDefault() . "'" : "null";

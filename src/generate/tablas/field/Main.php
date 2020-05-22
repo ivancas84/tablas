@@ -54,7 +54,7 @@ class _Field" . snake_case_to("XxYy", $this->tableName) . snake_case_to("XxYy", 
   protected function attributes(){
     $unique = ($this->fieldInfo["unique"])? "true":"false";
     $not_null = ($this->fieldInfo["not_null"])? "true":"false";
-    $default = (!empty($this->fieldInfo["field_default"])) ? "\"" . $this->fieldInfo["field_default"] . "\"" : "false";
+    $default = (!empty($this->fieldInfo["field_default"]) && strtolower($this->fieldInfo["field_default"]) != "null" ) ? "\"" . $this->fieldInfo["field_default"] . "\"" : "false";
     $length = (!empty($this->fieldInfo["length"])) ? "\"" . $this->fieldInfo["length"] . "\"" : "false";
     $main = ($this->fieldInfo["field_type"] == "pk") ? "true" : "false";
 
