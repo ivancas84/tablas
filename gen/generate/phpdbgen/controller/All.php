@@ -8,7 +8,7 @@ require_once("generate/GenerateFileEntity.php");
 class Gen_All extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
-    $directorio = PATH_ROOT."src/class/controller/all/";
+    $directorio = PATH_ROOT."/class/controller/all/";
     $nombreArchivo = $entity->getName("XxYy").".php";
     parent::__construct($directorio, $nombreArchivo, $entity);
   }
