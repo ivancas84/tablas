@@ -1,7 +1,6 @@
 <?php
 
-//controlador para generar el proyecto PhpDbGen
-require($_SERVER["DOCUMENT_ROOT"] . "/config/config.php"); //configuracion del modulo de administracion
+require("../config/config.php"); 
 
 require_once("class/model/Entity.php");
 
