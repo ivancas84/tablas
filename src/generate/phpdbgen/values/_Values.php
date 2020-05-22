@@ -6,7 +6,7 @@ require_once("generate/GenerateFileEntity.php");
 class _ClassValues extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
-    $directorio = PATH_ROOT."/class/model/values/" . $entity->getName("xxYy") . "/";
+    $directorio = $_SERVER["DOCUMENT_ROOT"]."/".PATH_ROOT."/class/model/values/" . $entity->getName("xxYy") . "/";
     $nombreArchivo = "_" . $entity->getName("XxYy") . ".php";
     parent::__construct($directorio, $nombreArchivo, $entity);
   }

@@ -7,7 +7,7 @@ require_once("generate/GenerateFileEntity.php");
 class Doc extends GenerateFileEntity {
 
   public function __construct(Entity $entity) {
-    $directorio = PATH_ROOT."doc/relations/";
+    $directorio = $_SERVER["DOCUMENT_ROOT"]."/".PATH_ROOT."doc/relations/";
     $nombreArchivo = $entity->getName() . ".txt";
     parent::__construct($directorio, $nombreArchivo, $entity);
   }

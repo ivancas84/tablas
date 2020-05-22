@@ -7,7 +7,7 @@
 class GenerateClassSqlMain extends GenerateFileEntity{
 
   public function __construct(Entity $entity) {
-    $dir = PATH_ROOT."/class/model/sql/" . $entity->getName("xxYy") . "/";
+    $dir = $_SERVER["DOCUMENT_ROOT"]."/".PATH_ROOT."/class/model/sql/" . $entity->getName("xxYy") . "/";
     parent::__construct($dir, "Main.php", $entity);
   }
 
