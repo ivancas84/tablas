@@ -81,11 +81,27 @@ abstract class GenerateFile extends Generate{
 		echo "<br><b>" . $this->getPath() . "</b><br>";
 
 		if ( file_exists($this->getPath())) {
-			echo "---- El archivo ya existe. No sera generado" ;
+			echo "---- El archivo ya existe. No sera generado.<br>" ;
 			return ;
 		}
 		
 		$this->generateCode();
-		$this->generateFile();	}
+		$this->generateFile();	
+	}
+
+	public function generateIfNotExistsWithImp(){
+		echo "<br><b>" . $this->getPath() . "</b><br>";
+
+		$pos = strrpos($this->getPath(),"/");
+		$impPath = substr($this->getPath(),0,$pos+1).substr($this->getPath(),$pos+2);
+
+		if ( file_exists($this->getPath()) || file_exists($impPath) ) {
+			echo "---- El archivo o su implementacion ya existe. No sera generado.<br>" ;
+			return ;
+		}
+		
+		$this->generateCode();
+		$this->generateFile();	
+	}
 	
 }
