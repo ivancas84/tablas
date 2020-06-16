@@ -28,16 +28,15 @@ abstract class GenerateFile extends Generate{
   public function generateFile(){
     $length = strpos($this->dir,"/");
 
+    $this->string = htmlspecialchars_decode($this->string); 
+
     while ($length!==false) {
         if ( !file_exists(substr($this->dir,0,$length+1)) ) {
-
-            mkdir(substr($this->dir,0,$length+1),0777);
+          if(strlen($this->string)) mkdir(substr($this->dir,0,$length+1),0777);
         }
         $length = strpos($this->dir,"/",$length+1);
 
     }
-
-    $this->string = htmlspecialchars_decode($this->string); 
 
     if (strlen($this->string)) {
       $handle = fopen( $this->getPath() , "w" );
