@@ -19,10 +19,10 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
 
   abstract protected function start();
   abstract protected function end();
-  abstract protected function body(Entity $entity, $prefix);
+  abstract protected function body(Entity $entity, $prefix, Field $field);
 
 
-  protected function recursive(Entity $entity, array $tablesVisited = [], $prefix = ""){ //Metodo recursivo de generacion de codigo
+  protected function recursive(Entity $entity, array $tablesVisited = [], $prefix = "", Field $field = null){ //Metodo recursivo de generacion de codigo
     /**
      * Genera codigo solo para las relaciones
      * @param Entity $entity
@@ -33,7 +33,7 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
 
     if(in_array($entity->getName(), $tablesVisited)) return;
     if (!empty($prefix)){
-      $this->string .= $this->body($entity, $prefix); //Genera codigo solo para las relaciones
+      $this->string .= $this->body($entity, $prefix, $field); //Genera codigo solo para las relaciones
     }
     $this->fk($entity, $tablesVisited, $prefix);
     $this->u_($entity, $tablesVisited, $prefix);
@@ -53,7 +53,7 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
     array_push($tablesVisited, $entity->getName());
 
     foreach($fk as $field){
-      $this->recursive($field->getEntityRef(), $tablesVisited, $prf . $field->getAlias());
+      $this->recursive($field->getEntityRef(), $tablesVisited, $prf . $field->getAlias(), $field);
     }
   }
 
@@ -63,7 +63,7 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
     array_push($tablesVisited, $entity->getName());
 
     foreach($u_ as $field) {
-      $this->body($field->getEntity(), $prf . $field->getAlias("_"));
+      $this->body($field->getEntity(), $prf . $field->getAlias("_"), $field);
     }
   }
 }
