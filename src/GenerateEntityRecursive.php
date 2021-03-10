@@ -19,7 +19,7 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
 
   abstract protected function start();
   abstract protected function end();
-  abstract protected function body(Entity $entity, $prefix, Field $field);
+  abstract protected function body(Entity $entity, $prefix, Field $field = null);
 
 
   protected function recursive(Entity $entity, array $tablesVisited = [], $prefix = "", Field $field = null){ //Metodo recursivo de generacion de codigo
