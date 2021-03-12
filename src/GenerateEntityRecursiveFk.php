@@ -13,12 +13,15 @@ abstract class GenerateEntityRecursiveFk extends GenerateEntityRecursive{
 
     if(in_array($entity->getName(), $tablesVisited)) return;
     
-    if (!empty($prefix))  {
+    if (!empty($field)){
       $this->string .= $this->body($entity, $prefix, $field); //Genera codigo solo para las relaciones
+      $prf = (empty($prefix)) ? $field->getAlias() : $prefix . "_" . $field->getAlias();
+    } else {
+      $prf = "";
     }
 
 
-    $this->fk($entity, $tablesVisited, $prefix);
+    $this->fk($entity, $tablesVisited, $prf);
 
 
   }

@@ -32,11 +32,17 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
      */
 
     if(in_array($entity->getName(), $tablesVisited)) return;
-    if (!empty($prefix)){
+
+    if (!empty($field)){
       $this->string .= $this->body($entity, $prefix, $field); //Genera codigo solo para las relaciones
+      $prf = (empty($prefix)) ? $field->getAlias() : $prefix . "_" . $field->getAlias();
+    } else {
+      $prf = "";
     }
-    $this->fk($entity, $tablesVisited, $prefix);
-    $this->u_($entity, $tablesVisited, $prefix);
+
+
+    $this->fk($entity, $tablesVisited, $prf);
+    $this->u_($entity, $tablesVisited, $prf);
     /**
      * Para determinar que se este recorriendo una relacion en vez de la entidad actual, se utiliza el prefix
      * Si prefix esta vacio, significa que recien se comenzo a recorrer la tabla actual y no se debe generar el codigo
@@ -49,11 +55,10 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
 
   public function fk(Entity $entity, array $tablesVisited, $prefix){
     $fk = $entity->getFieldsFkNotReferenced($tablesVisited);
-    $prf = (empty($prefix)) ? "" : $prefix . "_";
     array_push($tablesVisited, $entity->getName());
 
     foreach($fk as $field){
-      $this->recursive($field->getEntityRef(), $tablesVisited, $prf . $field->getAlias(), $field);
+      $this->recursive($field->getEntityRef(), $tablesVisited, $prefix, $field);
     }
   }
 
@@ -63,6 +68,7 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
     array_push($tablesVisited, $entity->getName());
 
     foreach($u_ as $field) {
+      $prf = (empty($prefix)) ? $field->getAlias("_") : $prefix . "_" . $field->getAlias("_");
       $this->body($field->getEntity(), $prf . $field->getAlias("_"), $field);
     }
   }
