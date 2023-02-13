@@ -63,7 +63,7 @@ abstract class GenerateEntityRecursive extends GenerateEntity{ //Comportamiento 
   }
 
   protected function u_(Entity $entity, array $tablesVisited, $prefix){
-    $u_ = $entity->getFieldsU_NotReferenced($tablesVisited);
+    $u_ = $entity->getFieldsOonNotReferenced($tablesVisited);
     $prf = (empty($prefix)) ? "" : $prefix . "_";
     array_push($tablesVisited, $entity->getName());
 
